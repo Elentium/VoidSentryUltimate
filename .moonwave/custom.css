@@ -1,0 +1,259 @@
+:root {
+	--ifm-color-primary: #7c3aed;
+	--ifm-color-primary-dark: #6d28d9;
+	--ifm-color-primary-darker: #5b21b6;
+	--ifm-color-primary-darkest: #4c1d95;
+	--ifm-color-primary-light: #8b5cf6;
+	--ifm-color-primary-lighter: #a78bfa;
+	--ifm-color-primary-lightest: #c4b5fd;
+	--ifm-link-color: #7c3aed;
+	--ifm-navbar-link-hover-color: #7c3aed;
+	--ifm-menu-color-active: #7c3aed;
+	--ifm-breadcrumb-color-active: #7c3aed;
+	--ifm-code-font-size: 95%;
+	--docusaurus-highlighted-code-line-bg: rgba(124, 58, 237, 0.08);
+	--vs-glow: 0 0 0 1px rgba(124, 58, 237, 0.35), 0 0 18px rgba(124, 58, 237, 0.18);
+	--vs-surface-hover: rgba(124, 58, 237, 0.08);
+	--vs-transition: 160ms ease;
+}
+
+[data-theme="dark"] {
+	--ifm-color-primary: #a78bfa;
+	--ifm-color-primary-dark: #8b5cf6;
+	--ifm-color-primary-darker: #7c3aed;
+	--ifm-color-primary-darkest: #6d28d9;
+	--ifm-color-primary-light: #c4b5fd;
+	--ifm-color-primary-lighter: #ddd6fe;
+	--ifm-color-primary-lightest: #ede9fe;
+	--ifm-background-color: #0b0a12;
+	--ifm-background-surface-color: #13111c;
+	--ifm-navbar-background-color: rgba(11, 10, 18, 0.92);
+	--ifm-footer-background-color: #0a0910;
+	--ifm-card-background-color: #161422;
+	--ifm-hover-overlay: rgba(167, 139, 250, 0.08);
+	--ifm-toc-border-color: rgba(167, 139, 250, 0.18);
+	--ifm-color-emphasis-200: rgba(167, 139, 250, 0.16);
+	--ifm-color-emphasis-300: rgba(167, 139, 250, 0.24);
+	--ifm-link-color: #c4b5fd;
+	--ifm-menu-color-active: #c4b5fd;
+	--docusaurus-highlighted-code-line-bg: rgba(167, 139, 250, 0.12);
+	--vs-glow: 0 0 0 1px rgba(167, 139, 250, 0.35), 0 0 20px rgba(124, 58, 237, 0.22);
+	--vs-surface-hover: rgba(167, 139, 250, 0.1);
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+.navbar {
+	backdrop-filter: blur(10px);
+	border-bottom: 1px solid rgba(124, 58, 237, 0.18);
+}
+
+.navbar__title {
+	font-weight: 700;
+	letter-spacing: -0.02em;
+}
+
+.navbar__link,
+.menu__link,
+.table-of-contents__link,
+.footer__link-item,
+.breadcrumbs__link {
+	transition:
+		color var(--vs-transition),
+		background-color var(--vs-transition),
+		border-color var(--vs-transition),
+		box-shadow var(--vs-transition),
+		transform var(--vs-transition);
+}
+
+.navbar__link:hover,
+.navbar__link--active {
+	color: var(--ifm-color-primary);
+}
+
+.menu__link:hover {
+	background: var(--vs-surface-hover);
+	color: var(--ifm-color-primary);
+}
+
+.menu__link--active:not(.menu__link--sublist),
+.menu__list-item-collapsible--active {
+	background: var(--vs-surface-hover);
+	box-shadow: inset 3px 0 0 var(--ifm-color-primary);
+}
+
+.menu__caret:before,
+.menu__link--sublist-caret:after {
+	transition: transform var(--vs-transition);
+}
+
+.table-of-contents__link:hover,
+.table-of-contents__link--active {
+	color: var(--ifm-color-primary);
+}
+
+.pagination-nav {
+	gap: 1rem;
+}
+
+.pagination-nav__link {
+	border: 1px solid var(--ifm-color-emphasis-300);
+	border-radius: 12px;
+	background: var(--ifm-background-surface-color);
+	transition:
+		border-color var(--vs-transition),
+		background-color var(--vs-transition),
+		box-shadow var(--vs-transition),
+		transform var(--vs-transition);
+}
+
+.pagination-nav__link:hover {
+	border-color: var(--ifm-color-primary);
+	background: var(--vs-surface-hover);
+	box-shadow: var(--vs-glow);
+	transform: translateY(-2px);
+	text-decoration: none;
+}
+
+.pagination-nav__link:active {
+	transform: translateY(0);
+	box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.45);
+}
+
+.pagination-nav__sublabel {
+	color: var(--ifm-color-emphasis-600);
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+	font-size: 0.72rem;
+	font-weight: 700;
+}
+
+.pagination-nav__label {
+	color: var(--ifm-font-color-base);
+	font-weight: 650;
+}
+
+.pagination-nav__link:hover .pagination-nav__label {
+	color: var(--ifm-color-primary);
+}
+
+a,
+button,
+.button {
+	transition:
+		color var(--vs-transition),
+		background-color var(--vs-transition),
+		border-color var(--vs-transition),
+		box-shadow var(--vs-transition),
+		transform var(--vs-transition),
+		opacity var(--vs-transition);
+}
+
+.button:hover,
+.button--primary:hover {
+	box-shadow: var(--vs-glow);
+	transform: translateY(-1px);
+}
+
+.button:active {
+	transform: translateY(0);
+}
+
+.card,
+.theme-admonition,
+details,
+.navbar__search-input {
+	transition:
+		border-color var(--vs-transition),
+		box-shadow var(--vs-transition),
+		background-color var(--vs-transition);
+}
+
+.navbar__search-input:hover,
+.navbar__search-input:focus {
+	border-color: var(--ifm-color-primary);
+	box-shadow: var(--vs-glow);
+	outline: none;
+}
+
+.theme-code-block,
+pre {
+	border: 1px solid rgba(124, 58, 237, 0.14);
+}
+
+[data-theme="dark"] .theme-code-block,
+[data-theme="dark"] pre {
+	border-color: rgba(167, 139, 250, 0.16);
+}
+
+.markdown a:hover {
+	text-decoration-thickness: 2px;
+}
+
+.theme-doc-sidebar-container {
+	border-right-color: rgba(124, 58, 237, 0.16) !important;
+}
+
+[data-theme="dark"] .theme-doc-sidebar-container {
+	border-right-color: rgba(167, 139, 250, 0.16) !important;
+}
+
+.footer {
+	border-top: 1px solid rgba(124, 58, 237, 0.18);
+}
+
+.hash-link:hover,
+.tabs__item--active,
+.breadcrumbs__item--active .breadcrumbs__link,
+.theme-edit-this-page:hover {
+	color: var(--ifm-color-primary);
+}
+
+.tabs__item:hover {
+	background: var(--vs-surface-hover);
+}
+
+.tabs__item--active {
+	border-bottom-color: var(--ifm-color-primary);
+}
+
+.hero {
+	background:
+		radial-gradient(ellipse 80% 60% at 50% -10%, rgba(124, 58, 237, 0.22), transparent 70%),
+		var(--ifm-background-color);
+	padding: 4rem 0 3rem;
+}
+
+.hero__title {
+	letter-spacing: -0.03em;
+}
+
+.hero__subtitle {
+	max-width: 38rem;
+	margin-left: auto;
+	margin-right: auto;
+	color: var(--ifm-color-emphasis-700);
+	font-size: 1.15rem;
+	line-height: 1.55;
+}
+
+[data-theme="dark"] .hero__subtitle {
+	color: var(--ifm-color-emphasis-600);
+}
+
+.hero .button--secondary {
+	border-color: rgba(124, 58, 237, 0.35);
+	background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+	color: #fff;
+}
+
+.hero .button--secondary:hover {
+	color: #fff;
+	filter: brightness(1.06);
+}
+
+.features h3 {
+	color: var(--ifm-color-primary);
+}

@@ -1,0 +1,50 @@
+{
+  "name": "@elentium/voidsentryultimate",
+  "version": "1.0.0",
+  "description": "Schema-driven, validation-free binary serializer for Roblox Luau",
+  "license": "Apache-2.0",
+  "author": "IAMNOTULTRA3",
+  "homepage": "https://elentium.github.io/VoidSentryUltimate/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elentium/VoidSentryUltimate.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Elentium/VoidSentryUltimate/issues"
+  },
+  "keywords": [
+    "roblox",
+    "roblox-ts",
+    "rbxts",
+    "serialization",
+    "serde",
+    "buffer",
+    "schema",
+    "luau"
+  ],
+  "main": "src/VoidSentryUltimate.luau",
+  "types": "src/VoidSentryUltimate.d.ts",
+  "typings": "src/VoidSentryUltimate.d.ts",
+  "files": [
+    "src/VoidSentryUltimate.luau",
+    "src/VoidSentryUltimate.d.ts",
+    "default.project.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@rbxts/compiler-types": "3.0.0-types.0",
+    "@rbxts/types": "^1.0.800",
+    "typescript": "^5.0.0"
+  },
+  "scripts": {
+    "docs:sync": "node scripts/sync-moonwave.mjs",
+    "docs:build": "node scripts/sync-moonwave.mjs && npx moonwave build --code src/VoidSentryUltimate.luau && node scripts/sync-moonwave.mjs",
+    "docs:clean-cache": "node -e \"const fs=require('fs'),os=require('os'),path=require('path');const p=path.join(os.homedir(),'Library','Caches','moonwave',path.basename(process.cwd()));fs.rmSync(p,{recursive:true,force:true});console.log('Removed',p)\"",
+    "docs:dev": "node scripts/sync-moonwave.mjs && npx moonwave dev --code src/VoidSentryUltimate.luau",
+    "docs:dev:watch": "node scripts/sync-moonwave.mjs --watch & npx moonwave dev --code src/VoidSentryUltimate.luau"
+  }
+}

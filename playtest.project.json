@@ -1,0 +1,17 @@
+{
+    "name": "voidsentryultimate",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "VoidSentryUltimate": {
+                "$path": "src/VoidSentryUltimate.luau"
+            },
+            "Bench": {
+                "$path": "src/bench"
+            },
+            "Test": {
+                "$path": "src/test"
+            }
+        }
+    }
+}

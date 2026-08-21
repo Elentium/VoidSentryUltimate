@@ -1,0 +1,36 @@
+title = "VoidSentryUltimate"
+gitRepoUrl = "https://github.com/Elentium/VoidSentryUltimate"
+gitSourceBranch = "main"
+changelog = true
+classOrder = [
+	{ section = "Core", classes = ["VoidSentryUltimate"] },
+	{ section = "Types", classes = ["Types"] },
+]
+apiCategories = ["Core", "Primitives", "Collections", "Special", "Vectors", "Roblox"]
+
+[docusaurus]
+url = "https://elentium.github.io"
+baseUrl = "/VoidSentryUltimate/"
+favicon = "favicon.svg"
+tagline = "schema-based serdes optimized for peak performance"
+onBrokenLinks = "throw"
+onBrokenMarkdownLinks = "warn"
+
+[footer]
+copyright = "Copyright © 2026 IAMNOTULTRA3. Built with Moonwave and Docusaurus."
+
+[home]
+enabled = true
+includeReadme = false
+
+[[home.features]]
+title = "Peak performance"
+description = "Native codegen, inlined buffer operations, and no runtime validation overhead keep hot serialization paths focused on throughput."
+
+[[home.features]]
+title = "Schema-first"
+description = "Compose primitive nodes into Struct, Array, Map, and Optional schemas for compact, predictable wire layouts."
+
+[[home.features]]
+title = "Roblox + pure Luau"
+description = "Use VoidSentryUltimate for Roblox datatypes or LuauVS for non-Roblox Luau environments with the same core API."

@@ -1,0 +1,1228 @@
+<!doctype html>
+<html lang="en" dir="ltr" class="plugin-moonwave plugin-id-moonwave" data-has-hydrated="false">
+<head>
+<meta charset="UTF-8">
+<meta name="generator" content="Docusaurus v3.10.1">
+<title data-rh="true">Types | VoidSentryUltimate</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://elentium.github.io/VoidSentryUltimate/api/Types"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docusaurus_tag" content="default"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docsearch:docusaurus_tag" content="default"><meta data-rh="true" property="og:title" content="Types | VoidSentryUltimate"><meta data-rh="true" name="description" content="Schema type nodes from `VoidSentryUltimate.Types`."><meta data-rh="true" property="og:description" content="Schema type nodes from `VoidSentryUltimate.Types`."><link data-rh="true" rel="icon" href="/VoidSentryUltimate/favicon.svg"><link data-rh="true" rel="canonical" href="https://elentium.github.io/VoidSentryUltimate/api/Types"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/api/Types" hreflang="en"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/api/Types" hreflang="x-default"><link rel="stylesheet" href="/VoidSentryUltimate/assets/css/styles.8701576f.css">
+<script src="/VoidSentryUltimate/assets/js/runtime~main.f1fe6830.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/main.61f2cc63.js" defer="defer"></script>
+</head>
+<body>
+<svg style="display: none;"><defs>
+<symbol id="theme-svg-external-link" viewBox="0 0 24 24"><path fill="currentColor" d="M21 13v10h-21v-19h12v2h-10v15h17v-8h2zm3-12h-10.988l4.035 4-6.977 7.07 2.828 2.828 6.977-7.07 4.125 4.172v-11z"/></symbol>
+</defs></svg>
+<script>!function(){var t=function(){try{return new URLSearchParams(window.location.search).get("docusaurus-theme")}catch(t){}}()||function(){try{return window.localStorage.getItem("theme")}catch(t){}}();document.documentElement.setAttribute("data-theme",t||(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light")),document.documentElement.setAttribute("data-theme-choice",t||"system")}(),function(){try{const c=new URLSearchParams(window.location.search).entries();for(var[t,e]of c)if(t.startsWith("docusaurus-data-")){var a=t.replace("docusaurus-data-","data-");document.documentElement.setAttribute(a,e)}}catch(t){}}()</script><div id="__docusaurus"><div role="region" aria-label="Skip to main content"><a class="skipToContent_fXgn" href="#__docusaurus_skipToContent_fallback">Skip to main content</a></div><nav aria-label="Main" class="theme-layout-navbar navbar navbar--fixed-top"><div class="navbar__inner"><div class="theme-layout-navbar-left navbar__items"><button aria-label="Toggle navigation bar" aria-expanded="false" class="navbar__toggle clean-btn" type="button"><svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true"><path stroke="currentColor" stroke-linecap="round" stroke-miterlimit="10" stroke-width="2" d="M4 7h22M4 15h22M4 23h22"></path></svg></button><a class="navbar__brand" href="/VoidSentryUltimate/"><b class="navbar__title text--truncate">VoidSentryUltimate</b></a><a class="navbar__item navbar__link" href="/VoidSentryUltimate/docs/intro">Docs</a><a aria-current="page" class="navbar__item navbar__link navbar__link--active" href="/VoidSentryUltimate/api/">API</a></div><div class="theme-layout-navbar-right navbar__items navbar__items--right"><a href="https://github.com/Elentium/VoidSentryUltimate" target="_blank" rel="noopener noreferrer" class="navbar__item navbar__link">GitHub<svg width="13.5" height="13.5" aria-label="(opens in new tab)" class="iconExternalLink_nPIU"><use href="#theme-svg-external-link"></use></svg></a><div class="toggle_vylO colorModeToggle_DEke"><button class="clean-btn toggleButton_gllP toggleButtonDisabled_aARS" type="button" disabled="" title="system mode" aria-label="Switch between dark and light mode (currently system mode)"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP lightToggleIcon_pyhR"><path fill="currentColor" d="M12,9c1.65,0,3,1.35,3,3s-1.35,3-3,3s-3-1.35-3-3S10.35,9,12,9 M12,7c-2.76,0-5,2.24-5,5s2.24,5,5,5s5-2.24,5-5 S14.76,7,12,7L12,7z M2,13l2,0c0.55,0,1-0.45,1-1s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S1.45,13,2,13z M20,13l2,0c0.55,0,1-0.45,1-1 s-0.45-1-1-1l-2,0c-0.55,0-1,0.45-1,1S19.45,13,20,13z M11,2v2c0,0.55,0.45,1,1,1s1-0.45,1-1V2c0-0.55-0.45-1-1-1S11,1.45,11,2z M11,20v2c0,0.55,0.45,1,1,1s1-0.45,1-1v-2c0-0.55-0.45-1-1-1C11.45,19,11,19.45,11,20z M5.99,4.58c-0.39-0.39-1.03-0.39-1.41,0 c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0s0.39-1.03,0-1.41L5.99,4.58z M18.36,16.95 c-0.39-0.39-1.03-0.39-1.41,0c-0.39,0.39-0.39,1.03,0,1.41l1.06,1.06c0.39,0.39,1.03,0.39,1.41,0c0.39-0.39,0.39-1.03,0-1.41 L18.36,16.95z M19.42,5.99c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06c-0.39,0.39-0.39,1.03,0,1.41 s1.03,0.39,1.41,0L19.42,5.99z M7.05,18.36c0.39-0.39,0.39-1.03,0-1.41c-0.39-0.39-1.03-0.39-1.41,0l-1.06,1.06 c-0.39,0.39-0.39,1.03,0,1.41s1.03,0.39,1.41,0L7.05,18.36z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP darkToggleIcon_wfgR"><path fill="currentColor" d="M9.37,5.51C9.19,6.15,9.1,6.82,9.1,7.5c0,4.08,3.32,7.4,7.4,7.4c0.68,0,1.35-0.09,1.99-0.27C17.45,17.19,14.93,19,12,19 c-3.86,0-7-3.14-7-7C5,9.07,6.81,6.55,9.37,5.51z M12,3c-4.97,0-9,4.03-9,9s4.03,9,9,9s9-4.03,9-9c0-0.46-0.04-0.92-0.1-1.36 c-0.98,1.37-2.58,2.26-4.4,2.26c-2.98,0-5.4-2.42-5.4-5.4c0-1.81,0.89-3.42,2.26-4.4C12.92,3.04,12.46,3,12,3L12,3z"></path></svg><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" class="toggleIcon_g3eP systemToggleIcon_QzmC"><path fill="currentColor" d="m12 21c4.971 0 9-4.029 9-9s-4.029-9-9-9-9 4.029-9 9 4.029 9 9 9zm4.95-13.95c1.313 1.313 2.05 3.093 2.05 4.95s-0.738 3.637-2.05 4.95c-1.313 1.313-3.093 2.05-4.95 2.05v-14c1.857 0 3.637 0.737 4.95 2.05z"></path></svg></button></div><div class="navbarSearchContainer_Bca1"><div class="navbar__search"><span aria-label="expand searchbar" role="button" class="search-icon" tabindex="0"></span><input id="search_input_react" type="search" placeholder="Loading..." aria-label="Search" class="navbar__search-input search-bar" disabled=""></div></div></div></div><div role="presentation" class="navbar-sidebar__backdrop"></div></nav><div id="__docusaurus_skipToContent_fallback" class="theme-layout-main main-wrapper mainWrapper_z2l0 docPageContainer_wNNk"><div class="docPage_Dpn1"><div class="docSidebarContainer_o_re"><div class="sidebar_njMd"><nav aria-label="Docs sidebar" class="menu thin-scrollbar menu_SIkG"><ul class="theme-doc-sidebar-menu menu__list"><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item menu__list-item--collapsed"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist menu__link--sublist-caret" role="button" aria-expanded="false" href="/VoidSentryUltimate/api/VoidSentryUltimate"><span title="Core" class="categoryLinkLabel_W154">Core</span></a></div></li><li class="theme-doc-sidebar-item-category theme-doc-sidebar-item-category-level-1 menu__list-item"><div class="menu__list-item-collapsible"><a class="categoryLink_byQd menu__link menu__link--sublist menu__link--sublist-caret menu__link--active" role="button" aria-expanded="true" href="/VoidSentryUltimate/api/Types"><span title="Types" class="categoryLinkLabel_W154">Types</span></a></div><ul class="menu__list"><li class="theme-doc-sidebar-item-link theme-doc-sidebar-item-link-level-2 menu__list-item"><a class="menu__link menu__link--active" aria-current="page" tabindex="0" href="/VoidSentryUltimate/api/Types"><span title="​Types" class="linkLabel_WmDU">​Types</span></a></li></ul></li></ul></nav></div></div><main class="docMainContainer_HJE1"><div class="container padding-vert--lg"><div class="row"><div class="col docItemCol_MU3C"><div class="docItemContainer_Wv98"><article><div class="member_J0w1 markdown"><div class="tocCollapsible_ETCw theme-doc-toc-mobile tocMobile_oUs_"><button type="button" class="clean-btn tocCollapsibleButton_TO0P">On this page</button></div><header><h1 class="docTitle_mZRt" style="text-decoration:none"><span style="display:inline-block">Types</span></h1><div class="luaClassTags_EipM"></div><div>
+<p>Schema type nodes from <code>VoidSentryUltimate.Types</code>.</p>
+</div></header><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="properties">Properties<a href="#properties" class="hash-link" aria-label="Direct link to Properties" title="Direct link to Properties" translate="no">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="I8"><code style="text-decoration:none">I8</code><a href="#I8" class="hash-link" aria-label="Direct link to I8" title="Direct link to I8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L245"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->I8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Signed 8-bit integer. 1 byte.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="U8"><code style="text-decoration:none">U8</code><a href="#U8" class="hash-link" aria-label="Direct link to U8" title="Direct link to U8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L270"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->U8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Unsigned 8-bit integer. 1 byte.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="U16"><code style="text-decoration:none">U16</code><a href="#U16" class="hash-link" aria-label="Direct link to U16" title="Direct link to U16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L295"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->U16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Unsigned 16-bit integer. 2 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="I16"><code style="text-decoration:none">I16</code><a href="#I16" class="hash-link" aria-label="Direct link to I16" title="Direct link to I16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L320"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->I16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Signed 16-bit integer. 2 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="U32"><code style="text-decoration:none">U32</code><a href="#U32" class="hash-link" aria-label="Direct link to U32" title="Direct link to U32" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L345"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->U32<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Unsigned 32-bit integer. 4 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="I32"><code style="text-decoration:none">I32</code><a href="#I32" class="hash-link" aria-label="Direct link to I32" title="Direct link to I32" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L370"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->I32<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Signed 32-bit integer. 4 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="F32"><code style="text-decoration:none">F32</code><a href="#F32" class="hash-link" aria-label="Direct link to F32" title="Direct link to F32" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L395"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->F32<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>IEEE float. 4 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="F64"><code style="text-decoration:none">F64</code><a href="#F64" class="hash-link" aria-label="Direct link to F64" title="Direct link to F64" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L420"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->F64<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>IEEE double. 8 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="String"><code style="text-decoration:none">String</code><a href="#String" class="hash-link" aria-label="Direct link to String" title="Direct link to String" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L445"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->String<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">string</code><code class="op_lSLc">&gt;</code></div><div>
+<p>UTF-8 string with a <code>u16</code> byte-length prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="String8"><code style="text-decoration:none">String8</code><a href="#String8" class="hash-link" aria-label="Direct link to String8" title="Direct link to String8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L477"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->String8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">string</code><code class="op_lSLc">&gt;</code></div><div>
+<p>UTF-8 string with a <code>u8</code> byte-length prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector"><code style="text-decoration:none">Vector</code><a href="#Vector" class="hash-link" aria-label="Direct link to Vector" title="Direct link to Vector" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L716"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>f32</code> components. 12 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="F16"><code style="text-decoration:none">F16</code><a href="#F16" class="hash-link" aria-label="Direct link to F16" title="Direct link to F16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L969"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->F16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Half-precision float. 2 bytes. Lossy.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="F24"><code style="text-decoration:none">F24</code><a href="#F24" class="hash-link" aria-label="Direct link to F24" title="Direct link to F24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1027"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->F24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>24-bit float. 3 bytes. Lossy.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="U24"><code style="text-decoration:none">U24</code><a href="#U24" class="hash-link" aria-label="Direct link to U24" title="Direct link to U24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1084"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->U24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Unsigned 24-bit integer. 3 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="I24"><code style="text-decoration:none">I24</code><a href="#I24" class="hash-link" aria-label="Direct link to I24" title="Direct link to I24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1117"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->I24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">number</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Signed 24-bit integer. 3 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorF24"><code style="text-decoration:none">VectorF24</code><a href="#VectorF24" class="hash-link" aria-label="Direct link to VectorF24" title="Direct link to VectorF24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1151"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorF24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>f24</code> components. 9 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorF16"><code style="text-decoration:none">VectorF16</code><a href="#VectorF16" class="hash-link" aria-label="Direct link to VectorF16" title="Direct link to VectorF16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1270"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorF16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>f16</code> components. 6 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorU16"><code style="text-decoration:none">VectorU16</code><a href="#VectorU16" class="hash-link" aria-label="Direct link to VectorU16" title="Direct link to VectorU16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1415"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorU16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>u16</code> components. 6 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorI16"><code style="text-decoration:none">VectorI16</code><a href="#VectorI16" class="hash-link" aria-label="Direct link to VectorI16" title="Direct link to VectorI16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1448"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorI16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>i16</code> components. 6 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorU8"><code style="text-decoration:none">VectorU8</code><a href="#VectorU8" class="hash-link" aria-label="Direct link to VectorU8" title="Direct link to VectorU8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1481"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorU8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>u8</code> components. 3 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Color3"><code style="text-decoration:none">Color3</code><a href="#Color3" class="hash-link" aria-label="Direct link to Color3" title="Direct link to Color3" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1514"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Color3<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Color3" target="_blank" rel="noopener noreferrer">Color3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>RGB channels as three bytes. 3 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorI8"><code style="text-decoration:none">VectorI8</code><a href="#VectorI8" class="hash-link" aria-label="Direct link to VectorI8" title="Direct link to VectorI8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1547"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorI8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>i8</code> components. 3 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorU24"><code style="text-decoration:none">VectorU24</code><a href="#VectorU24" class="hash-link" aria-label="Direct link to VectorU24" title="Direct link to VectorU24" translate="no"> ​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1580"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorU24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>u24</code> components. 9 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="VectorI24"><code style="text-decoration:none">VectorI24</code><a href="#VectorI24" class="hash-link" aria-label="Direct link to VectorI24" title="Direct link to VectorI24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1649"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->VectorI24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector3" target="_blank" rel="noopener noreferrer">Vector3<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector3</code> with three <code>i24</code> components. 9 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2"><code style="text-decoration:none">Vector2</code><a href="#Vector2" class="hash-link" aria-label="Direct link to Vector2" title="Direct link to Vector2" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1721"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>f32</code> components. 8 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2F24"><code style="text-decoration:none">Vector2F24</code><a href="#Vector2F24" class="hash-link" aria-label="Direct link to Vector2F24" title="Direct link to Vector2F24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1750"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2F24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>f24</code> components. 6 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2F16"><code style="text-decoration:none">Vector2F16</code><a href="#Vector2F16" class="hash-link" aria-label="Direct link to Vector2F16" title="Direct link to Vector2F16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1830"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2F16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>f16</code> components. 4 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2U16"><code style="text-decoration:none">Vector2U16</code><a href="#Vector2U16" class="hash-link" aria-label="Direct link to Vector2U16" title="Direct link to Vector2U16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1928"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2U16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>u16</code> components. 4 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2I16"><code style="text-decoration:none">Vector2I16</code><a href="#Vector2I16" class="hash-link" aria-label="Direct link to Vector2I16" title="Direct link to Vector2I16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1957"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2I16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>i16</code> components. 4 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2U8"><code style="text-decoration:none">Vector2U8</code><a href="#Vector2U8" class="hash-link" aria-label="Direct link to Vector2U8" title="Direct link to Vector2U8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L1986"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2U8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>u8</code> components. 2 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2I8"><code style="text-decoration:none">Vector2I8</code><a href="#Vector2I8" class="hash-link" aria-label="Direct link to Vector2I8" title="Direct link to Vector2I8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2015"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2I8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>i8</code> components. 2 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2U24"><code style="text-decoration:none">Vector2U24</code><a href="#Vector2U24" class="hash-link" aria-label="Direct link to Vector2U24" title="Direct link to Vector2U24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2044"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2U24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>u24</code> components. 6 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Vector2I24"><code style="text-decoration:none">Vector2I24</code><a href="#Vector2I24" class="hash-link" aria-label="Direct link to Vector2I24" title="Direct link to Vector2I24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#00a1e4;color:#00a1e4">Vectors</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2095"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Vector2I24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Vector2" target="_blank" rel="noopener noreferrer">Vector2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p><code>Vector2</code> with two <code>i24</code> components. 6 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="UDim2"><code style="text-decoration:none">UDim2</code><a href="#UDim2" class="hash-link" aria-label="Direct link to UDim2" title="Direct link to UDim2" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2148"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->UDim2<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/UDim2" target="_blank" rel="noopener noreferrer">UDim2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Full <code>UDim2</code> as four <code>f32</code> values. 16 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="UDim2Scale"><code style="text-decoration:none">UDim2Scale</code><a href="#UDim2Scale" class="hash-link" aria-label="Direct link to UDim2Scale" title="Direct link to UDim2Scale" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2181"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->UDim2Scale<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/UDim2" target="_blank" rel="noopener noreferrer">UDim2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Two <code>f32</code> scale components. 8 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="UDim2Offset"><code style="text-decoration:none">UDim2Offset</code><a href="#UDim2Offset" class="hash-link" aria-label="Direct link to UDim2Offset" title="Direct link to UDim2Offset" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2210"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->UDim2Offset<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/UDim2" target="_blank" rel="noopener noreferrer">UDim2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Two <code>f32</code> offset components. 8 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="UDim2OffsetI16"><code style="text-decoration:none">UDim2OffsetI16</code><a href="#UDim2OffsetI16" class="hash-link" aria-label="Direct link to UDim2OffsetI16" title="Direct link to UDim2OffsetI16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2239"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->UDim2OffsetI16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/UDim2" target="_blank" rel="noopener noreferrer">UDim2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Two <code>i16</code> offset components. 4 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="UDim2ScaleF24"><code style="text-decoration:none">UDim2ScaleF24</code><a href="#UDim2ScaleF24" class="hash-link" aria-label="Direct link to UDim2ScaleF24" title="Direct link to UDim2ScaleF24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2268"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->UDim2ScaleF24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/UDim2" target="_blank" rel="noopener noreferrer">UDim2<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Two <code>f24</code> scale components. 6 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Bool"><code style="text-decoration:none">Bool</code><a href="#Bool" class="hash-link" aria-label="Direct link to Bool" title="Direct link to Bool" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Primitives</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2348"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Bool<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">boolean</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Boolean stored as one byte (<code>0</code> or <code>1</code>).</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="BoolPacked"><code style="text-decoration:none">BoolPacked</code><a href="#BoolPacked" class="hash-link" aria-label="Direct link to BoolPacked" title="Direct link to BoolPacked" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2372"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->BoolPacked<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><code class="blue_P4bS">boolean</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Eight booleans packed into 1 byte.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Buffer"><code style="text-decoration:none">Buffer</code><a href="#Buffer" class="hash-link" aria-label="Direct link to Buffer" title="Direct link to Buffer" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2433"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Buffer<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">buffer</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Buffer with a <code>u16</code> byte-length prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Buffer8"><code style="text-decoration:none">Buffer8</code><a href="#Buffer8" class="hash-link" aria-label="Direct link to Buffer8" title="Direct link to Buffer8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2466"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Buffer8<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">buffer</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Buffer with a <code>u8</code> byte-length prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Buffer24"><code style="text-decoration:none">Buffer24</code><a href="#Buffer24" class="hash-link" aria-label="Direct link to Buffer24" title="Direct link to Buffer24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2499"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Buffer24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">buffer</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Buffer with a <code>u24</code> byte-length prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Instance"><code style="text-decoration:none">Instance</code><a href="#Instance" class="hash-link" aria-label="Direct link to Instance" title="Direct link to Instance" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2606"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Instance<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Instance" target="_blank" rel="noopener noreferrer">Instance<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Instance reference as a <code>u16</code> <code>_VSID</code>. 2 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Instance24"><code style="text-decoration:none">Instance24</code><a href="#Instance24" class="hash-link" aria-label="Direct link to Instance24" title="Direct link to Instance24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2641"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->Instance24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Instance" target="_blank" rel="noopener noreferrer">Instance<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Instance reference as a <code>u24</code> <code>_VSID</code>. 3 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="CFrame"><code style="text-decoration:none">CFrame</code><a href="#CFrame" class="hash-link" aria-label="Direct link to CFrame" title="Direct link to CFrame" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2683"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->CFrame<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame" target="_blank" rel="noopener noreferrer">CFrame<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Position plus rotation matrix (<code>12 × f32</code>). 48 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="QCFrame"><code style="text-decoration:none">QCFrame</code><a href="#QCFrame" class="hash-link" aria-label="Direct link to QCFrame" title="Direct link to QCFrame" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2741"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->QCFrame<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame" target="_blank" rel="noopener noreferrer">CFrame<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Position plus quaternion (<code>7 × f32</code>). 28 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="CFrameF24"><code style="text-decoration:none">CFrameF24</code><a href="#CFrameF24" class="hash-link" aria-label="Direct link to CFrameF24" title="Direct link to CFrameF24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2794"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->CFrameF24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame" target="_blank" rel="noopener noreferrer">CFrame<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Rotation matrix with <code>f24</code> components. 36 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="CFrameF16"><code style="text-decoration:none">CFrameF16</code><a href="#CFrameF16" class="hash-link" aria-label="Direct link to CFrameF16" title="Direct link to CFrameF16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L3164"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->CFrameF16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame" target="_blank" rel="noopener noreferrer">CFrame<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Rotation matrix with <code>f16</code> components. 24 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="QCFrameF24"><code style="text-decoration:none">QCFrameF24</code><a href="#QCFrameF24" class="hash-link" aria-label="Direct link to QCFrameF24" title="Direct link to QCFrameF24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L3594"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->QCFrameF24<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame" target="_blank" rel="noopener noreferrer">CFrame<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Quaternion CFrame with <code>f24</code> components. 21 bytes.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="QCFrameF16"><code style="text-decoration:none">QCFrameF16</code><a href="#QCFrameF16" class="hash-link" aria-label="Direct link to QCFrameF16" title="Direct link to QCFrameF16" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L3825"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.<!-- -->QCFrameF16<!-- -->:<!-- --> </code> <code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/CFrame" target="_blank" rel="noopener noreferrer">CFrame<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Quaternion CFrame with <code>f16</code> components. 14 bytes.</p>
+</div><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions" translate="no">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="StringFixed"><code style="text-decoration:none">StringFixed</code><a href="#StringFixed" class="hash-link" aria-label="Direct link to StringFixed" title="Direct link to StringFixed" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L512"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">StringFixed</code><code>(</code><div class="inset_uKQm"><div><code>length<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Exact byte length on the wire.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">string</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Fixed-length UTF-8 string with no length prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Array"><code style="text-decoration:none">Array</code><a href="#Array" class="hash-link" aria-label="Direct link to Array" title="Direct link to Array" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L543"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Array</code><code>(</code><div class="inset_uKQm"><div><code>node<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><span class="inlineDescription_G7Er">-- <span>
+<p>Element schema.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><code class="blue_P4bS">T</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Array with a <code>u16</code> element-count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Array8"><code style="text-decoration:none">Array8</code><a href="#Array8" class="hash-link" aria-label="Direct link to Array8" title="Direct link to Array8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L584"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Array8</code><code>(</code><div class="inset_uKQm"><div><code>node<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><span class="inlineDescription_G7Er">-- <span>
+<p>Element schema.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><code class="blue_P4bS">T</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Array with a <code>u8</code> element-count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Array24"><code style="text-decoration:none">Array24</code><a href="#Array24" class="hash-link" aria-label="Direct link to Array24" title="Direct link to Array24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L625"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Array24</code><code>(</code><div class="inset_uKQm"><div><code>node<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><span class="inlineDescription_G7Er">-- <span>
+<p>Element schema.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><code class="blue_P4bS">T</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Array with a <code>u24</code> element-count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Struct"><code style="text-decoration:none">Struct</code><a href="#Struct" class="hash-link" aria-label="Direct link to Struct" title="Direct link to Struct" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L671"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Struct</code><code>(</code><div class="inset_uKQm"><div><code>fields<!-- -->: </code><code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">string</code><code>]</code></span><code>: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">any</code><code class="op_lSLc">&gt;</code><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
+<p>Field schemas keyed by name.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">any</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Struct schema. Field names are sorted lexicographically on the wire.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Map"><code style="text-decoration:none">Map</code><a href="#Map" class="hash-link" aria-label="Direct link to Map" title="Direct link to Map" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L751"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Map</code><code>(</code><div class="inset_uKQm"><div><code>keyNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">K</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Key schema.</p>
+</span></span></div><div><code>valueNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">V</code><code class="op_lSLc">&gt;</code><span class="inlineDescription_G7Er">-- <span>
+<p>Value schema.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">K</code><code>]</code></span><code>: </code><code class="blue_P4bS">V</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Map with a <code>u16</code> entry-count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Map8"><code style="text-decoration:none">Map8</code><a href="#Map8" class="hash-link" aria-label="Direct link to Map8" title="Direct link to Map8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L798"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Map8</code><code>(</code><div class="inset_uKQm"><div><code>keyNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">K</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Key schema.</p>
+</span></span></div><div><code>valueNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">V</code><code class="op_lSLc">&gt;</code><span class="inlineDescription_G7Er">-- <span>
+<p>Value schema.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">K</code><code>]</code></span><code>: </code><code class="blue_P4bS">V</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Map with a <code>u8</code> entry-count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Map24"><code style="text-decoration:none">Map24</code><a href="#Map24" class="hash-link" aria-label="Direct link to Map24" title="Direct link to Map24" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L845"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Map24</code><code>(</code><div class="inset_uKQm"><div><code>keyNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">K</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Key schema.</p>
+</span></span></div><div><code>valueNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">V</code><code class="op_lSLc">&gt;</code><span class="inlineDescription_G7Er">-- <span>
+<p>Value schema.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">K</code><code>]</code></span><code>: </code><code class="blue_P4bS">V</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Map with a <code>u24</code> entry-count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="ArrayFixed"><code style="text-decoration:none">ArrayFixed</code><a href="#ArrayFixed" class="hash-link" aria-label="Direct link to ArrayFixed" title="Direct link to ArrayFixed" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L897"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">ArrayFixed</code><code>(</code><div class="inset_uKQm"><div><code>node<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Element schema.</p>
+</span></span></div><div><code>length<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Exact element count.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><code class="blue_P4bS">T</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Fixed-length array with no count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="MapFixed"><code style="text-decoration:none">MapFixed</code><a href="#MapFixed" class="hash-link" aria-label="Direct link to MapFixed" title="Direct link to MapFixed" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L933"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">MapFixed</code><code>(</code><div class="inset_uKQm"><div><code>keyNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">K</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Key schema.</p>
+</span></span></div><div><code>valueNode<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">V</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Value schema.</p>
+</span></span></div><div><code>length<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Exact entry count.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">K</code><code>]</code></span><code>: </code><code class="blue_P4bS">V</code><code class="purple_ieR2">}</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Fixed-length map with no count prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="BufferFixed"><code style="text-decoration:none">BufferFixed</code><a href="#BufferFixed" class="hash-link" aria-label="Direct link to BufferFixed" title="Direct link to BufferFixed" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#2b8ab6;color:#2b8ab6">Special</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2536"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">BufferFixed</code><code>(</code><div class="inset_uKQm"><div><code>length<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+<p>Exact byte length on the wire.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">buffer</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Fixed-length buffer with no length prefix.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Optional"><code style="text-decoration:none">Optional</code><a href="#Optional" class="hash-link" aria-label="Direct link to Optional" title="Direct link to Optional" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#925FB9;color:#925FB9">Collections</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L2568"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Optional</code><code>(</code><div class="inset_uKQm"><div><code>node<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><span class="inlineDescription_G7Er">-- <span>
+<p>Inner schema.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T?</code><code class="op_lSLc">&gt;</code></div><div>
+<p>Optional value prefixed by a one-byte presence flag.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="SerInstance"><code style="text-decoration:none">SerInstance</code><a href="#SerInstance" class="hash-link" aria-label="Direct link to SerInstance" title="Direct link to SerInstance" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L4094"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">SerInstance</code><code>(</code><div class="inset_uKQm"><div><code>className<!-- -->: </code><code class="blue_P4bS">string</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Instance class name.</p>
+</span></span></div><div><code>schema<!-- -->: </code><code class="purple_ieR2">{</code><span><code>[</code><code class="blue_P4bS">string</code><code>]</code></span><code>: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">any</code><code class="op_lSLc">&gt;</code><code class="purple_ieR2">}</code><span class="inlineDescription_G7Er">-- <span>
+<p>Property schemas keyed by name.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Instance" target="_blank" rel="noopener noreferrer">Instance<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Serializes selected properties from an existing instance.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Enum"><code style="text-decoration:none">Enum</code><a href="#Enum" class="hash-link" aria-label="Direct link to Enum" title="Direct link to Enum" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L4140"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Enum</code><code>(</code><div class="inset_uKQm"><div><code>enumType<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Enum" target="_blank" rel="noopener noreferrer">Enum<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
+<p>Enum to serialize.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/EnumItem" target="_blank" rel="noopener noreferrer">EnumItem<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Enum item stored as a <code>u16</code> value.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Enum8"><code style="text-decoration:none">Enum8</code><a href="#Enum8" class="hash-link" aria-label="Direct link to Enum8" title="Direct link to Enum8" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#dc0073;color:#dc0073">Roblox</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/src/VoidSentryUltimate.luau#L4169"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Types<!-- -->.</code><code class="green_DgR4">Enum8</code><code>(</code><div class="inset_uKQm"><div><code>enumType<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/Enum" target="_blank" rel="noopener noreferrer">Enum<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><span class="inlineDescription_G7Er">-- <span>
+<p>Enum to serialize.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="https://developer.roblox.com/en-us/api-reference/datatype/EnumItem" target="_blank" rel="noopener noreferrer">EnumItem<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound" style="color:gray;vertical-align:middle;margin-left:2px"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></code><code class="op_lSLc">&gt;</code></div><div>
+<p>Enum item stored as a <code>u8</code> value.</p>
+</div></div></article></div><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/VoidSentryUltimate/api/VoidSentryUltimate"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">VoidSentryUltimate</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/VoidSentryUltimate/docs/intro"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Guides</div></a></nav><details><summary>Show raw api</summary><pre style="max-width:100%;white-space:pre-wrap">{
+    &quot;functions&quot;: [
+        {
+            &quot;name&quot;: &quot;StringFixed&quot;,
+            &quot;desc&quot;: &quot;Fixed-length UTF-8 string with no length prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;length&quot;,
+                    &quot;desc&quot;: &quot;Exact byte length on the wire.&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;string&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 512,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Array&quot;,
+            &quot;desc&quot;: &quot;Array with a `u16` element-count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;node&quot;,
+                    &quot;desc&quot;: &quot;Element schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T&gt;&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ T }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 543,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Array8&quot;,
+            &quot;desc&quot;: &quot;Array with a `u8` element-count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;node&quot;,
+                    &quot;desc&quot;: &quot;Element schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T&gt;&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ T }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 584,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Array24&quot;,
+            &quot;desc&quot;: &quot;Array with a `u24` element-count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;node&quot;,
+                    &quot;desc&quot;: &quot;Element schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T&gt;&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ T }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 625,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Struct&quot;,
+            &quot;desc&quot;: &quot;Struct schema. Field names are sorted lexicographically on the wire.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;fields&quot;,
+                    &quot;desc&quot;: &quot;Field schemas keyed by name.&quot;,
+                    &quot;lua_type&quot;: &quot;{[string]: SerdesNode&lt;any&gt;}&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;any&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 671,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Map&quot;,
+            &quot;desc&quot;: &quot;Map with a `u16` entry-count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;keyNode&quot;,
+                    &quot;desc&quot;: &quot;Key schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;K&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;valueNode&quot;,
+                    &quot;desc&quot;: &quot;Value schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;V&gt;&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ [K]: V }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 751,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Map8&quot;,
+            &quot;desc&quot;: &quot;Map with a `u8` entry-count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;keyNode&quot;,
+                    &quot;desc&quot;: &quot;Key schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;K&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;valueNode&quot;,
+                    &quot;desc&quot;: &quot;Value schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;V&gt;&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ [K]: V }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 798,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Map24&quot;,
+            &quot;desc&quot;: &quot;Map with a `u24` entry-count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;keyNode&quot;,
+                    &quot;desc&quot;: &quot;Key schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;K&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;valueNode&quot;,
+                    &quot;desc&quot;: &quot;Value schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;V&gt;&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ [K]: V }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 845,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;ArrayFixed&quot;,
+            &quot;desc&quot;: &quot;Fixed-length array with no count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;node&quot;,
+                    &quot;desc&quot;: &quot;Element schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;length&quot;,
+                    &quot;desc&quot;: &quot;Exact element count.&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ T }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 897,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;MapFixed&quot;,
+            &quot;desc&quot;: &quot;Fixed-length map with no count prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;keyNode&quot;,
+                    &quot;desc&quot;: &quot;Key schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;K&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;valueNode&quot;,
+                    &quot;desc&quot;: &quot;Value schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;V&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;length&quot;,
+                    &quot;desc&quot;: &quot;Exact entry count.&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;{ [K]: V }&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 933,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;BufferFixed&quot;,
+            &quot;desc&quot;: &quot;Fixed-length buffer with no length prefix.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;length&quot;,
+                    &quot;desc&quot;: &quot;Exact byte length on the wire.&quot;,
+                    &quot;lua_type&quot;: &quot;number&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;buffer&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2536,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Optional&quot;,
+            &quot;desc&quot;: &quot;Optional value prefixed by a one-byte presence flag.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;node&quot;,
+                    &quot;desc&quot;: &quot;Inner schema.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T&gt;&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T?&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Collections&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2568,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;SerInstance&quot;,
+            &quot;desc&quot;: &quot;Serializes selected properties from an existing instance.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;className&quot;,
+                    &quot;desc&quot;: &quot;Instance class name.&quot;,
+                    &quot;lua_type&quot;: &quot;string&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;schema&quot;,
+                    &quot;desc&quot;: &quot;Property schemas keyed by name.&quot;,
+                    &quot;lua_type&quot;: &quot;{[string]: SerdesNode&lt;any&gt;}&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;Instance&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 4094,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Enum&quot;,
+            &quot;desc&quot;: &quot;Enum item stored as a `u16` value.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;enumType&quot;,
+                    &quot;desc&quot;: &quot;Enum to serialize.&quot;,
+                    &quot;lua_type&quot;: &quot;Enum&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;EnumItem&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 4140,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Enum8&quot;,
+            &quot;desc&quot;: &quot;Enum item stored as a `u8` value.&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;enumType&quot;,
+                    &quot;desc&quot;: &quot;Enum to serialize.&quot;,
+                    &quot;lua_type&quot;: &quot;Enum&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;EnumItem&gt;&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 4169,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        }
+    ],
+    &quot;properties&quot;: [
+        {
+            &quot;name&quot;: &quot;I8&quot;,
+            &quot;desc&quot;: &quot;Signed 8-bit integer. 1 byte.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 245,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;U8&quot;,
+            &quot;desc&quot;: &quot;Unsigned 8-bit integer. 1 byte.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 270,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;U16&quot;,
+            &quot;desc&quot;: &quot;Unsigned 16-bit integer. 2 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 295,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;I16&quot;,
+            &quot;desc&quot;: &quot;Signed 16-bit integer. 2 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 320,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;U32&quot;,
+            &quot;desc&quot;: &quot;Unsigned 32-bit integer. 4 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 345,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;I32&quot;,
+            &quot;desc&quot;: &quot;Signed 32-bit integer. 4 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 370,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;F32&quot;,
+            &quot;desc&quot;: &quot;IEEE float. 4 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 395,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;F64&quot;,
+            &quot;desc&quot;: &quot;IEEE double. 8 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 420,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;String&quot;,
+            &quot;desc&quot;: &quot;UTF-8 string with a `u16` byte-length prefix.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;string&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 445,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;String8&quot;,
+            &quot;desc&quot;: &quot;UTF-8 string with a `u8` byte-length prefix.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;string&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 477,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `f32` components. 12 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 716,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;F16&quot;,
+            &quot;desc&quot;: &quot;Half-precision float. 2 bytes. Lossy.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 969,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;F24&quot;,
+            &quot;desc&quot;: &quot;24-bit float. 3 bytes. Lossy.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1027,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;U24&quot;,
+            &quot;desc&quot;: &quot;Unsigned 24-bit integer. 3 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1084,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;I24&quot;,
+            &quot;desc&quot;: &quot;Signed 24-bit integer. 3 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;number&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1117,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorF24&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `f24` components. 9 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1151,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorF16&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `f16` components. 6 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1270,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorU16&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `u16` components. 6 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1415,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorI16&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `i16` components. 6 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1448,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorU8&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `u8` components. 3 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1481,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Color3&quot;,
+            &quot;desc&quot;: &quot;RGB channels as three bytes. 3 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Color3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1514,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorI8&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `i8` components. 3 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1547,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorU24&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `u24` components. 9 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1580,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;VectorI24&quot;,
+            &quot;desc&quot;: &quot;`Vector3` with three `i24` components. 9 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector3&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1649,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `f32` components. 8 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1721,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2F24&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `f24` components. 6 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1750,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2F16&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `f16` components. 4 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1830,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2U16&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `u16` components. 4 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1928,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2I16&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `i16` components. 4 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1957,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2U8&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `u8` components. 2 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 1986,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2I8&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `i8` components. 2 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2015,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2U24&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `u24` components. 6 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2044,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Vector2I24&quot;,
+            &quot;desc&quot;: &quot;`Vector2` with two `i24` components. 6 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Vector2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Vectors&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2095,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;UDim2&quot;,
+            &quot;desc&quot;: &quot;Full `UDim2` as four `f32` values. 16 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;UDim2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2148,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;UDim2Scale&quot;,
+            &quot;desc&quot;: &quot;Two `f32` scale components. 8 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;UDim2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2181,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;UDim2Offset&quot;,
+            &quot;desc&quot;: &quot;Two `f32` offset components. 8 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;UDim2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2210,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;UDim2OffsetI16&quot;,
+            &quot;desc&quot;: &quot;Two `i16` offset components. 4 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;UDim2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2239,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;UDim2ScaleF24&quot;,
+            &quot;desc&quot;: &quot;Two `f24` scale components. 6 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;UDim2&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2268,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Bool&quot;,
+            &quot;desc&quot;: &quot;Boolean stored as one byte (`0` or `1`).&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;boolean&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Primitives&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2348,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;BoolPacked&quot;,
+            &quot;desc&quot;: &quot;Eight booleans packed into 1 byte.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;{ boolean }&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2372,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Buffer&quot;,
+            &quot;desc&quot;: &quot;Buffer with a `u16` byte-length prefix.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;buffer&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2433,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Buffer8&quot;,
+            &quot;desc&quot;: &quot;Buffer with a `u8` byte-length prefix.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;buffer&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2466,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Buffer24&quot;,
+            &quot;desc&quot;: &quot;Buffer with a `u24` byte-length prefix.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;buffer&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Special&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2499,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Instance&quot;,
+            &quot;desc&quot;: &quot;Instance reference as a `u16` `_VSID`. 2 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Instance&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2606,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Instance24&quot;,
+            &quot;desc&quot;: &quot;Instance reference as a `u24` `_VSID`. 3 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;Instance&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2641,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;CFrame&quot;,
+            &quot;desc&quot;: &quot;Position plus rotation matrix (`12 × f32`). 48 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;CFrame&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2683,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;QCFrame&quot;,
+            &quot;desc&quot;: &quot;Position plus quaternion (`7 × f32`). 28 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;CFrame&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2741,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;CFrameF24&quot;,
+            &quot;desc&quot;: &quot;Rotation matrix with `f24` components. 36 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;CFrame&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 2794,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;CFrameF16&quot;,
+            &quot;desc&quot;: &quot;Rotation matrix with `f16` components. 24 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;CFrame&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 3164,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;QCFrameF24&quot;,
+            &quot;desc&quot;: &quot;Quaternion CFrame with `f24` components. 21 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;CFrame&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 3594,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;QCFrameF16&quot;,
+            &quot;desc&quot;: &quot;Quaternion CFrame with `f16` components. 14 bytes.&quot;,
+            &quot;lua_type&quot;: &quot;SerdesNode&lt;CFrame&gt;&quot;,
+            &quot;tags&quot;: [
+                &quot;Roblox&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 3825,
+                &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+            }
+        }
+    ],
+    &quot;types&quot;: [],
+    &quot;name&quot;: &quot;Types&quot;,
+    &quot;desc&quot;: &quot;Schema type nodes from `VoidSentryUltimate.Types`.&quot;,
+    &quot;source&quot;: {
+        &quot;line&quot;: 45,
+        &quot;path&quot;: &quot;src/VoidSentryUltimate.luau&quot;
+    }
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#Primitives" class="table-of-contents__link toc-highlight">Primitives</a><ul><li><a href="#Bool" class="table-of-contents__link toc-highlight">Bool</a></li><li><a href="#F16" class="table-of-contents__link toc-highlight">F16</a></li><li><a href="#F24" class="table-of-contents__link toc-highlight">F24</a></li><li><a href="#F32" class="table-of-contents__link toc-highlight">F32</a></li><li><a href="#F64" class="table-of-contents__link toc-highlight">F64</a></li><li><a href="#I16" class="table-of-contents__link toc-highlight">I16</a></li><li><a href="#I24" class="table-of-contents__link toc-highlight">I24</a></li><li><a href="#I32" class="table-of-contents__link toc-highlight">I32</a></li><li><a href="#I8" class="table-of-contents__link toc-highlight">I8</a></li><li><a href="#U16" class="table-of-contents__link toc-highlight">U16</a></li><li><a href="#U24" class="table-of-contents__link toc-highlight">U24</a></li><li><a href="#U32" class="table-of-contents__link toc-highlight">U32</a></li><li><a href="#U8" class="table-of-contents__link toc-highlight">U8</a></li></ul></li><li><a href="#Special" class="table-of-contents__link toc-highlight">Special</a><ul><li><a href="#BoolPacked" class="table-of-contents__link toc-highlight">BoolPacked</a></li><li><a href="#Buffer" class="table-of-contents__link toc-highlight">Buffer</a></li><li><a href="#Buffer24" class="table-of-contents__link toc-highlight">Buffer24</a></li><li><a href="#Buffer8" class="table-of-contents__link toc-highlight">Buffer8</a></li><li><a href="#String" class="table-of-contents__link toc-highlight">String</a></li><li><a href="#String8" class="table-of-contents__link toc-highlight">String8</a></li></ul></li><li><a href="#Vectors" class="table-of-contents__link toc-highlight">Vectors</a><ul><li><a href="#Vector" class="table-of-contents__link toc-highlight">Vector</a></li><li><a href="#Vector2" class="table-of-contents__link toc-highlight">Vector2</a></li><li><a href="#Vector2F16" class="table-of-contents__link toc-highlight">Vector2F16</a></li><li><a href="#Vector2F24" class="table-of-contents__link toc-highlight">Vector2F24</a></li><li><a href="#Vector2I16" class="table-of-contents__link toc-highlight">Vector2I16</a></li><li><a href="#Vector2I24" class="table-of-contents__link toc-highlight">Vector2I24</a></li><li><a href="#Vector2I8" class="table-of-contents__link toc-highlight">Vector2I8</a></li><li><a href="#Vector2U16" class="table-of-contents__link toc-highlight">Vector2U16</a></li><li><a href="#Vector2U24" class="table-of-contents__link toc-highlight">Vector2U24</a></li><li><a href="#Vector2U8" class="table-of-contents__link toc-highlight">Vector2U8</a></li><li><a href="#VectorF16" class="table-of-contents__link toc-highlight">VectorF16</a></li><li><a href="#VectorF24" class="table-of-contents__link toc-highlight">VectorF24</a></li><li><a href="#VectorI16" class="table-of-contents__link toc-highlight">VectorI16</a></li><li><a href="#VectorI24" class="table-of-contents__link toc-highlight">VectorI24</a></li><li><a href="#VectorI8" class="table-of-contents__link toc-highlight">VectorI8</a></li><li><a href="#VectorU16" class="table-of-contents__link toc-highlight">VectorU16</a></li><li><a href="#VectorU24" class="table-of-contents__link toc-highlight">VectorU24</a></li><li><a href="#VectorU8" class="table-of-contents__link toc-highlight">VectorU8</a></li></ul></li><li><a href="#Roblox" class="table-of-contents__link toc-highlight">Roblox</a><ul><li><a href="#CFrame" class="table-of-contents__link toc-highlight">CFrame</a></li><li><a href="#CFrameF16" class="table-of-contents__link toc-highlight">CFrameF16</a></li><li><a href="#CFrameF24" class="table-of-contents__link toc-highlight">CFrameF24</a></li><li><a href="#Color3" class="table-of-contents__link toc-highlight">Color3</a></li><li><a href="#Instance" class="table-of-contents__link toc-highlight">Instance</a></li><li><a href="#Instance24" class="table-of-contents__link toc-highlight">Instance24</a></li><li><a href="#QCFrame" class="table-of-contents__link toc-highlight">QCFrame</a></li><li><a href="#QCFrameF16" class="table-of-contents__link toc-highlight">QCFrameF16</a></li><li><a href="#QCFrameF24" class="table-of-contents__link toc-highlight">QCFrameF24</a></li><li><a href="#UDim2" class="table-of-contents__link toc-highlight">UDim2</a></li><li><a href="#UDim2Offset" class="table-of-contents__link toc-highlight">UDim2Offset</a></li><li><a href="#UDim2OffsetI16" class="table-of-contents__link toc-highlight">UDim2OffsetI16</a></li><li><a href="#UDim2Scale" class="table-of-contents__link toc-highlight">UDim2Scale</a></li><li><a href="#UDim2ScaleF24" class="table-of-contents__link toc-highlight">UDim2ScaleF24</a></li></ul></li></ul></li><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#Collections" class="table-of-contents__link toc-highlight">Collections</a><ul><li><a href="#Array" class="table-of-contents__link toc-highlight">.Array</a></li><li><a href="#Array24" class="table-of-contents__link toc-highlight">.Array24</a></li><li><a href="#Array8" class="table-of-contents__link toc-highlight">.Array8</a></li><li><a href="#ArrayFixed" class="table-of-contents__link toc-highlight">.ArrayFixed</a></li><li><a href="#Map" class="table-of-contents__link toc-highlight">.Map</a></li><li><a href="#Map24" class="table-of-contents__link toc-highlight">.Map24</a></li><li><a href="#Map8" class="table-of-contents__link toc-highlight">.Map8</a></li><li><a href="#MapFixed" class="table-of-contents__link toc-highlight">.MapFixed</a></li><li><a href="#Optional" class="table-of-contents__link toc-highlight">.Optional</a></li><li><a href="#Struct" class="table-of-contents__link toc-highlight">.Struct</a></li></ul></li><li><a href="#Special" class="table-of-contents__link toc-highlight">Special</a><ul><li><a href="#BufferFixed" class="table-of-contents__link toc-highlight">.BufferFixed</a></li><li><a href="#StringFixed" class="table-of-contents__link toc-highlight">.StringFixed</a></li></ul></li><li><a href="#Roblox" class="table-of-contents__link toc-highlight">Roblox</a><ul><li><a href="#Enum" class="table-of-contents__link toc-highlight">.Enum</a></li><li><a href="#Enum8" class="table-of-contents__link toc-highlight">.Enum8</a></li><li><a href="#SerInstance" class="table-of-contents__link toc-highlight">.SerInstance</a></li></ul></li></ul></li></ul></div></div></div></div></main></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 IAMNOTULTRA3. Built with Moonwave and Docusaurus.</div></div></div></footer></div>
+</body>
+</html>

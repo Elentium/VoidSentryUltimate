@@ -15,7 +15,7 @@ VoidSentryUltimate = "elentium/voidsentryultimate@1.0.0"
 For a pure Luau project, use the separate package:
 
 ```luau
-LuauVS = "elentium/voidsentryultimateluau@1.0.0"
+VoidSentryUltimate = "elentium/voidsentryultimateluau@1.0.0"
 ```
 
 Install dependencies:
@@ -73,4 +73,4 @@ https://create.roblox.com/store/asset/98529222224861
 
 ## RBXM
 
-Install `roblox/VoidSentryUltimate.rbxm` from this repository and insert it in Studio.
+Install `artifacts/VoidSentryUltimate.rbxm` from this repository and insert it in Studio.

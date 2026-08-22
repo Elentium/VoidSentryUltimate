@@ -5,3 +5,5 @@ tmp/
 pesde.lock
 package-lock.json
 *.tgz
+sourcemap.json
+**/sourcemap.json

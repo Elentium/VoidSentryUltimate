@@ -4,7 +4,7 @@ sidebar_position: 7
 
 # Benchmarks
 
-These numbers come from the in-repo benches under `src/bench/`, measured on an Apple M4. Absolute times vary by hardware, Studio build, and load; use the ratios and relative ordering as the main takeaway.
+These numbers come from the in-repo benches under `bench/`, measured on an Apple M4. Absolute times vary by hardware, Studio build, and load; use the ratios and relative ordering as the main takeaway.
 
 Each operation is timed with `BenchHelper`: 50 warm-up calls, then 10 timed batches. Reported **Avg** is mean microseconds per call across those batches.
 
@@ -57,7 +57,7 @@ Primitive nodes stay near **0.05 μs** serialize and **0.02 μs** deserialize. C
 ## Versus Sera
 
 Source: `benchresults/seravssentryresult.txt`  
-Harness: `src/bench/SeraVsVoidSentry/Comparator.luau`  
+Harness: `bench/SeraVsVoidSentry/Comparator.luau`  
 Iterations: **10,000** per timed batch
 
 Sera only serializes through schemas. For primitives, vectors, and CFrames the comparator wraps Sera values in a single-field schema, while VoidSentryUltimate uses bare nodes. **Struct** rows are the fairest same-shape comparison (`Sera.Schema` vs `Types.Struct`).

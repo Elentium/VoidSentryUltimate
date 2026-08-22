@@ -18,7 +18,7 @@ return Types.Struct({
 })
 ```
 
-## Version persisted and network formats
+## Version persisted formats
 
 Treat schemas as protocols. If a field or node changes, either keep decoding with the old schema or add an explicit version outside the payload.
 

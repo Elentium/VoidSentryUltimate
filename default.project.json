@@ -1,6 +1,6 @@
 {
-    "name": "voidsentryultimate",
-    "tree": {
-        "$path": "src/VoidSentryUltimate.luau"
-    }
+	"name": "voidsentryultimate",
+	"tree": {
+		"$path": "packages/voidsentryultimate/VoidSentryUltimate.luau"
+	}
 }

@@ -177,14 +177,3 @@ local decoded = VoidSentryUltimate.DeserializeWithOffset(Payload, bytes, 2)
 ```
 
 The first two bytes are initially zero because `SerializeWithOffset` allocates a new zero-filled buffer of `offset + payload length`.
-
-## Pure Luau vector
-
-```luau
-local LuauVS = require(path.to.LuauVS)
-local Types = LuauVS.Types
-
-local Direction = Types.VectorF16
-local bytes = LuauVS.Serialize(Direction, vector.create(0.25, 0.5, 1))
-local restored = LuauVS.Deserialize(Direction, bytes)
-```

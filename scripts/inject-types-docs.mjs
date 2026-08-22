@@ -3,7 +3,13 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const targetPath = path.join(__dirname, "..", "src", "VoidSentryUltimate.luau");
+const targetPath = path.join(
+	__dirname,
+	"..",
+	"packages",
+	"voidsentryultimate",
+	"VoidSentryUltimate.luau",
+);
 
 const props = [
 	["I8", "Primitives", "Signed 8-bit integer. 1 byte.", "SerdesNode<number>"],

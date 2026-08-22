@@ -10,13 +10,13 @@ includes = [
 	"pesde.toml",
 	"LICENSE",
 	"README.md",
-	"src/VoidSentryUltimate.luau",
+	"VoidSentryUltimate.luau",
 ]
 
 [target]
 environment = "roblox"
-lib = "src/VoidSentryUltimate.luau"
-build_files = ["src/VoidSentryUltimate.luau"]
+lib = "VoidSentryUltimate.luau"
+build_files = ["VoidSentryUltimate.luau"]
 
 [indices]
 default = "https://github.com/pesde-pkg/index"

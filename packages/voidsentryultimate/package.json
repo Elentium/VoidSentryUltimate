@@ -1,0 +1,44 @@
+{
+  "name": "@elentium/voidsentryultimate",
+  "version": "1.0.0",
+  "description": "Schema-driven, validation-free binary serializer for Roblox Luau",
+  "license": "Apache-2.0",
+  "author": "IAMNOTULTRA3",
+  "homepage": "https://elentium.github.io/VoidSentryUltimate/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Elentium/VoidSentryUltimate.git",
+    "directory": "packages/voidsentryultimate"
+  },
+  "bugs": {
+    "url": "https://github.com/Elentium/VoidSentryUltimate/issues"
+  },
+  "keywords": [
+    "roblox",
+    "roblox-ts",
+    "rbxts",
+    "serialization",
+    "serde",
+    "buffer",
+    "schema",
+    "luau"
+  ],
+  "main": "VoidSentryUltimate.luau",
+  "types": "VoidSentryUltimate.d.ts",
+  "typings": "VoidSentryUltimate.d.ts",
+  "files": [
+    "VoidSentryUltimate.luau",
+    "VoidSentryUltimate.d.ts",
+    "default.project.json",
+    "LICENSE",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "@rbxts/compiler-types": "3.0.0-types.0",
+    "@rbxts/types": "^1.0.800",
+    "typescript": "^5.0.0"
+  }
+}

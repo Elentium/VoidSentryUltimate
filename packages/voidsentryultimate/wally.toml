@@ -1,0 +1,18 @@
+[package]
+name = "elentium/voidsentryultimate"
+description = "Schema-driven, validation-free binary serializer for Roblox Luau"
+version = "1.0.0"
+license = "Apache-2.0"
+authors = ["IAMNOTULTRA3"]
+realm = "shared"
+registry = "https://github.com/UpliftGames/wally-index"
+include = [
+	"default.project.json",
+	"VoidSentryUltimate.luau",
+	"LICENSE",
+	"README.md",
+	"wally.toml",
+]
+exclude = ["**"]
+
+[dependencies]

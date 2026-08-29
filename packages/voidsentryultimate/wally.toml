@@ -1,7 +1,7 @@
 [package]
 name = "elentium/voidsentryultimate"
 description = "Schema-driven, validation-free binary serializer for Roblox Luau"
-version = "1.0.0"
+version = "1.0.1"
 license = "Apache-2.0"
 authors = ["IAMNOTULTRA3"]
 realm = "shared"

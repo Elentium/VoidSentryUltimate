@@ -90,6 +90,30 @@ const function LuauTest(Log: boolean?)
         c = true,
     }
 
+    const TestDeltaSchema = VSTypes.DeltaStruct({
+        a = VSTypes.U8,
+        b = VSTypes.U16,
+        c = VSTypes.Bool,
+    })
+    const TestDeltaValue = {
+        a = 1,
+        b = 2,
+    }
+    const TestDelta16Schema = VSTypes.DeltaStruct16({
+        a = VSTypes.U8,
+        b = VSTypes.U16,
+        c = VSTypes.Bool,
+    })
+
+    const function CompareStructLike(A: any, B: any): boolean
+        return TestHelper.StructsEq(A, B, function(AValue, BValue)
+            if type(AValue) == "number" then
+                return TestHelper.NumbersEq(AValue, BValue)
+            end
+            return TestHelper.BoolsEq(AValue, BValue)
+        end)
+    end
+
     Section("Number Types")
     RunTest("U8", VSTypes.U8, 42, 1, TestHelper.NumbersEq)
     RunTest("I8", VSTypes.I8, -42, 1, TestHelper.NumbersEq)
@@ -156,14 +180,11 @@ const function LuauTest(Log: boolean?)
     RunTest("MapFixed", U8MapFixed, { [1] = 2, [2] = 3 }, 4, function(A, B)
         return TestHelper.MapsEq(A, B, TestHelper.NumbersEq)
     end)
-    RunTest("Struct", TestStructSchema, TestStructValue, 4, function(A, B)
-        return TestHelper.StructsEq(A, B, function(AValue, BValue)
-            if type(AValue) == "number" then
-                return TestHelper.NumbersEq(AValue, BValue)
-            end
-            return TestHelper.BoolsEq(AValue, BValue)
-        end)
-    end)
+    RunTest("Struct", TestStructSchema, TestStructValue, 4, CompareStructLike)
+    -- keys sorted a,b,c; present a,b => u8 len + (id+u8) + (id+u16) = 1+2+3 = 6
+    RunTest("DeltaStruct", TestDeltaSchema, TestDeltaValue, 6, CompareStructLike)
+    -- same payload with u16 len + u16 ids => 2+3+4 = 9
+    RunTest("DeltaStruct16", TestDelta16Schema, TestDeltaValue, 9, CompareStructLike)
 
     if Log then
         PrintResults()

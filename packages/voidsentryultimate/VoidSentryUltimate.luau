@@ -2,15 +2,15 @@
 --!optimize 2
 --[[
     VoidSentryUltimate 
-    [ V1.0.0 ]
+    [ V1.0.1 ]
     [ by IAMNOTULTRA3 a.k.a Elentium, Elite ]
     [ Apache-2.0 License ]
 
     Efficient SerDes library
 
-    Wally: "elentium/voidsentryultimate@1.0.0"
+    Wally: "elentium/voidsentryultimate@1.0.1"
     Pesde: pesde add elentium/voidsentryultimate
-    Npm: npm add @elentium/voidsentryultimate
+    Npm: npm install @elentium/voidsentryultimate
     Docs: https://Elentium.github.io/VoidSentryUltimate
 ]]
 
@@ -39,7 +39,7 @@ const RunService = game:GetService("RunService")
 ---------------------------------------------------------
 -- MODULE
 ---------------------------------------------------------
-const VoidSentryUltimate = {} :: Lib
+const VoidSentryUltimate = {}
 --- Schema type nodes from `VoidSentryUltimate.Types`.
 --- @class Types
 const Types = {}
@@ -62,6 +62,21 @@ type function GetInstanceType(ClassName: type, Instances: type, InstanceType: ty
     const Inst = Instances:readproperty(ClassName)
 
     return Inst or InstanceType
+end
+
+type function Optional(Type: type)
+    if Type.tag ~= "table" then
+        error(`Argument #1 must be a table, got {Type.tag}`)
+    end
+
+    const Tbl = types.newtable()
+    for Key, Value in Type:properties() do
+        const Val = Value.read or Value.write :: type
+        Tbl:setproperty(Key, types.optional(Val))
+    end
+    Tbl:setindexer(types.string, types.any)
+
+    return Tbl
 end
 
 type function GetEnumItem(Enum: type)
@@ -89,8 +104,6 @@ export type SerdesNode<T> = {
 	_T: T | any,
 }
 
--- Returns a non-any type from the Dual union
--- This type function is made because for some reason .Deserialize return type is any | T
 type function GetProperTypeFromUnion(Union: type)
     if Union.tag ~= "union" then
         return Union
@@ -105,84 +118,14 @@ type function GetProperTypeFromUnion(Union: type)
     return First :: any
 end
 
-export type Lib = {
-    Serialize: <T>(Node: SerdesNode<T>, Data: T) -> buffer,
-    SerializeWithOffset: <T>(Node: SerdesNode<T>, Data: T, Offset: number) -> buffer,
-    Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> GetProperTypeFromUnion<T>,
-    DeserializeWithOffset: <T>(Node: SerdesNode<T>, Buffer: buffer, Offset: number) -> GetProperTypeFromUnion<T> & { [string]: any },
-    Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> (),
-    SetWriteBufferSize: (NewSize: number) -> (),
+type function GetTypeFromTypeNode(Node: type)
+    const T = Node:readproperty(types.singleton("_T"))
+    if not T then
+        error("_T field not found in Node")
+    end
 
-    Types: {
-        U8: SerdesNode<number>,
-        I8: SerdesNode<number>,
-        U16: SerdesNode<number>,
-        I16: SerdesNode<number>,
-        U32: SerdesNode<number>,
-        I32: SerdesNode<number>,
-        U24: SerdesNode<number>,
-        I24: SerdesNode<number>,
-        F16: SerdesNode<number>,
-        F24: SerdesNode<number>,
-        F32: SerdesNode<number>,
-        F64: SerdesNode<number>,
-        Bool: SerdesNode<boolean>,
-        BoolPacked: SerdesNode<{ boolean }>,
-        String: SerdesNode<string>,
-        String8: SerdesNode<string>,
-        StringFixed: (Length: number) -> SerdesNode<string>,
-        Buffer: SerdesNode<buffer>,
-        Buffer8: SerdesNode<buffer>,
-        Buffer24: SerdesNode<buffer>,
-        BufferFixed: (Length: number) -> SerdesNode<buffer>,
-        Vector: SerdesNode<Vector3>,
-        VectorF16: SerdesNode<Vector3>,
-        VectorF24: SerdesNode<Vector3>,
-        VectorU8: SerdesNode<Vector3>,
-        VectorI8: SerdesNode<Vector3>,
-        VectorU16: SerdesNode<Vector3>,
-        VectorI16: SerdesNode<Vector3>,
-        VectorU24: SerdesNode<Vector3>,
-        VectorI24: SerdesNode<Vector3>,
-        Vector2: SerdesNode<Vector2>,
-        Vector2F16: SerdesNode<Vector2>,
-        Vector2F24: SerdesNode<Vector2>,
-        Vector2U8: SerdesNode<Vector2>,
-        Vector2I8: SerdesNode<Vector2>,
-        Vector2U16: SerdesNode<Vector2>,
-        Vector2I16: SerdesNode<Vector2>,
-        Vector2U24: SerdesNode<Vector2>,
-        Vector2I24: SerdesNode<Vector2>,
-        UDim2: SerdesNode<UDim2>,
-        UDim2Scale: SerdesNode<UDim2>,
-        UDim2Offset: SerdesNode<UDim2>,
-        UDim2OffsetI16: SerdesNode<UDim2>,
-        UDim2ScaleF24: SerdesNode<UDim2>,
-        Array: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
-        Array8: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
-        Array24: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
-        ArrayFixed: <T>(Node: SerdesNode<T>, Length: number) -> SerdesNode<{ T }>,
-        Struct: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<GetTypeFromTypeNodes<T>>,
-        Map: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
-        Map8: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
-        Map24: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
-        MapFixed: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>, Length: number) -> SerdesNode<{ [K]: V }>,
-        Optional: <T>(Node: SerdesNode<T>) -> SerdesNode<T?>,
-
-        Instance: SerdesNode<Instance>,
-        Instance24: SerdesNode<Instance>,
-        SerInstance: <T>(ClassName: T | keyof<Instances> | "", Schema: { [string]: any }) -> SerdesNode<GetInstanceType<T, Instances, Instance>>,
-        CFrame: SerdesNode<CFrame>,
-        QCFrame: SerdesNode<CFrame>,
-        CFrameF16: SerdesNode<CFrame>,
-        CFrameF24: SerdesNode<CFrame>,
-        QCFrameF16: SerdesNode<CFrame>,
-        QCFrameF24: SerdesNode<CFrame>,
-        Color3: SerdesNode<Color3>,
-        Enum: <T>(EnumType: T & Enum) -> SerdesNode<GetEnumItem<T>>,
-        Enum8: <T>(EnumType: T & Enum) -> SerdesNode<GetEnumItem<T>>
-    },
-}
+    return GetProperTypeFromUnion(T)
+end
 
 export type function GetTypeFromTypeNodes(Struct: type)
     if Struct.tag ~= "table" then
@@ -190,19 +133,99 @@ export type function GetTypeFromTypeNodes(Struct: type)
     end
 
     const Tbl = types.newtable()
-    const TKey = types.singleton("_T")
     for Key, Value in Struct:properties() do
         const Node = Value.read or Value.write :: type
-        const T = Node:readproperty(TKey)
-        if not T then
-            error("_T field not found in Node")
-        end
 
-        Tbl:setproperty(Key, T:components()[1])
+        Tbl:setproperty(Key, GetTypeFromTypeNode(Node))
     end
+    Tbl:setindexer(types.string, types.any)
 
     return Tbl
 end
+
+export type Lib = {
+    -- TODO: when luau bug is fixed, replace this with read Serialize: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>) -> buffer,
+    read Serialize: <T>(Node: SerdesNode<T>, Data: T) -> buffer,
+    -- when fixed: read SerializeWithOffset: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Offset: number) -> buffer,
+    read SerializeWithOffset: <T>(Node: SerdesNode<T>, Data: T, Offset: number) -> buffer,
+    read Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> GetProperTypeFromUnion<T>,
+    read DeserializeWithOffset: <T>(Node: SerdesNode<T>, Buffer: buffer, Offset: number) -> GetProperTypeFromUnion<T>,
+    -- when fixed: read Push: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?) -> (),
+    read Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> (),
+    read SetWriteBufferSize: (NewSize: number) -> (),
+
+    read Types: {
+        read U8: SerdesNode<number>,
+        read I8: SerdesNode<number>,
+        read U16: SerdesNode<number>,
+        read I16: SerdesNode<number>,
+        read U32: SerdesNode<number>,
+        read I32: SerdesNode<number>,
+        read U24: SerdesNode<number>,
+        read I24: SerdesNode<number>,
+        read F16: SerdesNode<number>,
+        read F24: SerdesNode<number>,
+        read F32: SerdesNode<number>,
+        read F64: SerdesNode<number>,
+        read Bool: SerdesNode<boolean>,
+        read BoolPacked: SerdesNode<{ boolean }>,
+        read String: SerdesNode<string>,
+        read String8: SerdesNode<string>,
+        read StringFixed: (Length: number) -> SerdesNode<string>,
+        read Buffer: SerdesNode<buffer>,
+        read Buffer8: SerdesNode<buffer>,
+        read Buffer24: SerdesNode<buffer>,
+        read BufferFixed: (Length: number) -> SerdesNode<buffer>,
+        read Vector: SerdesNode<Vector3>,
+        read VectorF16: SerdesNode<Vector3>,
+        read VectorF24: SerdesNode<Vector3>,
+        read VectorU8: SerdesNode<Vector3>,
+        read VectorI8: SerdesNode<Vector3>,
+        read VectorU16: SerdesNode<Vector3>,
+        read VectorI16: SerdesNode<Vector3>,
+        read VectorU24: SerdesNode<Vector3>,
+        read VectorI24: SerdesNode<Vector3>,
+        read Vector2: SerdesNode<Vector2>,
+        read Vector2F16: SerdesNode<Vector2>,
+        read Vector2F24: SerdesNode<Vector2>,
+        read Vector2U8: SerdesNode<Vector2>,
+        read Vector2I8: SerdesNode<Vector2>,
+        read Vector2U16: SerdesNode<Vector2>,
+        read Vector2I16: SerdesNode<Vector2>,
+        read Vector2U24: SerdesNode<Vector2>,
+        read Vector2I24: SerdesNode<Vector2>,
+        read UDim2: SerdesNode<UDim2>,
+        read UDim2Scale: SerdesNode<UDim2>,
+        read UDim2Offset: SerdesNode<UDim2>,
+        read UDim2OffsetI16: SerdesNode<UDim2>,
+        read UDim2ScaleF24: SerdesNode<UDim2>,
+        read Array: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
+        read Array8: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
+        read Array24: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
+        read ArrayFixed: <T>(Node: SerdesNode<T>, Length: number) -> SerdesNode<{ T }>,
+        read Struct: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<GetTypeFromTypeNodes<T>>,
+        read DeltaStruct: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<Optional<GetTypeFromTypeNodes<T>>>,
+        read DeltaStruct16: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<Optional<GetTypeFromTypeNodes<T>>>,
+        read Map: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
+        read Map8: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
+        read Map24: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
+        read MapFixed: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>, Length: number) -> SerdesNode<{ [K]: V }>,
+        read Optional: <T>(Node: SerdesNode<T>) -> SerdesNode<T?>,
+
+        read Instance: SerdesNode<Instance>,
+        read Instance24: SerdesNode<Instance>,
+        read SerInstance: <T>(ClassName: T | keyof<Instances> | "", Schema: { [string]: any }) -> SerdesNode<GetInstanceType<T, Instances, Instance>>,
+        read CFrame: SerdesNode<CFrame>,
+        read QCFrame: SerdesNode<CFrame>,
+        read CFrameF16: SerdesNode<CFrame>,
+        read CFrameF24: SerdesNode<CFrame>,
+        read QCFrameF16: SerdesNode<CFrame>,
+        read QCFrameF24: SerdesNode<CFrame>,
+        read Color3: SerdesNode<Color3>,
+        read Enum: <T>(EnumType: T & Enum) -> SerdesNode<GetEnumItem<T>>,
+        read Enum8: <T>(EnumType: T & Enum) -> SerdesNode<GetEnumItem<T>>
+    },
+}
 
 ---------------------------------------------------------
 -- STATE
@@ -230,7 +253,6 @@ const FromUDim2Scale = UDim2.fromScale
 const FromUDim2Offset = UDim2.fromOffset
 const Pcall = pcall
 const NewColor3 = Color3.fromRGB
-const Ipairs = ipairs
 
 const MathHuge = math.huge
 const NMathHuge = -math.huge
@@ -552,7 +574,7 @@ const function Array<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
         const Cur = Cursor
         buffer.writeu16(WriteBuffer, Cur, Len)
         Cursor = Cur + 2
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -593,7 +615,7 @@ const function Array8<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
         const Len = #Array
         buffer.writeu8(WriteBuffer, Cur, Len)
         Cursor = Cur + 1
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -636,7 +658,7 @@ const function Array24<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
         buffer.writeu16(Buf, Cur, bit32.band(Len, 0xFFFF))
         buffer.writeu8(Buf, Cur + 2, bit32.band(bit32.rshift(Len, 16), 0xFF))
         Cursor = Cur + 3
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -670,7 +692,7 @@ end
 --- @return SerdesNode<any>
 
 const function Struct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<GetTypeFromTypeNodes<T>>
-    const StructNode: SerdesNode<T> = {}
+    const StructNode: SerdesNode<GetTypeFromTypeNodes<T>> = {}
 
     const Keys = {}
     local Idx = 0
@@ -683,30 +705,172 @@ const function Struct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Get
     const Writes = CreateTable<<Ser<any>>>(Idx)
     const Reads = CreateTable<<Des<any>>>(Idx)
 
-    for i, Key in Ipairs(Keys) do
+    for i, Key in Keys do
         const Node = Tbl[Key]
         Writes[i] = Node[SER] :: Ser<any>
         Reads[i] = Node[DES] :: Des<any>
     end
 
-    const function StructSer(Struct: T & { [string]: SerdesNode<any> })
-        for i, Key in Ipairs(Keys) do
-            Writes[i](Struct[Key])
+    const function StructSer(Value: GetTypeFromTypeNodes<T> & { [string]: any })
+        for i, Key in Keys do
+            Writes[i](Value[Key])
         end
     end
 
-    const function StructDes(): T
+    const function StructDes(): GetTypeFromTypeNodes<T>
         const Result = {}
-        for i, Key in Ipairs(Keys) do
+        for i, Key in Keys do
             Result[Key] = Reads[i]()
         end
-        return Result
+        return Result :: any
     end
 
     StructNode[SER] = StructSer
     StructNode[DES] = StructDes
 
     return StructNode
+end
+
+-- DeltaStruct (u8 present-count + u8 field ids; max 255 present fields)
+--- Sparse struct: serializes present input keys only. `u8` present-count and field ids (max 255).
+--- Field ids are 1-based into lexicographically sorted schema keys; entry order follows the input table.
+--- @within Types
+--- @tag Collections
+--- @function DeltaStruct
+--- @param fields {[string]: SerdesNode<any>} -- Field schemas keyed by name.
+--- @return SerdesNode<any>
+
+const function DeltaStruct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }>
+    const DeltaStructNode: SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }> = {}
+
+    const Keys = {}
+    local Idx = 0
+    for Key in Tbl :: { [string]: SerdesNode<any> } do
+        Idx += 1
+        Keys[Idx] = Key
+    end
+    table.sort(Keys)
+
+    const Writes = CreateTable<<Ser<any>>>(Idx)
+    const Reads = CreateTable<<Des<any>>>(Idx)
+    const Lookup: { [string]: number } = {}
+
+    for i, Key in Keys do
+        const Node = Tbl[Key]
+        Writes[i] = Node[SER] :: Ser<any>
+        Reads[i] = Node[DES] :: Des<any>
+        Lookup[Key] = i
+    end
+
+    const function DeltaStructSer(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil })
+        const Cur = Cursor
+        const Buf = WriteBuffer
+        Cursor = Cur + 1
+        local Len = 0
+        for Key, Field in Value :: { [string]: any } do
+            const Id = Lookup[Key]
+            Len += 1
+            const Curs = Cursor
+            buffer.writeu8(Buf, Curs, Id)
+            Cursor = Curs + 1
+            Writes[Id](Field)
+        end
+        buffer.writeu8(Buf, Cur, Len)
+    end
+
+    const function DeltaStructDes(): Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }
+        const Result = {}
+        const Buf = ReadBuffer :: buffer
+        local Cur = Cursor
+        const Len = buffer.readu8(Buf, Cur)
+        Cursor = Cur + 1
+        for _ = 1, Len do
+            Cur = Cursor
+            const Id = buffer.readu8(Buf, Cur)
+            Cursor = Cur + 1
+            const Key = Keys[Id]
+            const Read = Reads[Id]
+
+            Result[Key] = Read()
+        end
+        return Result :: any
+    end
+
+    DeltaStructNode[SER] = DeltaStructSer
+    DeltaStructNode[DES] = DeltaStructDes
+
+    return DeltaStructNode
+end
+
+-- DeltaStruct16 (u16 present-count + u16 field ids; max 65535 present fields)
+--- Sparse struct: serializes present input keys only. `u16` present-count and field ids (max 65535).
+--- Field ids are 1-based into lexicographically sorted schema keys; entry order follows the input table.
+--- @within Types
+--- @tag Collections
+--- @function DeltaStruct16
+--- @param fields {[string]: SerdesNode<any>} -- Field schemas keyed by name.
+--- @return SerdesNode<any>
+
+const function DeltaStruct16<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }>
+    const DeltaStruct16Node: SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }> = {}
+
+    const Keys = {}
+    local Idx = 0
+    for Key in Tbl :: { [string]: SerdesNode<any> } do
+        Idx += 1
+        Keys[Idx] = Key
+    end
+    table.sort(Keys)
+
+    const Writes = CreateTable<<Ser<any>>>(Idx)
+    const Reads = CreateTable<<Des<any>>>(Idx)
+    const Lookup: { [string]: number } = {}
+
+    for i, Key in Keys do
+        const Node = Tbl[Key]
+        Writes[i] = Node[SER] :: Ser<any>
+        Reads[i] = Node[DES] :: Des<any>
+        Lookup[Key] = i
+    end
+
+    const function DeltaStruct16Ser(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil })
+        const Cur = Cursor
+        const Buf = WriteBuffer
+        Cursor = Cur + 2
+        local Len = 0
+        for Key, Field in Value :: { [string]: any } do
+            const Id = Lookup[Key]
+            Len += 1
+            const Curs = Cursor
+            buffer.writeu16(Buf, Curs, Id)
+            Cursor = Curs + 2
+            Writes[Id](Field)
+        end
+        buffer.writeu16(Buf, Cur, Len)
+    end
+
+    const function DeltaStruct16Des(): Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }
+        const Result = {}
+        const Buf = ReadBuffer :: buffer
+        local Cur = Cursor
+        const Len = buffer.readu16(Buf, Cur)
+        Cursor = Cur + 2
+        for _ = 1, Len do
+            Cur = Cursor
+            const Id = buffer.readu16(Buf, Cur)
+            Cursor = Cur + 2
+            const Key = Keys[Id]
+            const Read = Reads[Id]
+
+            Result[Key] = Read()
+        end
+        return Result :: any
+    end
+
+    DeltaStruct16Node[SER] = DeltaStruct16Ser
+    DeltaStruct16Node[DES] = DeltaStruct16Des
+
+    return DeltaStruct16Node
 end
 
 --- `Vector3` with three `f32` components. 12 bytes.
@@ -902,7 +1066,7 @@ const function ArrayFixed<T>(Node: SerdesNode<T>, Length: number): SerdesNode<{ 
     const Des = Node[DES] :: Des<T>
 
     const function ArrayFixedSer(Array: { T })
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -4105,21 +4269,21 @@ const function SerInstance<T>(ClassName: T | keyof<Instances> | "", Schema: { [s
     const Writes = CreateTable<<Ser<any>>>(Idx)
     const Reads = CreateTable<<Des<any>>>(Idx)
 
-    for i, Key in Ipairs(Keys) do
+    for i, Key in Keys do
         const Node = Schema[Key]
         Writes[i] = Node[SER] :: Ser<any>
         Reads[i] = Node[DES] :: Des<any>
     end
 
     const function SerInstanceSer(Value: Instance)
-        for i, Key in Ipairs(Keys) do
+        for i, Key in Keys do
             Writes[i]((Value :: any)[Key])
         end
     end
 
     const function SerInstanceDes(): GetInstanceType<T, Instances, Instance>
         const Inst = NewInstance(ClassName) :: any
-        for i, Key in Ipairs(Keys) do
+        for i, Key in Keys do
             Inst[Key] = Reads[i]()
         end
 
@@ -4203,6 +4367,8 @@ Types.Array = Array
 Types.Array8 = Array8
 Types.Array24 = Array24
 Types.Struct = Struct
+Types.DeltaStruct = DeltaStruct
+Types.DeltaStruct16 = DeltaStruct16
 Types.Vector = Vector
 Types.Map = Map
 Types.Map8 = Map8
@@ -4388,7 +4554,7 @@ if INSTANCE_SERIALIZATION_ENABLED then
             InstanceMap[Descendant] = Id
         end
 
-        for _, Descendant in Ipairs(game:GetDescendants()) do
+        for _, Descendant in game:GetDescendants() do
             TaskSpawn(OnInstance, Descendant)
         end
         game.DescendantAdded:Connect(OnInstance)
@@ -4430,7 +4596,7 @@ if INSTANCE_SERIALIZATION_ENABLED then
             -- the entries are cleaned up automatically
         end
 
-        for _, Descendant in Ipairs(game:GetDescendants()) do
+        for _, Descendant in game:GetDescendants() do
             TaskSpawn(OnInstance, Descendant)
         end
         game.DescendantAdded:Connect(OnInstance)
@@ -4438,4 +4604,8 @@ if INSTANCE_SERIALIZATION_ENABLED then
     end
 end
 
-return VoidSentryUltimate
+const Freeze = table.freeze
+Freeze(Types)
+Freeze(VoidSentryUltimate)
+
+return VoidSentryUltimate :: Lib

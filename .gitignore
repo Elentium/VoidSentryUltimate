@@ -7,3 +7,4 @@ package-lock.json
 *.tgz
 sourcemap.json
 **/sourcemap.json
+bytecodetest.luau

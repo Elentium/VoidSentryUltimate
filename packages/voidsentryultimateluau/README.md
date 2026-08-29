@@ -7,7 +7,7 @@ Validation-free, schema-driven binary serializer for pure Luau (no Roblox types)
 Wally:
 
 ```toml
-VoidSentryUltimate = "elentium/voidsentryultimateluau@1.0.0"
+VoidSentryUltimate = "elentium/voidsentryultimateluau@1.0.1"
 ```
 
 Pesde:

@@ -9,13 +9,13 @@ sidebar_position: 2
 Add the Roblox package to your `wally.toml` dependencies:
 
 ```luau
-VoidSentryUltimate = "elentium/voidsentryultimate@1.0.0"
+VoidSentryUltimate = "elentium/voidsentryultimate@1.0.1"
 ```
 
 For a pure Luau project, use the separate package:
 
 ```luau
-VoidSentryUltimate = "elentium/voidsentryultimateluau@1.0.0"
+VoidSentryUltimate = "elentium/voidsentryultimateluau@1.0.1"
 ```
 
 Install dependencies:
@@ -56,7 +56,7 @@ local VoidSentryUltimate = require(path.to.VoidSentryUltimate)
 Install the npm package:
 
 ```luau
-npm add @elentium/voidsentryultimate
+npm install @elentium/voidsentryultimate
 ```
 
 Use your npm package import path as usual. The npm package targets the

@@ -9,6 +9,10 @@ declare namespace VoidSentryUltimate {
 		[K in keyof T]: Infer<T[K]>
 	}
 
+	export type DeltaStructOf<T extends { readonly [key: string]: SerdesNode<unknown> }> = {
+		[K in keyof T]?: Infer<T[K]>
+	}
+
 	export type Dictionary<K, V> = { [P in Extract<K, string | number>]: V }
 
 	export type BoolPacked = [
@@ -108,6 +112,14 @@ declare namespace VoidSentryUltimate {
 		readonly Struct: <T extends { readonly [key: string]: SerdesNode<unknown> }>(
 			tbl: T,
 		) => SerdesNode<StructOf<T>>
+
+		readonly DeltaStruct: <T extends { readonly [key: string]: SerdesNode<unknown> }>(
+			tbl: T,
+		) => SerdesNode<DeltaStructOf<T>>
+
+		readonly DeltaStruct16: <T extends { readonly [key: string]: SerdesNode<unknown> }>(
+			tbl: T,
+		) => SerdesNode<DeltaStructOf<T>>
 
 		readonly Optional: <T>(node: SerdesNode<T>) => SerdesNode<T | undefined>
 

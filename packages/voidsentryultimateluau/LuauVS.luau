@@ -3,7 +3,7 @@
 --[[
     VoidSentryUltimate 
     [ Pure luau version ]
-    [ V1.0.0 ]
+    [ V1.0.1 ]
     [ by IAMNOTULTRA3 a.k.a Elentium, Elite ]
     [ Apache-2.0 License ]
 
@@ -28,7 +28,7 @@ const BIG_BUFFER_SIZE = 1_000_000 -- size of big scratch buffer (this also means
 ---------------------------------------------------------
 -- MODULE
 ---------------------------------------------------------
-const VoidSentryUltimate = {} :: Lib
+const VoidSentryUltimate = {}
 --- Schema type nodes from `VoidSentryUltimate.Types`.
 --- @class Types
 const Types = {}
@@ -37,6 +37,22 @@ VoidSentryUltimate.Types = Types
 ---------------------------------------------------------
 -- TYPES
 ---------------------------------------------------------
+
+type function Optional(Type: type)
+    if Type.tag ~= "table" then
+        error(`Argument #1 must be a table, got {Type.tag}`)
+    end
+
+    const Tbl = types.newtable()
+    for Key, Value in Type:properties() do
+        const Val = Value.read or Value.write :: type
+        Tbl:setproperty(Key, types.optional(Val))
+    end
+    Tbl:setindexer(types.string, types.any)
+
+    return Tbl
+end
+
 export type Ser<T> = (T) -> ()
 export type Des<T> = () -> T
 
@@ -47,8 +63,6 @@ export type SerdesNode<T> = {
 	_T: T | any,
 }
 
--- Returns a non-any type from the Dual union
--- This type function is made because for some reason .Deserialize return type is any | T
 type function GetProperTypeFromUnion(Union: type)
     if Union.tag ~= "union" then
         return Union
@@ -63,57 +77,14 @@ type function GetProperTypeFromUnion(Union: type)
     return First :: any
 end
 
-export type Lib = {
-    Serialize: <T>(Node: SerdesNode<T>, Data: T) -> buffer,
-    SerializeWithOffset: <T>(Node: SerdesNode<T>, Data: T, Offset: number) -> buffer,
-    Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> GetProperTypeFromUnion<T>,
-    DeserializeWithOffset: <T>(Node: SerdesNode<T>, Buffer: buffer, Offset: number) -> GetProperTypeFromUnion<T> & { [string]: any },
-    Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> (),
-    SetWriteBufferSize: (NewSize: number) -> (),
+type function GetTypeFromTypeNode(Node: type)
+    const T = Node:readproperty(types.singleton("_T"))
+    if not T then
+        error("_T field not found in Node")
+    end
 
-    Types: {
-        U8: SerdesNode<number>,
-        I8: SerdesNode<number>,
-        U16: SerdesNode<number>,
-        I16: SerdesNode<number>,
-        U32: SerdesNode<number>,
-        I32: SerdesNode<number>,
-        U24: SerdesNode<number>,
-        I24: SerdesNode<number>,
-        F16: SerdesNode<number>,
-        F24: SerdesNode<number>,
-        F32: SerdesNode<number>,
-        F64: SerdesNode<number>,
-        Bool: SerdesNode<boolean>,
-        BoolPacked: SerdesNode<{ boolean }>,
-        String: SerdesNode<string>,
-        String8: SerdesNode<string>,
-        StringFixed: (Length: number) -> SerdesNode<string>,
-        Buffer: SerdesNode<buffer>,
-        Buffer8: SerdesNode<buffer>,
-        Buffer24: SerdesNode<buffer>,
-        BufferFixed: (Length: number) -> SerdesNode<buffer>,
-        Vector: SerdesNode<vector>,
-        VectorF16: SerdesNode<vector>,
-        VectorF24: SerdesNode<vector>,
-        VectorU8: SerdesNode<vector>,
-        VectorI8: SerdesNode<vector>,
-        VectorU16: SerdesNode<vector>,
-        VectorI16: SerdesNode<vector>,
-        VectorU24: SerdesNode<vector>,
-        VectorI24: SerdesNode<vector>,
-        Array: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
-        Array8: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
-        Array24: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
-        ArrayFixed: <T>(Node: SerdesNode<T>, Length: number) -> SerdesNode<{ T }>,
-        Struct: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<GetTypeFromTypeNodes<T>>,
-        Map: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
-        Map8: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
-        Map24: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
-        MapFixed: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>, Length: number) -> SerdesNode<{ [K]: V }>,
-        Optional: <T>(Node: SerdesNode<T>) -> SerdesNode<T?>,
-    },
-}
+    return GetProperTypeFromUnion(T)
+end
 
 export type function GetTypeFromTypeNodes(Struct: type)
     if Struct.tag ~= "table" then
@@ -121,19 +92,72 @@ export type function GetTypeFromTypeNodes(Struct: type)
     end
 
     const Tbl = types.newtable()
-    const TKey = types.singleton("_T")
     for Key, Value in Struct:properties() do
         const Node = Value.read or Value.write :: type
-        const T = Node:readproperty(TKey)
-        if not T then
-            error("_T field not found in Node")
-        end
 
-        Tbl:setproperty(Key, T:components()[1])
+        Tbl:setproperty(Key, GetTypeFromTypeNode(Node))
     end
+    Tbl:setindexer(types.string, types.any)
 
     return Tbl
 end
+
+export type Lib = {
+    -- TODO: when luau bug is fixed, replace this with read Serialize: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>) -> buffer,
+    read Serialize: <T>(Node: SerdesNode<T>, Data: T) -> buffer,
+    -- when fixed: read SerializeWithOffset: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Offset: number) -> buffer,
+    read SerializeWithOffset: <T>(Node: SerdesNode<T>, Data: T, Offset: number) -> buffer,
+    read Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> GetProperTypeFromUnion<T>,
+    read DeserializeWithOffset: <T>(Node: SerdesNode<T>, Buffer: buffer, Offset: number) -> GetProperTypeFromUnion<T>,
+    -- when fixed: read Push: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?) -> (),
+    read Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> (),
+    read SetWriteBufferSize: (NewSize: number) -> (),
+
+    read Types: {
+        read U8: SerdesNode<number>,
+        read I8: SerdesNode<number>,
+        read U16: SerdesNode<number>,
+        read I16: SerdesNode<number>,
+        read U32: SerdesNode<number>,
+        read I32: SerdesNode<number>,
+        read U24: SerdesNode<number>,
+        read I24: SerdesNode<number>,
+        read F16: SerdesNode<number>,
+        read F24: SerdesNode<number>,
+        read F32: SerdesNode<number>,
+        read F64: SerdesNode<number>,
+        read Bool: SerdesNode<boolean>,
+        read BoolPacked: SerdesNode<{ boolean }>,
+        read String: SerdesNode<string>,
+        read String8: SerdesNode<string>,
+        read StringFixed: (Length: number) -> SerdesNode<string>,
+        read Buffer: SerdesNode<buffer>,
+        read Buffer8: SerdesNode<buffer>,
+        read Buffer24: SerdesNode<buffer>,
+        read BufferFixed: (Length: number) -> SerdesNode<buffer>,
+        read Vector: SerdesNode<vector>,
+        read VectorF16: SerdesNode<vector>,
+        read VectorF24: SerdesNode<vector>,
+        read VectorU8: SerdesNode<vector>,
+        read VectorI8: SerdesNode<vector>,
+        read VectorU16: SerdesNode<vector>,
+        read VectorI16: SerdesNode<vector>,
+        read VectorU24: SerdesNode<vector>,
+        read VectorI24: SerdesNode<vector>,
+        read Array: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
+        read Array8: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
+        read Array24: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
+        read ArrayFixed: <T>(Node: SerdesNode<T>, Length: number) -> SerdesNode<{ T }>,
+        read Struct: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<GetTypeFromTypeNodes<T>>,
+        read DeltaStruct: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<Optional<GetTypeFromTypeNodes<T>>>,
+        read DeltaStruct16: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> SerdesNode<Optional<GetTypeFromTypeNodes<T>>>,
+        read Map: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
+        read Map8: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
+        read Map24: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>) -> SerdesNode<{ [K]: V }>,
+        read MapFixed: <K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>, Length: number) -> SerdesNode<{ [K]: V }>,
+        read Optional: <T>(Node: SerdesNode<T>) -> SerdesNode<T?>,
+    },
+}
 
 ---------------------------------------------------------
 -- STATE
@@ -147,7 +171,7 @@ local ReadBuffer: buffer? = nil
 -- LOCALIZING BUILTINS
 ---------------------------------------------------------
 const CreateTable = table.create
-const Ipairs = ipairs
+
 const MathHuge = math.huge
 const NMathHuge = -math.huge
 
@@ -468,7 +492,7 @@ const function Array<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
         const Cur = Cursor
         buffer.writeu16(WriteBuffer, Cur, Len)
         Cursor = Cur + 2
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -509,7 +533,7 @@ const function Array8<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
         const Len = #Array
         buffer.writeu8(WriteBuffer, Cur, Len)
         Cursor = Cur + 1
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -552,7 +576,7 @@ const function Array24<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
         buffer.writeu16(Buf, Cur, bit32.band(Len, 0xFFFF))
         buffer.writeu8(Buf, Cur + 2, bit32.band(bit32.rshift(Len, 16), 0xFF))
         Cursor = Cur + 3
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -586,7 +610,7 @@ end
 --- @return SerdesNode<any>
 
 const function Struct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<GetTypeFromTypeNodes<T>>
-    const StructNode: SerdesNode<T> = {}
+    const StructNode: SerdesNode<GetTypeFromTypeNodes<T>> = {}
 
     const Keys = {}
     local Idx = 0
@@ -599,30 +623,173 @@ const function Struct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Get
     const Writes = CreateTable<<Ser<any>>>(Idx)
     const Reads = CreateTable<<Des<any>>>(Idx)
 
-    for i, Key in Ipairs(Keys) do
+    for i, Key in Keys do
         const Node = Tbl[Key]
         Writes[i] = Node[SER] :: Ser<any>
         Reads[i] = Node[DES] :: Des<any>
     end
 
-    const function StructSer(Struct: T & { [string]: SerdesNode<any> })
-        for i, Key in Ipairs(Keys) do
-            Writes[i](Struct[Key])
+    const function StructSer(Value: GetTypeFromTypeNodes<T>)
+        const Row = Value :: { [string]: any }
+        for i, Key in Keys do
+            Writes[i](Row[Key])
         end
     end
 
-    const function StructDes(): T
+    const function StructDes(): GetTypeFromTypeNodes<T>
         const Result = {}
-        for i, Key in Ipairs(Keys) do
+        for i, Key in Keys do
             Result[Key] = Reads[i]()
         end
-        return Result
+        return Result :: any
     end
 
     StructNode[SER] = StructSer
     StructNode[DES] = StructDes
 
     return StructNode
+end
+
+-- DeltaStruct (u8 present-count + u8 field ids; max 255 present fields)
+--- Sparse struct: serializes present input keys only. `u8` present-count and field ids (max 255).
+--- Field ids are 1-based into lexicographically sorted schema keys; entry order follows the input table.
+--- @within Types
+--- @tag Collections
+--- @function DeltaStruct
+--- @param fields {[string]: SerdesNode<any>} -- Field schemas keyed by name.
+--- @return SerdesNode<any>
+
+const function DeltaStruct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }>
+    const DeltaStructNode: SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }> = {}
+
+    const Keys = {}
+    local Idx = 0
+    for Key in Tbl :: { [string]: SerdesNode<any> } do
+        Idx += 1
+        Keys[Idx] = Key
+    end
+    table.sort(Keys)
+
+    const Writes = CreateTable<<Ser<any>>>(Idx)
+    const Reads = CreateTable<<Des<any>>>(Idx)
+    const Lookup: { [string]: number } = {}
+
+    for i, Key in Keys do
+        const Node = Tbl[Key]
+        Writes[i] = Node[SER] :: Ser<any>
+        Reads[i] = Node[DES] :: Des<any>
+        Lookup[Key] = i
+    end
+
+    const function DeltaStructSer(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil })
+        const Cur = Cursor
+        const Buf = WriteBuffer
+        Cursor = Cur + 1
+        local Len = 0
+        for Key, Field in Value :: { [string]: any } do
+            const Id = Lookup[Key]
+            Len += 1
+            const Curs = Cursor
+            buffer.writeu8(Buf, Curs, Id)
+            Cursor = Curs + 1
+            Writes[Id](Field)
+        end
+        buffer.writeu8(Buf, Cur, Len)
+    end
+
+    const function DeltaStructDes(): Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }
+        const Result = {}
+        const Buf = ReadBuffer :: buffer
+        local Cur = Cursor
+        const Len = buffer.readu8(Buf, Cur)
+        Cursor = Cur + 1
+        for _ = 1, Len do
+            Cur = Cursor
+            const Id = buffer.readu8(Buf, Cur)
+            Cursor = Cur + 1
+            const Key = Keys[Id]
+            const Read = Reads[Id]
+
+            Result[Key] = Read()
+        end
+        return Result :: any
+    end
+
+    DeltaStructNode[SER] = DeltaStructSer
+    DeltaStructNode[DES] = DeltaStructDes
+
+    return DeltaStructNode
+end
+
+-- DeltaStruct16 (u16 present-count + u16 field ids; max 65535 present fields)
+--- Sparse struct: serializes present input keys only. `u16` present-count and field ids (max 65535).
+--- Field ids are 1-based into lexicographically sorted schema keys; entry order follows the input table.
+--- @within Types
+--- @tag Collections
+--- @function DeltaStruct16
+--- @param fields {[string]: SerdesNode<any>} -- Field schemas keyed by name.
+--- @return SerdesNode<any>
+
+const function DeltaStruct16<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }>
+    const DeltaStruct16Node: SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }> = {}
+
+    const Keys = {}
+    local Idx = 0
+    for Key in Tbl :: { [string]: SerdesNode<any> } do
+        Idx += 1
+        Keys[Idx] = Key
+    end
+    table.sort(Keys)
+
+    const Writes = CreateTable<<Ser<any>>>(Idx)
+    const Reads = CreateTable<<Des<any>>>(Idx)
+    const Lookup: { [string]: number } = {}
+
+    for i, Key in Keys do
+        const Node = Tbl[Key]
+        Writes[i] = Node[SER] :: Ser<any>
+        Reads[i] = Node[DES] :: Des<any>
+        Lookup[Key] = i
+    end
+
+    const function DeltaStruct16Ser(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil })
+        const Cur = Cursor
+        const Buf = WriteBuffer
+        Cursor = Cur + 2
+        local Len = 0
+        for Key, Field in Value :: { [string]: any } do
+            const Id = Lookup[Key]
+            Len += 1
+            const Curs = Cursor
+            buffer.writeu16(Buf, Curs, Id)
+            Cursor = Curs + 2
+            Writes[Id](Field)
+        end
+        buffer.writeu16(Buf, Cur, Len)
+    end
+
+    const function DeltaStruct16Des(): Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }
+        const Result = {}
+        const Buf = ReadBuffer :: buffer
+        local Cur = Cursor
+        const Len = buffer.readu16(Buf, Cur)
+        Cursor = Cur + 2
+        for _ = 1, Len do
+            Cur = Cursor
+            const Id = buffer.readu16(Buf, Cur)
+            Cursor = Cur + 2
+            const Key = Keys[Id]
+            const Read = Reads[Id]
+
+            Result[Key] = Read()
+        end
+        return Result :: any
+    end
+
+    DeltaStruct16Node[SER] = DeltaStruct16Ser
+    DeltaStruct16Node[DES] = DeltaStruct16Des
+
+    return DeltaStruct16Node
 end
 
 --- `vector` with three `f32` components. 12 bytes.
@@ -689,7 +856,7 @@ const function Map<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Serd
     const function MapDes(): { [K]: V }
         const Cur = Cursor
         const Len = buffer.readu16(ReadBuffer :: buffer, Cur)
-        const Map = {}
+        const Map = CreateTable(Len)
         Cursor = Cur + 2
         for _ = 1, Len do
             Map[KeyDes()] = ValueDes()
@@ -736,7 +903,7 @@ const function Map8<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Ser
     const function Map8Des(): { [K]: V }
         const Cur = Cursor
         const Len = buffer.readu8(ReadBuffer :: buffer, Cur)
-        const Map = {}
+        const Map = CreateTable(Len)
         Cursor = Cur + 1
         for _ = 1, Len do
             Map[KeyDes()] = ValueDes()
@@ -788,7 +955,7 @@ const function Map24<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Se
         const b1: number = buffer.readu16(Buf, Cur)
         const b2: number = buffer.readu8(Buf, Cur + 2)
         const Len = bit32.bor(b1, bit32.lshift(b2, 16))
-        const Map = {}
+        const Map = CreateTable(Len)
         Cursor = Cur + 3
         for _ = 1, Len do
             Map[KeyDes()] = ValueDes()
@@ -818,7 +985,7 @@ const function ArrayFixed<T>(Node: SerdesNode<T>, Length: number): SerdesNode<{ 
     const Des = Node[DES] :: Des<T>
 
     const function ArrayFixedSer(Array: { T })
-        for _, Value in Ipairs(Array) do
+        for _, Value in Array do
             Ser(Value)
         end
     end
@@ -1597,6 +1764,7 @@ do
     VectorI24[DES] = VectorI24Des
 end
 
+
 --- Boolean stored as one byte (`0` or `1`).
 --- @within Types
 --- @tag Primitives
@@ -1868,6 +2036,8 @@ Types.Array = Array
 Types.Array8 = Array8
 Types.Array24 = Array24
 Types.Struct = Struct
+Types.DeltaStruct = DeltaStruct
+Types.DeltaStruct16 = DeltaStruct16
 Types.Vector = Vector
 Types.Map = Map
 Types.Map8 = Map8
@@ -1907,7 +2077,7 @@ Types.Optional = Optional
 --- @param Schema SerdesNode<T> -- Schema that defines the wire representation.
 --- @param Value T -- Value to serialize.
 --- @return buffer
-function VoidSentryUltimate.Serialize<T>(Schema: SerdesNode<T>, Value: T): buffer
+function VoidSentryUltimate.Serialize<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>): buffer
 	Cursor = 0
 	const Ser = Schema[SER] :: Ser<T>
 	Ser(Value)
@@ -1926,7 +2096,7 @@ end
 --- @param Value T -- Value to serialize.
 --- @param Offset number -- Number of bytes reserved before the payload.
 --- @return buffer
-function VoidSentryUltimate.SerializeWithOffset<T>(Schema: SerdesNode<T>, Value: T, Offset: number): buffer
+function VoidSentryUltimate.SerializeWithOffset<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>, Offset: number): buffer
 	Cursor = 0
 	const Ser = Schema[SER] :: Ser<T>
 	Ser(Value)
@@ -1961,7 +2131,7 @@ end
 --- @param Value T -- Value to serialize.
 --- @param Buffer buffer -- Existing destination buffer.
 --- @param Offset number? -- Byte offset at which writing begins. Defaults to 0.
-function VoidSentryUltimate.Push<T>(Schema: SerdesNode<T>, Value: T, Buffer: buffer, Offset: number?): ()
+function VoidSentryUltimate.Push<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?): ()
     Offset = Offset or 0
     const BigBufSave = WriteBuffer
     WriteBuffer = Buffer
@@ -1989,11 +2159,15 @@ end
 --- Replaces the reusable serialization scratch buffer with a new capacity.
 ---
 --- The default capacity is 1,000,000 bytes. Set a different size before
---- serialization when yourw payload limit differs.
+--- serialization when your payload limit differs.
 --- @tag Core
 --- @param NewSize number -- New scratch-buffer size in bytes.
 function VoidSentryUltimate.SetWriteBufferSize(NewSize: number): ()
     WriteBuffer = buffer.create(NewSize)
 end
 
-return VoidSentryUltimate
+const Freeze = table.freeze
+Freeze(Types)
+Freeze(VoidSentryUltimate)
+
+return VoidSentryUltimate :: Lib

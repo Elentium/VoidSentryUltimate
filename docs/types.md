@@ -65,6 +65,8 @@ The prefix records bytes, not UTF-8 characters. `StringFixed` requires the calle
 - `Map24(keyNode, valueNode)`: 3-byte entry-count prefix.
 - `MapFixed(keyNode, valueNode, length)`: no prefix; exactly `length` entries.
 - `Struct(fields)`: fields only, with no struct prefix.
+- `DeltaStruct(fields)`: sparse struct; walks present input keys; `u8` present-count and field ids (max 255 present fields).
+- `DeltaStruct16(fields)`: sparse struct; walks present input keys; `u16` present-count and field ids (max 65,535 present fields).
 - `Optional(node)`: 1-byte presence marker, followed by the value only when present.
 
 The 1-, 2-, and 3-byte count prefixes represent up to 255, 65,535, and 16,777,215 entries respectively. Fixed variants do not encode a count and perform no exact-length validation.
@@ -129,7 +131,7 @@ For `Instance` and `Instance24`, module initialization maintains maps between in
 
 - Numbers and booleans: `U8`, `I8`, `U16`, `I16`, `U24`, `I24`, `U32`, `I32`, `F16`, `F24`, `F32`, `F64`, `Bool`, `BoolPacked`.
 - Strings and buffers: `String`, `String8`, `StringFixed`, `Buffer`, `Buffer8`, `Buffer24`, `BufferFixed`.
-- Collections: `Array`, `Array8`, `Array24`, `ArrayFixed`, `Map`, `Map8`, `Map24`, `MapFixed`, `Struct`, `Optional`.
+- Collections: `Array`, `Array8`, `Array24`, `ArrayFixed`, `Map`, `Map8`, `Map24`, `MapFixed`, `Struct`, `DeltaStruct`, `DeltaStruct16`, `Optional`.
 - Vectors: `Vector`, `VectorF16`, `VectorF24`, `VectorU8`, `VectorI8`, `VectorU16`, `VectorI16`, `VectorU24`, `VectorI24`.
 
 The Roblox module contains all names above plus the Roblox-only names documented in this page.

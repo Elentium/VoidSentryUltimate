@@ -1,17 +1,12 @@
 name = "elentium/voidsentryultimateluau"
-version = "1.0.0"
+version = "1.0.1"
 description = "Schema-driven, validation-free binary serializer for pure Luau (no Roblox types)"
 license = "Apache-2.0"
 authors = ["IAMNOTULTRA3"]
 repository = "https://github.com/Elentium/VoidSentryUltimate"
 homepage = "https://elentium.github.io/VoidSentryUltimate/"
 
-includes = [
-	"pesde.toml",
-	"LICENSE",
-	"README.md",
-	"LuauVS.luau",
-]
+includes = ["pesde.toml", "LICENSE", "README.md", "LuauVS.luau"]
 
 [target]
 environment = "luau"

@@ -4,7 +4,7 @@ sidebar_position: 3
 
 # Schemas
 
-A schema is a serialization node. Primitive nodes are ready to use, while constructors such as `Struct`, `Array`, `Map`, and `Optional` return composed nodes.
+A schema is a serialization node. Primitive nodes are ready to use, while constructors such as `Struct`, `DeltaStruct`, `Array`, `Map`, and `Optional` return composed nodes.
 
 ```luau
 local Types = VoidSentryUltimate.Types
@@ -39,6 +39,33 @@ local Transform = Types.Struct({
 ```
 
 For this schema, `Position` is written before `Rotation` because the keys are sorted lexicographically. Both ends still need the same field names and field nodes. Do not treat Lua table construction order as a wire-format contract, and do not infer broader deterministic cross-process behavior beyond the implementation's sorted string keys.
+
+## Delta structs
+
+`DeltaStruct` and `DeltaStruct16` serialize only keys present in the input table. Serialization walks the input (not the full schema), looks up each key’s field id, and writes that field. Deserialization returns a sparse table containing only the fields that were present on the wire.
+
+At schema creation, field names are collected and sorted lexicographically to assign stable 1-based field ids. Entry order on the wire follows Luau table iteration order of the input, not sorted key order.
+
+- `DeltaStruct(fields)`: 1-byte present-count and 1-byte field ids (max 255 present fields).
+- `DeltaStruct16(fields)`: 2-byte present-count and 2-byte field ids (max 65,535 present fields).
+
+```luau
+local PlayerDelta = Types.DeltaStruct({
+	Health = Types.U8,
+	Name = Types.String8,
+	Score = Types.U32,
+})
+
+-- Only Health and Score are encoded
+local bytes = VoidSentryUltimate.Serialize(PlayerDelta, {
+	Health = 100,
+	Score = 42,
+})
+```
+
+Omit keys you do not want to send. Nesting `Optional` inside a delta struct is usually redundant: presence is decided by whether the key exists in the input.
+
+Unknown keys are not validated on the hot path; they will fail when the serializer looks up the field id.
 
 ## Arrays
 

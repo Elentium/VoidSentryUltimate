@@ -1,1 +1,1 @@
-NOTE: The speeds vary depending on hardware, this test was made on M4
+NOTE: The speeds vary depending on hardware, this test was made on apple M4

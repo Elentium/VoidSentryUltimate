@@ -102,6 +102,20 @@ const functions = [
 		"SerdesNode<any>",
 	],
 	[
+		"DeltaStruct",
+		"Collections",
+		"Sparse struct: serializes present input keys only. `u8` present-count and field ids (max 255).",
+		["fields {[string]: SerdesNode<any>} -- Field schemas keyed by name."],
+		"SerdesNode<any>",
+	],
+	[
+		"DeltaStruct16",
+		"Collections",
+		"Sparse struct: serializes present input keys only. `u16` present-count and field ids (max 65535).",
+		["fields {[string]: SerdesNode<any>} -- Field schemas keyed by name."],
+		"SerdesNode<any>",
+	],
+	[
 		"Map",
 		"Collections",
 		"Map with a `u16` entry-count prefix.",

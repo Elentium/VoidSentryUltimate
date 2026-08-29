@@ -139,9 +139,33 @@ const function LuauBench(Log: boolean?, Iterations: number?)
         return VSTypes.Struct(Tbl)
     end
 
+    const function MakeU8DeltaStructSchema(Count: number): any
+        local Tbl: { [string]: any } = {}
+        for i = 1, Count do
+            Tbl[`f{string.format("%03d", i)}`] = VSTypes.U8
+        end
+        return VSTypes.DeltaStruct(Tbl)
+    end
+
+    const function MakeU8DeltaStruct16Schema(Count: number): any
+        local Tbl: { [string]: any } = {}
+        for i = 1, Count do
+            Tbl[`f{string.format("%03d", i)}`] = VSTypes.U8
+        end
+        return VSTypes.DeltaStruct16(Tbl)
+    end
+
     const function MakeU8StructValue(Count: number): { [string]: number }
         local Tbl: { [string]: number } = {}
         for i = 1, Count do
+            Tbl[`f{string.format("%03d", i)}`] = i % 256
+        end
+        return Tbl
+    end
+
+    const function MakeU8DeltaValue(Count: number, Present: number): { [string]: number }
+        local Tbl: { [string]: number } = {}
+        for i = 1, Present do
             Tbl[`f{string.format("%03d", i)}`] = i % 256
         end
         return Tbl
@@ -208,6 +232,7 @@ const function LuauBench(Log: boolean?, Iterations: number?)
     BenchPrimitive("Array (1 elem)", U8Array, MakeU8Array(1))
     BenchPrimitive("Map (1 elem)", U8Map, MakeU8Map(1))
     BenchPrimitive("Struct (1 elem)", MakeU8StructSchema(1), MakeU8StructValue(1))
+    BenchPrimitive("DeltaStruct (1/10 present)", MakeU8DeltaStructSchema(10), MakeU8DeltaValue(10, 1))
     YieldIfPossible()
     BenchPrimitive("Array (10 elem)", U8Array, MakeU8Array(10))
     BenchPrimitive("Array24 (10 elem)", U8Array24, MakeU8Array(10))
@@ -215,10 +240,14 @@ const function LuauBench(Log: boolean?, Iterations: number?)
     YieldIfPossible()
     BenchPrimitive("Map24 (10 elem)", U8Map24, MakeU8Map(10))
     BenchPrimitive("Struct (10 elem)", MakeU8StructSchema(10), MakeU8StructValue(10))
+    BenchPrimitive("DeltaStruct (3/10 present)", MakeU8DeltaStructSchema(10), MakeU8DeltaValue(10, 3))
+    YieldIfPossible()
+    BenchPrimitive("DeltaStruct16 (3/10 present)", MakeU8DeltaStruct16Schema(10), MakeU8DeltaValue(10, 3))
     BenchPrimitive("Array (100 elem)", U8Array, MakeU8Array(100))
     YieldIfPossible()
     BenchPrimitive("Map (100 elem)", U8Map, MakeU8Map(100))
     BenchPrimitive("Struct (100 elem)", MakeU8StructSchema(100), MakeU8StructValue(100))
+    BenchPrimitive("DeltaStruct (10/100 present)", MakeU8DeltaStructSchema(100), MakeU8DeltaValue(100, 10))
     YieldIfPossible()
 
     if Log then

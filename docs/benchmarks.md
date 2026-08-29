@@ -60,9 +60,18 @@ Source: `benchresults/seravssentryresult.txt`
 Harness: `bench/SeraVsVoidSentry/Comparator.luau`  
 Iterations: **10,000** per timed batch
 
-Sera only serializes through schemas. For primitives, vectors, and CFrames the comparator wraps Sera values in a single-field schema, while VoidSentryUltimate uses bare nodes. **Struct** rows are the fairest same-shape comparison (`Sera.Schema` vs `Types.Struct`).
+Sera only serializes through schemas. For primitives, vectors, and CFrames the comparator wraps Sera values in a single-field schema, while VoidSentryUltimate uses bare nodes. **Struct** rows compare `Sera.Schema` vs `Types.Struct`. **Delta** rows compare `Sera.DeltaSerialize` / `DeltaDeserialize` vs `Types.DeltaStruct`. **Push** compares `Sera.Push` / `DeltaPush` vs `VoidSentryUltimate.Push`.
 
 **Speedup** is `Sera Avg ÷ VoidSentry Avg`. Values above `1.00x` mean VoidSentry was faster.
+
+### Overall (suite averages)
+
+| Category | Serialize | Deserialize | Total / RoundTrip |
+| --- | ---: | ---: | ---: |
+| Primitives | **1.60x** VS | **2.07x** VS | **2.04x** VS |
+| Structs | **1.07x** VS | 1.03x Sera | **1.02x** VS |
+| Deltas | **1.21x** VS | **1.01x** VS | **1.10x** VS |
+| Push (avg μs) | VS **0.934** / Sera **1.072** | — | — |
 
 ### Numbers, bools, and strings
 
@@ -73,18 +82,18 @@ Sera only serializes through schemas. For primitives, vectors, and CFrames the c
 | `U8` RoundTrip | 0.16 | 0.06 | 2.67x |
 | `F64` Serialize | 0.09 | 0.05 | 1.80x |
 | `F64` Deserialize | 0.06 | 0.02 | 3.00x |
-| `Bool` Serialize | 0.09 | 0.05 | 1.80x |
+| `Bool` Serialize | 0.10 | 0.05 | 2.00x |
 | `Bool` Deserialize | 0.06 | 0.02 | 3.00x |
 | `String8` (100 chars) Serialize | 0.14 | 0.08 | 1.75x |
-| `String8` (100 chars) Deserialize | 0.10 | 0.06 | 1.67x |
+| `String8` (100 chars) Deserialize | 0.10 | 0.07 | 1.43x |
 
 ### Vectors and CFrames
 
 | Operation | Sera (μs) | VoidSentry (μs) | Speedup |
 | --- | ---: | ---: | ---: |
-| `Vector3` Serialize | 0.09 | 0.05 | 1.80x |
+| `Vector3` Serialize | 0.10 | 0.06 | 1.67x |
 | `Vector3` Deserialize | 0.06 | 0.02 | 3.00x |
-| `Vector3` RoundTrip | 0.16 | 0.07 | 2.29x |
+| `Vector3` RoundTrip | 0.17 | 0.07 | 2.43x |
 | `CFrame` Serialize | 0.14 | 0.09 | 1.56x |
 | `CFrame` Deserialize | 0.09 | 0.05 | 1.80x |
 | `CFrame` RoundTrip | 0.24 | 0.15 | 1.60x |
@@ -95,20 +104,38 @@ Sera only serializes through schemas. For primitives, vectors, and CFrames the c
 
 | Operation | Sera (μs) | VoidSentry (μs) | Speedup |
 | --- | ---: | ---: | ---: |
-| 1 field Serialize | 0.09 | 0.08 | 1.12x |
-| 1 field Deserialize | 0.06 | 0.09 | 0.67x |
-| 10 fields Serialize | 0.24 | 0.20 | 1.20x |
+| 1 field Serialize | 0.09 | 0.07 | 1.29x |
+| 1 field Deserialize | 0.06 | 0.07 | 0.86x |
+| 10 fields Serialize | 0.22 | 0.19 | 1.16x |
 | 10 fields Deserialize | 0.36 | 0.38 | 0.95x |
-| 100 fields Serialize | 1.80 | 1.53 | 1.18x |
-| 100 fields Deserialize | 2.87 | 2.94 | 0.98x |
-| 100 fields RoundTrip | 4.79 | 4.55 | 1.05x |
+| 100 fields Serialize | 1.65 | 1.58 | 1.04x |
+| 100 fields Deserialize | 2.87 | 2.95 | 0.97x |
+| 100 fields RoundTrip | 4.82 | 4.76 | 1.01x |
+
+### Deltas (`DeltaStruct` vs Sera delta)
+
+| Operation | Sera (μs) | VoidSentry (μs) | Speedup |
+| --- | ---: | ---: | ---: |
+| 10 fields, all present Serialize | 0.26 | 0.23 | 1.13x |
+| 10 fields, all present Deserialize | 0.39 | 0.41 | 0.95x |
+| 100 fields, all present Serialize | 2.23 | 1.87 | 1.19x |
+| 100 fields, only 1 present Serialize | 0.10 | 0.07 | 1.43x |
+| 255 fields, only 1 present Serialize | 0.10 | 0.08 | 1.25x |
+
+### Push
+
+| Operation | Sera (μs) | VoidSentry (μs) | Speedup |
+| --- | ---: | ---: | ---: |
+| Struct Push (100 fields) | 1.66 | 1.59 | 1.04x |
+| DeltaPush (100 fields, only 1 present) | 0.07 | 0.04 | 1.75x |
 
 ### Summary
 
-- Across the paired comparator suite, VoidSentry was faster on most operations (roughly **1.8× median**, **~2× mean** speedup).
-- The largest gaps are on **deserialize** of bare primitives, vectors, and CFrames.
-- On **multi-field structs**, the libraries are close: VoidSentry tends to win serialize; Sera occasionally edges small-struct deserialize.
-- Prefer the struct table when comparing schema-to-schema work; prefer the primitive tables when comparing each library's natural API for single values.
+- **Primitives** are VoidSentry’s clearest win (~**1.6–2.1×** on the suite averages; bare deserialize often ~**3×**).
+- **Structs** are near parity: VoidSentry slightly ahead on serialize/total; Sera occasionally edges deserialize.
+- **Deltas** favor VoidSentry overall (~**1.21×** serialize, ~**1.10×** total), including sparse “only 1 present” cases after input-key iteration.
+- **Push** averages favor VoidSentry (**0.934 μs** vs **1.072 μs**).
+- Prefer struct/delta tables for schema-to-schema comparisons; prefer primitive tables when comparing each library’s natural single-value API.
 
 ## Reproducing
 
@@ -116,8 +143,8 @@ Sera only serializes through schemas. For primitives, vectors, and CFrames the c
 -- VoidSentry-only throughput (Luau subset + Roblox types)
 local LuauBench = require(path.to.bench.LuauBench)
 local RobloxBench = require(path.to.bench.RobloxBench)
-LuauBench(true, 10_000)
-RobloxBench(true, 10_000)
+LuauBench(true, 100_000)
+RobloxBench(true, 100_000)
 
 -- VoidSentry vs Sera
 local Comparator = require(path.to.bench.SeraVsVoidSentry.Comparator)

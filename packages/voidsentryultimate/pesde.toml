@@ -1,5 +1,5 @@
 name = "elentium/voidsentryultimate"
-version = "1.0.0"
+version = "1.0.1"
 description = "Schema-driven, validation-free binary serializer for Roblox Luau"
 license = "Apache-2.0"
 authors = ["IAMNOTULTRA3"]

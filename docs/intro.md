@@ -40,10 +40,10 @@ Schemas are executable serialization nodes, not metadata embedded in the output.
 ## Choose a module
 
 - Use `VoidSentryUltimate.luau` in Roblox. Its Wally package is
-  `elentium/voidsentryultimate@1.0.0`. It includes Roblox datatypes, instance
+  `elentium/voidsentryultimate@1.0.1`. It includes Roblox datatypes, instance
   references, and serializable instances.
 - Use `LuauVS.luau` for pure Luau. Its Wally package is
-  `elentium/voidsentryultimateluau@1.0.0`. It includes scalar, string, buffer,
+  `elentium/voidsentryultimateluau@1.0.1`. It includes scalar, string, buffer,
   collection, optional, packed-boolean, and `vector` nodes, but no Roblox-only
   types.
 

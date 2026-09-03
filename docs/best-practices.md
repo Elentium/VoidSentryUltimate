@@ -106,11 +106,14 @@ VoidSentryUltimate.SetWriteBufferSize(2_000_000)
 ## Use `Push` for known offsets
 
 Prefer `Push` when you have already allocated a destination buffer and know
-where each fixed-layout field belongs. It avoids allocating a separate result,
-but it does not grow the destination or tell you the ending cursor.
+where each fixed-layout field belongs. It avoids allocating a separate result
+buffer and returns the ending cursor. The destination is not grown for you.
 
 ```luau
 local packet = buffer.create(6)
-VoidSentryUltimate.Push(Types.U16, packetType, packet, 0)
-VoidSentryUltimate.Push(Types.U32, sequence, packet, 2)
+local cursor = VoidSentryUltimate.Push(Types.U16, packetType, packet, 0)
+VoidSentryUltimate.Push(Types.U32, sequence, packet, cursor)
 ```
+
+`Deserialize`, `DeserializeWithOffset`, and `Push` all return the final cursor.
+You can ignore the second return from deserialize calls when you only need the value.

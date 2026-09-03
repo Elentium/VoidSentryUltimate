@@ -3,7 +3,7 @@
 --[[
     VoidSentryUltimate 
     [ Pure luau version ]
-    [ V1.0.1 ]
+    [ V1.0.2 ]
     [ by IAMNOTULTRA3 a.k.a Elentium, Elite ]
     [ Apache-2.0 License ]
 
@@ -107,10 +107,10 @@ export type Lib = {
     read Serialize: <T>(Node: SerdesNode<T>, Data: T) -> buffer,
     -- when fixed: read SerializeWithOffset: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Offset: number) -> buffer,
     read SerializeWithOffset: <T>(Node: SerdesNode<T>, Data: T, Offset: number) -> buffer,
-    read Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> GetProperTypeFromUnion<T>,
-    read DeserializeWithOffset: <T>(Node: SerdesNode<T>, Buffer: buffer, Offset: number) -> GetProperTypeFromUnion<T>,
-    -- when fixed: read Push: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?) -> (),
-    read Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> (),
+    read Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> (GetProperTypeFromUnion<T>, number),
+    read DeserializeWithOffset: <T>(Node: SerdesNode<T>, Buffer: buffer, Offset: number) -> (GetProperTypeFromUnion<T>, number),
+    -- when fixed: read Push: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?) -> number,
+    read Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> number,
     read SetWriteBufferSize: (NewSize: number) -> (),
 
     read Types: {
@@ -2112,26 +2112,27 @@ end
 --- @tag Core
 --- @param Schema SerdesNode<T> -- Schema that defines the wire representation.
 --- @param Buffer buffer -- Buffer containing the encoded value.
---- @return T
-function VoidSentryUltimate.Deserialize<T>(Schema: SerdesNode<T>, Buffer: buffer): T
+--- @return T, number (cursor)
+function VoidSentryUltimate.Deserialize<T>(Schema: SerdesNode<T>, Buffer: buffer): (T, number)
     Cursor = 0
 	ReadBuffer = Buffer
 	const Des = Schema[DES] :: Des<T>
 	const Value = Des()
 	ReadBuffer = nil -- gc the buffer if no more references exist
-	return Value
+	return Value, Cursor
 end
 
 --- Writes a serialized value directly into an existing buffer.
 ---
---- The destination must already be large enough. `Offset` defaults to zero,
---- and this function does not return the final cursor position.
+--- The destination must already be large enough. `Offset` defaults to zero.
+--- Returns the byte offset after the written payload.
 --- @tag Core
 --- @param Schema SerdesNode<T> -- Schema that defines the wire representation.
 --- @param Value T -- Value to serialize.
 --- @param Buffer buffer -- Existing destination buffer.
 --- @param Offset number? -- Byte offset at which writing begins. Defaults to 0.
-function VoidSentryUltimate.Push<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?): ()
+--- @return number (cursor)
+function VoidSentryUltimate.Push<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?): number
     Offset = Offset or 0
     const BigBufSave = WriteBuffer
     WriteBuffer = Buffer
@@ -2139,6 +2140,7 @@ function VoidSentryUltimate.Push<T>(Schema: SerdesNode<any> & T, Value: GetTypeF
     const Ser = Schema[SER] :: Ser<T>
     Ser(Value)
     WriteBuffer = BigBufSave
+    return Cursor
 end
 
 --- Deserializes a value beginning at a byte offset in a buffer.
@@ -2146,14 +2148,14 @@ end
 --- @param Schema SerdesNode<T> -- Schema that defines the wire representation.
 --- @param Buffer buffer -- Buffer containing the encoded value.
 --- @param Offset number -- Byte offset at which reading begins.
---- @return T
-function VoidSentryUltimate.DeserializeWithOffset<T>(Schema: SerdesNode<T>, Buffer: buffer, Offset: number): T
+--- @return T, number (cursor)
+function VoidSentryUltimate.DeserializeWithOffset<T>(Schema: SerdesNode<T>, Buffer: buffer, Offset: number): (T, number)
     Cursor = Offset
 	ReadBuffer = Buffer
 	const Des = Schema[DES] :: Des<T>
 	const Value = Des()
 	ReadBuffer = nil
-	return Value
+	return Value, Cursor
 end
 
 --- Replaces the reusable serialization scratch buffer with a new capacity.

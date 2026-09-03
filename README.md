@@ -7,7 +7,7 @@ VoidSentryUltimate is a validation-free, schema-driven serdes optimized for perf
 Wally:
 
 ```toml
-VoidSentryUltimate = "elentium/voidsentryultimate@1.0.1"
+VoidSentryUltimate = "elentium/voidsentryultimate@1.0.2"
 ```
 
 Pesde:
@@ -23,7 +23,7 @@ npm install @elentium/voidsentryultimate
 
 Wally (pure luau):
 ```toml
-VoidSentryUltimate = "elentium/voidsentryultimateluau@1.0.1"
+VoidSentryUltimate = "elentium/voidsentryultimateluau@1.0.2"
 ```
 
 Pesde (pure luau):

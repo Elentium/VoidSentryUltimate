@@ -148,18 +148,18 @@ interface VoidSentryUltimate {
 		value: T,
 		offset: number,
 	) => buffer
-	readonly Deserialize: <T>(schema: VoidSentryUltimate.SerdesNode<T>, buf: buffer) => T
+	readonly Deserialize: <T>(schema: VoidSentryUltimate.SerdesNode<T>, buf: buffer) => LuaTuple<[T, number]>
 	readonly DeserializeWithOffset: <T>(
 		schema: VoidSentryUltimate.SerdesNode<T>,
 		buf: buffer,
 		offset: number,
-	) => T
+	) => LuaTuple<[T, number]>
 	readonly Push: <T>(
 		schema: VoidSentryUltimate.SerdesNode<T>,
 		value: T,
 		buf: buffer,
 		offset?: number,
-	) => void
+	) => number
 	readonly SetWriteBufferSize: (newSize: number) => void
 }
 

@@ -1,4 +1,5 @@
 --!native
+--!nonstrict
 const Types = require("./Types")
 const Benchmark = require("./BenchHelper")
 const VoidSentryUltimate = require("../VoidSentryUltimate")
@@ -35,7 +36,7 @@ end
 
 const function PrintResults(Iterations: number)
     print(Separator)
-    print("* LUAU BENCH RESULTS")
+    print("* ROBLOX BENCH RESULTS")
     print(`* ITERATIONS: {Iterations}`)
     for _, SectionData in Results do
         print(`** {SectionData.SectionName}:`)

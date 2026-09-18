@@ -4,13 +4,21 @@
 		"noEmit": true,
 		"noLib": true,
 		"module": "commonjs",
+		"ignoreDeprecations": "6.0",
 		"moduleResolution": "Node",
 		"target": "ESNext",
-		"typeRoots": ["../../node_modules/@rbxts"],
-		"types": ["types", "compiler-types"],
+		"typeRoots": [
+			"../../node_modules/@rbxts"
+		],
+		"types": [
+			"types",
+			"compiler-types"
+		],
 		"allowSyntheticDefaultImports": true,
 		"forceConsistentCasingInFileNames": true,
 		"skipLibCheck": true
 	},
-	"include": ["VoidSentryUltimate.d.ts"]
+	"include": [
+		"VoidSentryUltimate.d.ts"
+	]
 }

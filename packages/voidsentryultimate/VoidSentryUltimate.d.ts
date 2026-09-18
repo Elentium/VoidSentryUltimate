@@ -13,6 +13,24 @@ declare namespace VoidSentryUltimate {
 		[K in keyof T]?: Infer<T[K]>
 	}
 
+	export interface Schema<T> {
+		readonly Serialize: (data: T) => buffer
+		readonly SerializeWithOffset: (data: T, offset: number) => buffer
+		readonly Deserialize: (buf: buffer) => LuaTuple<[T, number]>
+		readonly DeserializeWithOffset: (buf: buffer, offset: number) => LuaTuple<[T, number]>
+		readonly Push: (data: T, buf: buffer, offset?: number) => number
+		readonly DeltaSerialize: (data: DeltaStructOf<{ readonly [key: string]: SerdesNode<unknown> }>, offset?: number) => buffer
+		readonly DeltaDeserialize: (
+			buf: buffer,
+			offset?: number,
+		) => LuaTuple<[DeltaStructOf<{ readonly [key: string]: SerdesNode<unknown> }>, number]>
+		readonly DeltaPush: (
+			buf: buffer,
+			data: DeltaStructOf<{ readonly [key: string]: SerdesNode<unknown> }>,
+			offset: number,
+		) => number
+	}
+
 	export type Dictionary<K, V> = { [P in Extract<K, string | number>]: V }
 
 	export type BoolPacked = [
@@ -161,6 +179,9 @@ interface VoidSentryUltimate {
 		offset?: number,
 	) => number
 	readonly SetWriteBufferSize: (newSize: number) => void
+	readonly Schema: <T extends { readonly [key: string]: SerdesNode<unknown> }>(
+		tbl: T,
+	) => VoidSentryUltimate.Schema<VoidSentryUltimate.StructOf<T>>
 }
 
 declare const VoidSentryUltimate: VoidSentryUltimate

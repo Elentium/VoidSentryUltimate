@@ -2,20 +2,18 @@
 --!optimize 2
 --[[
     VoidSentryUltimate 
-    [ Pure luau version ]
-    [ V1.0.2 ]
+    [ Pure Luau implementation ]
+    [ V1.1.0 ]
     [ by IAMNOTULTRA3 a.k.a Elentium, Elite ]
     [ Apache-2.0 License ]
-
-    Efficient SerDes library
 
     Docs: https://Elentium.github.io/VoidSentryUltimate
 ]]
 
---- Schema-based, validation-free serialization for Luau.
+--- Schema-based, validation-free serialization for Pure Luau.
 ---
 --- Build a `SerdesNode` from `VoidSentryUltimate.Types`, then use the same
---- schema to serialize and deserialize a value. The file does not include Roblox types.
+--- schema to serialize and deserialize a value. The module does not include Roblox types.
 ---
 --- @class VoidSentryUltimate
 ---------------------------------------------------------
@@ -53,9 +51,8 @@ type function Optional(Type: type)
     return Tbl
 end
 
-export type Ser<T> = (T) -> ()
-export type Des<T> = () -> T
-
+export type Ser<T> = (T, buffer, number) -> number
+export type Des<T> = (buffer, number) -> (T, number)
 export type SerdesNode<T> = {
 	-- [1] = Ser
 	-- [2] = Des
@@ -102,9 +99,20 @@ export type function GetTypeFromTypeNodes(Struct: type)
     return Tbl
 end
 
+export type Schema<T> = {
+    read Serialize: (Data: T) -> buffer,
+    read SerializeWithOffset: (Data: T, Offset: number) -> buffer,
+    read Deserialize: (Buffer: buffer) -> (T, number),
+    read DeserializeWithOffset: (Buffer: buffer, Offset: number) -> (T, number),
+    read Push: (Data: T, Buffer: buffer, Offset: number?) -> number,
+    read DeltaSerialize: (Data: Optional<T>, Offset: number?) -> buffer,
+    read DeltaDeserialize: (Buffer: buffer, Offset: number?) -> (Optional<T>, number),
+    read DeltaPush: (Buffer: buffer, Data: Optional<T>, Offset: number) -> number
+}
+
 export type Lib = {
-    -- TODO: when luau bug is fixed, replace this with read Serialize: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>) -> buffer,
-    read Serialize: <T>(Node: SerdesNode<T>, Data: T) -> buffer,
+    -- TODO: when luau bug is fixed, replace this with 
+    read Serialize: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>) -> buffer,
     -- when fixed: read SerializeWithOffset: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Offset: number) -> buffer,
     read SerializeWithOffset: <T>(Node: SerdesNode<T>, Data: T, Offset: number) -> buffer,
     read Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> (GetProperTypeFromUnion<T>, number),
@@ -112,6 +120,7 @@ export type Lib = {
     -- when fixed: read Push: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?) -> number,
     read Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> number,
     read SetWriteBufferSize: (NewSize: number) -> (),
+    read Schema: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> Schema<GetTypeFromTypeNodes<T>>,
 
     read Types: {
         read U8: SerdesNode<number>,
@@ -164,13 +173,12 @@ export type Lib = {
 ---------------------------------------------------------
 local WriteBuffer = buffer.create(BIG_BUFFER_SIZE) -- scratch buffer that is used during serialization
 const FloatConverter = buffer.create(4) -- used to convert f32 to smaller precision version
-local Cursor: number = 0
-local ReadBuffer: buffer? = nil
 
 ---------------------------------------------------------
 -- LOCALIZING BUILTINS
 ---------------------------------------------------------
 const CreateTable = table.create
+const TableFreeze = table.freeze
 
 const MathHuge = math.huge
 const NMathHuge = -math.huge
@@ -186,17 +194,17 @@ const NMathHuge = -math.huge
 const I8: SerdesNode<number> = {} -- Signed 8-bit integer
 
 do
-	const function I8Ser(Value: number)
-        const Cur = Cursor
-		buffer.writei8(WriteBuffer, Cur, Value)
-		Cursor = Cur + 1
+	const function I8Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writei8(Buf, Cur, Value)
+		Cur = Cur + 1
+	
+		return Cur
 	end
 
-	const function I8Des(): number
-        const Cur = Cursor
-		const Value = buffer.readi8(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 1
-		return Value
+	const function I8Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readi8(Buf, Cur)
+		Cur = Cur + 1
+		return Value, Cur
 	end
 
 	I8[SER] = I8Ser
@@ -211,17 +219,17 @@ end
 const U8: SerdesNode<number> = {} -- Unsigned 8-bit integer
 
 do
-	const function U8Ser(Value: number)
-        const Cur = Cursor
-		buffer.writeu8(WriteBuffer, Cur, Value)
-		Cursor = Cur + 1
+	const function U8Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writeu8(Buf, Cur, Value)
+		Cur = Cur + 1
+	
+		return Cur
 	end
 
-	const function U8Des(): number
-        const Cur = Cursor
-		const Value = buffer.readu8(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 1
-		return Value
+	const function U8Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readu8(Buf, Cur)
+		Cur = Cur + 1
+		return Value, Cur
 	end
 
 	U8[SER] = U8Ser
@@ -236,17 +244,17 @@ end
 const U16: SerdesNode<number> = {} -- Unsigned 16-bit integer
 
 do
-	const function U16Ser(Value: number)
-		const Cur = Cursor
-		buffer.writeu16(WriteBuffer, Cur, Value)
-		Cursor = Cur + 2
+	const function U16Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writeu16(Buf, Cur, Value)
+		Cur = Cur + 2
+	
+		return Cur
 	end
 
-	const function U16Des(): number
-		const Cur = Cursor
-		const Value = buffer.readu16(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 2
-		return Value
+	const function U16Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readu16(Buf, Cur)
+		Cur = Cur + 2
+		return Value, Cur
 	end
 
 	U16[SER] = U16Ser
@@ -261,17 +269,17 @@ end
 const I16: SerdesNode<number> = {} -- Signed 16-bit integer
 
 do
-	const function I16Ser(Value: number)
-		const Cur = Cursor
-		buffer.writei16(WriteBuffer, Cur, Value)
-		Cursor = Cur + 2
+	const function I16Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writei16(Buf, Cur, Value)
+		Cur = Cur + 2
+	
+		return Cur
 	end
 
-	const function I16Des(): number
-		const Cur = Cursor
-		const Value = buffer.readi16(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 2
-		return Value
+	const function I16Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readi16(Buf, Cur)
+		Cur = Cur + 2
+		return Value, Cur
 	end
 
 	I16[SER] = I16Ser
@@ -286,17 +294,17 @@ end
 const U32: SerdesNode<number> = {} -- Unsigned 32-bit integer
 
 do
-	const function U32Ser(Value: number)
-		const Cur = Cursor
-		buffer.writeu32(WriteBuffer, Cur, Value)
-		Cursor = Cur + 4
+	const function U32Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writeu32(Buf, Cur, Value)
+		Cur = Cur + 4
+	
+		return Cur
 	end
 
-	const function U32Des(): number
-		const Cur = Cursor
-		const Value = buffer.readu32(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 4
-		return Value
+	const function U32Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readu32(Buf, Cur)
+		Cur = Cur + 4
+		return Value, Cur
 	end
 
 	U32[SER] = U32Ser
@@ -311,17 +319,17 @@ end
 const I32: SerdesNode<number> = {} -- Signed 32-bit integer
 
 do
-	const function I32Ser(Value: number)
-		const Cur = Cursor
-		buffer.writei32(WriteBuffer, Cur, Value)
-		Cursor = Cur + 4
+	const function I32Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writei32(Buf, Cur, Value)
+		Cur = Cur + 4
+	
+		return Cur
 	end
 
-	const function I32Des(): number
-		const Cur = Cursor
-		const Value = buffer.readi32(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 4
-		return Value
+	const function I32Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readi32(Buf, Cur)
+		Cur = Cur + 4
+		return Value, Cur
 	end
 
 	I32[SER] = I32Ser
@@ -336,17 +344,17 @@ end
 const F32: SerdesNode<number> = {} -- IEEE-754 Single Precision Float
 
 do
-	const function F32Ser(Value: number)
-		const Cur = Cursor
-		buffer.writef32(WriteBuffer, Cur, Value)
-		Cursor = Cur + 4
+	const function F32Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writef32(Buf, Cur, Value)
+		Cur = Cur + 4
+	
+		return Cur
 	end
 
-	const function F32Des(): number
-		const Cur = Cursor
-		const Value = buffer.readf32(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 4
-		return Value
+	const function F32Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readf32(Buf, Cur)
+		Cur = Cur + 4
+		return Value, Cur
 	end
 
 	F32[SER] = F32Ser
@@ -361,17 +369,17 @@ end
 const F64: SerdesNode<number> = {} -- IEEE-754 Double Precision Float
 
 do
-	const function F64Ser(Value: number)
-		const Cur = Cursor
-		buffer.writef64(WriteBuffer, Cur, Value)
-		Cursor = Cur + 8
+	const function F64Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writef64(Buf, Cur, Value)
+		Cur = Cur + 8
+	
+		return Cur
 	end
 
-	const function F64Des(): number
-		const Cur = Cursor
-		const Value = buffer.readf64(ReadBuffer :: buffer, Cur)
-		Cursor = Cur + 8
-		return Value
+	const function F64Des(Buf: buffer, Cur: number): (number, number)
+		const Value = buffer.readf64(Buf, Cur)
+		Cur = Cur + 8
+		return Value, Cur
 	end
 
 	F64[SER] = F64Ser
@@ -386,24 +394,22 @@ end
 const String: SerdesNode<string> = {} -- String  (16 bits for length, meaning max characters size is 65535)
 
 do
-	const function StringSer(Value: string)
+	const function StringSer(Value: string, Buf: buffer, Cur: number): number
         const Len = #Value
-        local Cur = Cursor
-        const Buf = WriteBuffer
         buffer.writeu16(Buf, Cur, Len)
         Cur += 2
 		buffer.writestring(Buf, Cur, Value)
-		Cursor = Cur + Len
+		Cur = Cur + Len
+	
+        return Cur
 	end
 
-	const function StringDes(): string
-        local Cur = Cursor
-        const Buf = ReadBuffer
-		const Len = buffer.readu16(Buf :: buffer, Cur)
+	const function StringDes(Buf: buffer, Cur: number): (string, number)
+		const Len = buffer.readu16(Buf, Cur)
 		Cur += 2
-        const Value = buffer.readstring(Buf :: buffer, Cur, Len)
-        Cursor = Cur + Len
-		return Value
+        const Value = buffer.readstring(Buf, Cur, Len)
+        Cur = Cur + Len
+		return Value, Cur
 	end
 
 	String[SER] = StringSer
@@ -418,24 +424,22 @@ end
 const String8: SerdesNode<string> = {} -- String8 (8 bits for length, meaning max characters size is 255)
 
 do
-	const function String8Ser(Value: string)
+	const function String8Ser(Value: string, Buf: buffer, Cur: number): number
         const Len = #Value
-        const Buf = WriteBuffer
-        local Cur = Cursor
         buffer.writeu8(Buf, Cur, Len)
         Cur += 1
 		buffer.writestring(Buf, Cur, Value)
-		Cursor = Cur + Len
+		Cur = Cur + Len
+	
+        return Cur
 	end
 
-	const function String8Des(): string
-        const Buf = ReadBuffer
-        local Cur = Cursor
-		const Len = buffer.readu8(Buf :: buffer, Cur)
+	const function String8Des(Buf: buffer, Cur: number): (string, number)
+		const Len = buffer.readu8(Buf, Cur)
 		Cur += 1
-        const Value = buffer.readstring(Buf :: buffer, Cur, Len)
-        Cursor = Cur + Len
-		return Value
+        const Value = buffer.readstring(Buf, Cur, Len)
+        Cur = Cur + Len
+		return Value, Cur
 	end
 
 	String8[SER] = String8Ser
@@ -453,18 +457,17 @@ end
 const function StringFixed(Length: number): SerdesNode<string>
     const StringFixedNode: SerdesNode<string> = {}
 
-    const function StringFixedSer(Value: string)
-        const Cur = Cursor
-		buffer.writestring(WriteBuffer, Cur, Value)
-		Cursor = Cur + Length
-	end
+    const function StringFixedSer(Value: string, Buf: buffer, Cur: number): number
+		buffer.writestring(Buf, Cur, Value)
+		Cur = Cur + Length
+	
+		return Cur
+    end
 
-	const function StringFixedDes(): string
-        const Buf = ReadBuffer
-        const Cur = Cursor
-        const Value = buffer.readstring(Buf :: buffer, Cur, Length)
-        Cursor = Cur + Length
-		return Value
+	const function StringFixedDes(Buf: buffer, Cur: number): (string, number)
+        const Value = buffer.readstring(Buf, Cur, Length)
+        Cur = Cur + Length
+		return Value, Cur
 	end
 
 	StringFixedNode[SER] = StringFixedSer
@@ -487,25 +490,27 @@ const function Array<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
     const Ser = Node[SER] :: Ser<T>
     const Des = Node[DES] :: Des<T>
 
-    const function ArraySer(Array: { T })
+    const function ArraySer(Array: { T }, Buf: buffer, Cur: number): number
         const Len = #Array
-        const Cur = Cursor
-        buffer.writeu16(WriteBuffer, Cur, Len)
-        Cursor = Cur + 2
+        buffer.writeu16(Buf, Cur, Len)
+        Cur = Cur + 2
+        const Ser = Ser
         for _, Value in Array do
-            Ser(Value)
+            Cur = Ser(Value, Buf, Cur)
         end
+    
+        return Cur
     end
 
-    const function ArrayDes(): { T }
-        const Cur = Cursor
-        const Len = buffer.readu16(ReadBuffer :: buffer, Cur)
+    const function ArrayDes(Buf: buffer, Cur: number): ({ T }, number)
+        const Len = buffer.readu16(Buf, Cur)
         const Array = CreateTable<<T>>(Len)
-        Cursor = Cur + 2
+        Cur = Cur + 2
+        const Des = Des
         for i = 1, Len do
-            Array[i] = Des()
+            Array[i], Cur = Des(Buf, Cur)
         end
-        return Array
+        return Array, Cur
     end
 
     ArrayNode[SER] = ArraySer
@@ -528,25 +533,27 @@ const function Array8<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
     const Ser = Node[SER] :: Ser<T>
     const Des = Node[DES] :: Des<T>
 
-    const function Array8Ser(Array: { T })
-        const Cur = Cursor
+    const function Array8Ser(Array: { T }, Buf: buffer, Cur: number): number
         const Len = #Array
-        buffer.writeu8(WriteBuffer, Cur, Len)
-        Cursor = Cur + 1
+        buffer.writeu8(Buf, Cur, Len)
+        Cur = Cur + 1
+        const Ser = Ser
         for _, Value in Array do
-            Ser(Value)
+            Cur = Ser(Value, Buf, Cur)
         end
+    
+        return Cur
     end
 
-    const function Array8Des(): { T }
-        const Cur = Cursor
-        const Len = buffer.readu8(ReadBuffer :: buffer, Cur)
+    const function Array8Des(Buf: buffer, Cur: number): ({ T }, number)
+        const Len = buffer.readu8(Buf, Cur)
         const Array = CreateTable<<T>>(Len)
-        Cursor = Cur + 1
+        Cur = Cur + 1
+        const Des = Des
         for i = 1, Len do
-            Array[i] = Des()
+            Array[i], Cur = Des(Buf, Cur)
         end
-        return Array
+        return Array, Cur
     end
 
     Array8Node[SER] = Array8Ser
@@ -569,30 +576,30 @@ const function Array24<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
     const Ser = Node[SER] :: Ser<T>
     const Des = Node[DES] :: Des<T>
 
-    const function Array24Ser(Array: { T })
+    const function Array24Ser(Array: { T }, Buf: buffer, Cur: number): number
         const Len = #Array
-        local Cur = Cursor
-        const Buf = WriteBuffer
         buffer.writeu16(Buf, Cur, bit32.band(Len, 0xFFFF))
         buffer.writeu8(Buf, Cur + 2, bit32.band(bit32.rshift(Len, 16), 0xFF))
-        Cursor = Cur + 3
+        Cur = Cur + 3
+        const Ser = Ser
         for _, Value in Array do
-            Ser(Value)
+            Cur = Ser(Value, Buf, Cur)
         end
+    
+        return Cur
     end
 
-    const function Array24Des(): { T }
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function Array24Des(Buf: buffer, Cur: number): ({ T }, number)
         const b1: number = buffer.readu16(Buf, Cur)
         const b2: number = buffer.readu8(Buf, Cur + 2)
         const Len = bit32.bor(b1, bit32.lshift(b2, 16))
         const Array = CreateTable<<T>>(Len)
-        Cursor = Cur + 3
+        Cur = Cur + 3
+        const Des = Des
         for i = 1, Len do
-            Array[i] = Des()
+            Array[i], Cur = Des(Buf, Cur)
         end
-        return Array
+        return Array, Cur
     end
 
     Array24Node[SER] = Array24Ser
@@ -629,19 +636,22 @@ const function Struct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Get
         Reads[i] = Node[DES] :: Des<any>
     end
 
-    const function StructSer(Value: GetTypeFromTypeNodes<T>)
-        const Row = Value :: { [string]: any }
+    const function StructSer(Value: GetTypeFromTypeNodes<T> & { [string]: any }, Buf: buffer, Cur: number): number
+        const Writes = Writes
         for i, Key in Keys do
-            Writes[i](Row[Key])
+            Cur = Writes[i](Value[Key], Buf, Cur)
         end
+    
+        return Cur
     end
 
-    const function StructDes(): GetTypeFromTypeNodes<T>
+    const function StructDes(Buf: buffer, Cur: number): (GetTypeFromTypeNodes<T>, number)
         const Result = {}
+        const Reads = Reads
         for i, Key in Keys do
-            Result[Key] = Reads[i]()
+            Result[Key], Cur = Reads[i](Buf, Cur)
         end
-        return Result :: any
+        return Result :: any, Cur
     end
 
     StructNode[SER] = StructSer
@@ -681,38 +691,39 @@ const function DeltaStruct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNod
         Lookup[Key] = i
     end
 
-    const function DeltaStructSer(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil })
-        const Cur = Cursor
-        const Buf = WriteBuffer
-        Cursor = Cur + 1
+    const function DeltaStructSer(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }, Buf: buffer, Cur: number): number
+        const Start = Cur
+        Cur = Cur + 1
         local Len = 0
+        const Lookup = Lookup
+        const Writes = Writes
         for Key, Field in Value :: { [string]: any } do
             const Id = Lookup[Key]
             Len += 1
-            const Curs = Cursor
-            buffer.writeu8(Buf, Curs, Id)
-            Cursor = Curs + 1
-            Writes[Id](Field)
+            buffer.writeu8(Buf, Cur, Id)
+            Cur += 1
+            Cur = Writes[Id](Field, Buf, Cur)
         end
-        buffer.writeu8(Buf, Cur, Len)
+        buffer.writeu8(Buf, Start, Len)
+    
+        return Cur
     end
 
-    const function DeltaStructDes(): Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }
+    const function DeltaStructDes(Buf: buffer, Cur: number): (Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }, number)
         const Result = {}
-        const Buf = ReadBuffer :: buffer
-        local Cur = Cursor
         const Len = buffer.readu8(Buf, Cur)
-        Cursor = Cur + 1
+        const Keys = Keys
+        const Reads = Reads
+        Cur = Cur + 1
         for _ = 1, Len do
-            Cur = Cursor
             const Id = buffer.readu8(Buf, Cur)
-            Cursor = Cur + 1
+            Cur = Cur + 1
             const Key = Keys[Id]
             const Read = Reads[Id]
 
-            Result[Key] = Read()
+            Result[Key], Cur = Read(Buf, Cur)
         end
-        return Result :: any
+        return Result :: any, Cur
     end
 
     DeltaStructNode[SER] = DeltaStructSer
@@ -752,38 +763,39 @@ const function DeltaStruct16<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesN
         Lookup[Key] = i
     end
 
-    const function DeltaStruct16Ser(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil })
-        const Cur = Cursor
-        const Buf = WriteBuffer
-        Cursor = Cur + 2
+    const function DeltaStruct16Ser(Value: Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }, Buf: buffer, Cur: number): number
+        const Start = Cur
+        Cur = Cur + 2
         local Len = 0
+        const Lookup = Lookup
+        const Writes = Writes
         for Key, Field in Value :: { [string]: any } do
             const Id = Lookup[Key]
             Len += 1
-            const Curs = Cursor
-            buffer.writeu16(Buf, Curs, Id)
-            Cursor = Curs + 2
-            Writes[Id](Field)
+            buffer.writeu16(Buf, Cur, Id)
+            Cur += 2
+            Cur = Writes[Id](Field, Buf, Cur)
         end
-        buffer.writeu16(Buf, Cur, Len)
+        buffer.writeu16(Buf, Start, Len)
+    
+        return Cur
     end
 
-    const function DeltaStruct16Des(): Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }
+    const function DeltaStruct16Des(Buf: buffer, Cur: number): (Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }, number)
         const Result = {}
-        const Buf = ReadBuffer :: buffer
-        local Cur = Cursor
         const Len = buffer.readu16(Buf, Cur)
-        Cursor = Cur + 2
+        Cur = Cur + 2
+        const Keys = Keys
+        const Reads = Reads
         for _ = 1, Len do
-            Cur = Cursor
             const Id = buffer.readu16(Buf, Cur)
-            Cursor = Cur + 2
+            Cur = Cur + 2
             const Key = Keys[Id]
             const Read = Reads[Id]
 
-            Result[Key] = Read()
+            Result[Key], Cur = Read(Buf, Cur)
         end
-        return Result :: any
+        return Result :: any, Cur
     end
 
     DeltaStruct16Node[SER] = DeltaStruct16Ser
@@ -799,24 +811,22 @@ end
 
 const Vector: SerdesNode<vector> = {} -- Vector (4x3 bytes, each element is F32)
 do
-    const function VectorSer(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorSer(Value: vector, Buf: buffer, Cur: number): number
         buffer.writef32(Buf, Cur, Value.x)
         buffer.writef32(Buf, Cur + 4, Value.y)
         buffer.writef32(Buf, Cur + 8, Value.z)
-        Cursor = Cur + 12
+        Cur = Cur + 12
+    
+        return Cur
     end
 
-    const function VectorDes(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorDes(Buf: buffer, Cur: number): (vector, number)
         const x = buffer.readf32(Buf, Cur)
         const y = buffer.readf32(Buf, Cur + 4)
         const z = buffer.readf32(Buf, Cur + 8)
-        Cursor = Cur + 12
+        Cur = Cur + 12
 
-        return vector.create(x, y, z)
+        return vector.create(x, y, z), Cur
     end
 
     Vector[SER] = VectorSer
@@ -841,27 +851,36 @@ const function Map<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Serd
     const ValueSer = ValueNode[SER] :: Ser<V>
     const ValueDes = ValueNode[DES] :: Des<V>
 
-    const function MapSer(Map: { [K]: V })
-        const Cur = Cursor
+    const function MapSer(Map: { [K]: V }, Buf: buffer, Cur: number): number
+        const Start = Cur
         local Len = 0
-        Cursor = Cur + 2
+        Cur = Cur + 2
+        const KeySer = KeySer
+        const ValueSer = ValueSer
         for Key, Value in Map do
             Len += 1
-            KeySer(Key)
-            ValueSer(Value)
+            Cur = KeySer(Key, Buf, Cur)
+            Cur = ValueSer(Value, Buf, Cur)
         end
-        buffer.writeu16(WriteBuffer, Cur, Len)
+        buffer.writeu16(Buf, Start, Len)
+    
+        return Cur
     end
 
-    const function MapDes(): { [K]: V }
-        const Cur = Cursor
-        const Len = buffer.readu16(ReadBuffer :: buffer, Cur)
-        const Map = CreateTable(Len)
-        Cursor = Cur + 2
+    const function MapDes(Buf: buffer, Cur: number): ({ [K]: V }, number)
+        const Len = buffer.readu16(Buf, Cur)
+        const Map = {}
+        Cur = Cur + 2
+        const KeyDes = KeyDes
+        const ValueDes = ValueDes
         for _ = 1, Len do
-            Map[KeyDes()] = ValueDes()
+            local Key
+            local Val
+            Key, Cur = KeyDes(Buf, Cur)
+            Val, Cur = ValueDes(Buf, Cur)
+            Map[Key] = Val
         end
-        return Map
+        return Map, Cur
     end
 
     MapNode[SER] = MapSer
@@ -888,27 +907,36 @@ const function Map8<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Ser
     const ValueSer = ValueNode[SER] :: Ser<V>
     const ValueDes = ValueNode[DES] :: Des<V>
 
-    const function Map8Ser(Map: { [K]: V })
-        const Cur = Cursor
+    const function Map8Ser(Map: { [K]: V }, Buf: buffer, Cur: number): number
+        const Start = Cur
         local Len = 0
-        Cursor = Cur + 1
+        Cur = Cur + 1
+        const KeySer = KeySer
+        const ValueSer = ValueSer
         for Key, Value in Map do
             Len += 1
-            KeySer(Key)
-            ValueSer(Value)
+            Cur = KeySer(Key, Buf, Cur)
+            Cur = ValueSer(Value, Buf, Cur)
         end
-        buffer.writeu8(WriteBuffer, Cur, Len)
+        buffer.writeu8(Buf, Start, Len)
+    
+        return Cur
     end
 
-    const function Map8Des(): { [K]: V }
-        const Cur = Cursor
-        const Len = buffer.readu8(ReadBuffer :: buffer, Cur)
-        const Map = CreateTable(Len)
-        Cursor = Cur + 1
+    const function Map8Des(Buf: buffer, Cur: number): ({ [K]: V }, number)
+        const Len = buffer.readu8(Buf, Cur)
+        const Map = {}
+        Cur = Cur + 1
+        const KeyDes = KeyDes
+        const ValueDes = ValueDes
         for _ = 1, Len do
-            Map[KeyDes()] = ValueDes()
+            local Key
+            local Val
+            Key, Cur = KeyDes(Buf, Cur)
+            Val, Cur = ValueDes(Buf, Cur)
+            Map[Key] = Val
         end
-        return Map
+        return Map, Cur
     end
 
     Map8Node[SER] = Map8Ser
@@ -935,32 +963,39 @@ const function Map24<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Se
     const ValueSer = ValueNode[SER] :: Ser<V>
     const ValueDes = ValueNode[DES] :: Des<V>
 
-    const function Map24Ser(Map: { [K]: V })
-        const Cur = Cursor
+    const function Map24Ser(Map: { [K]: V }, Buf: buffer, Cur: number): number
+        const Start = Cur
         local Len = 0
-        Cursor = Cur + 3
+        Cur = Cur + 3
+        const KeySer = KeySer
+        const ValueSer = ValueSer
         for Key, Value in Map do
             Len += 1
-            KeySer(Key)
-            ValueSer(Value)
+            Cur = KeySer(Key, Buf, Cur)
+            Cur = ValueSer(Value, Buf, Cur)
         end
-        const Buf = WriteBuffer
-        buffer.writeu16(Buf, Cur, bit32.band(Len, 0xFFFF))
-        buffer.writeu8(Buf, Cur + 2, bit32.band(bit32.rshift(Len, 16), 0xFF))
+        buffer.writeu16(Buf, Start, bit32.band(Len, 0xFFFF))
+        buffer.writeu8(Buf, Start + 2, bit32.band(bit32.rshift(Len, 16), 0xFF))
+    
+        return Cur
     end
 
-    const function Map24Des(): { [K]: V }
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function Map24Des(Buf: buffer, Cur: number): ({ [K]: V }, number)
         const b1: number = buffer.readu16(Buf, Cur)
         const b2: number = buffer.readu8(Buf, Cur + 2)
         const Len = bit32.bor(b1, bit32.lshift(b2, 16))
-        const Map = CreateTable(Len)
-        Cursor = Cur + 3
+        const Map = {}
+        Cur = Cur + 3
+        const KeyDes = KeyDes
+        const ValueDes = ValueDes
         for _ = 1, Len do
-            Map[KeyDes()] = ValueDes()
+            local Key
+            local Val
+            Key, Cur = KeyDes(Buf, Cur)
+            Val, Cur = ValueDes(Buf, Cur)
+            Map[Key] = Val
         end
-        return Map
+        return Map, Cur
     end
 
     Map24Node[SER] = Map24Ser
@@ -984,18 +1019,22 @@ const function ArrayFixed<T>(Node: SerdesNode<T>, Length: number): SerdesNode<{ 
     const Ser = Node[SER] :: Ser<T>
     const Des = Node[DES] :: Des<T>
 
-    const function ArrayFixedSer(Array: { T })
+    const function ArrayFixedSer(Array: { T }, Buf: buffer, Cur: number): number
+        const Ser = Ser
         for _, Value in Array do
-            Ser(Value)
+            Cur = Ser(Value, Buf, Cur)
         end
+    
+        return Cur
     end
 
-    const function ArrayFixedDes(): { T }
+    const function ArrayFixedDes(Buf: buffer, Cur: number): ({ T }, number)
         const Array = CreateTable<<T>>(Length)
+        const Des = Des
         for i = 1, Length do
-            Array[i] = Des()
+            Array[i], Cur = Des(Buf, Cur)
         end
-        return Array
+        return Array, Cur
     end
 
     ArrayFixedNode[SER] = ArrayFixedSer
@@ -1023,19 +1062,29 @@ const function MapFixed<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>, 
     const ValueSer = ValueNode[SER] :: Ser<V>
     const ValueDes = ValueNode[DES] :: Des<V>
 
-    const function MapFixedSer(Map: { [K]: V })
+    const function MapFixedSer(Map: { [K]: V }, Buf: buffer, Cur: number): number
+        const KeySer = KeySer
+        const ValueSer = ValueSer
         for Key, Value in Map do
-            KeySer(Key)
-            ValueSer(Value)
+            Cur = KeySer(Key, Buf, Cur)
+            Cur = ValueSer(Value, Buf, Cur)
         end
+    
+        return Cur
     end
 
-    const function MapFixedDes(): { [K]: V }
+    const function MapFixedDes(Buf: buffer, Cur: number): ({ [K]: V }, number)
         const Map = {}
+        const KeyDes = KeyDes
+        const ValueDes = ValueDes
         for _ = 1, Length do
-            Map[KeyDes()] = ValueDes()
+            local Key
+            local Val
+            Key, Cur = KeyDes(Buf, Cur)
+            Val, Cur = ValueDes(Buf, Cur)
+            Map[Key] = Val
         end
-        return Map
+        return Map, Cur
     end
 
     MapFixedNode[SER] = MapFixedSer
@@ -1052,7 +1101,7 @@ end
 
 const F16: SerdesNode<number> = {}
 do
-    const function F16Ser(Value: number)
+    const function F16Ser(Value: number, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
         buffer.writef32(Conv, 0, Value)
         const Bits: number = buffer.readu32(Conv, 0)
@@ -1074,20 +1123,20 @@ do
             Packed = bit32.bor(Sign, F16Exp, F16Mant)
         end
 
-        const Cur = Cursor
-        buffer.writeu16(WriteBuffer, Cur, Packed)
-        Cursor = Cur + 2
+        buffer.writeu16(Buf, Cur, Packed)
+        Cur = Cur + 2
+    
+        return Cur
     end
 
-    const function F16Deser(): number
-        const Cur = Cursor
-        const Packed: number = buffer.readu16(ReadBuffer :: buffer, Cur)
-        Cursor = Cur + 2
+    const function F16Deser(Buf: buffer, Cur: number): (number, number)
+        const Packed: number = buffer.readu16(Buf, Cur)
+        Cur = Cur + 2
     
         const Exp16: number = bit32.band(bit32.rshift(Packed, 10), 0x1F)
         
         if Exp16 == 0 then
-            return 0
+            return 0, Cur
         end
     
         const Sign: number = bit32.band(Packed, 0x8000)
@@ -1095,7 +1144,7 @@ do
     
         const Result: number = math.ldexp(1 + Mant10 / 1024, Exp16 - 15)
         
-        return if Sign == 0 then Result else -Result
+        return (if Sign == 0 then Result else -Result), Cur
     end
 
     F16[SER] = F16Ser
@@ -1110,8 +1159,7 @@ end
 
 const F24: SerdesNode<number> = {}
 do
-    const function F24Ser(Value: number)
-        const Buf = WriteBuffer
+    const function F24Ser(Value: number, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
 
         buffer.writef32(Conv, 0, Value)
@@ -1120,39 +1168,38 @@ do
         -- drop the bottom 8 bits of precision to shrink it to 24 bits
         const Packed: number = bit32.rshift(Bits, 8)
 
-        local Cur = Cursor
         buffer.writeu16(Buf, Cur, bit32.band(Packed, 0xFFFF))
         Cur += 2
         buffer.writeu8(Buf, Cur, bit32.rshift(Packed, 16))
         
-        Cursor = Cur + 1
+        Cur = Cur + 1
+    
+        return Cur
     end
 
-    const function F24Deser(): number
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function F24Deser(Buf: buffer, Cur: number): (number, number)
         const b1: number = buffer.readu16(Buf, Cur)
         Cur += 2
         const b2: number = buffer.readu8(Buf, Cur)
-        Cursor = Cur + 1
+        Cur = Cur + 1
 
         const Packed: number = bit32.bor(b1, bit32.lshift(b2, 16))
 
         const Exp8: number = bit32.band(bit32.rshift(Packed, 15), 0xFF)
         
         if Exp8 == 0 then
-            return 0
+            return 0, Cur
         end
 
         const Sign: number = bit32.band(Packed, 0x800000)
         if Exp8 == 255 then
-            return if Sign == 0 then MathHuge else NMathHuge
+            return (if Sign == 0 then MathHuge else NMathHuge), Cur
         end
 
         const Mant15: number = bit32.band(Packed, 0x7FFF)
         const Result: number = math.ldexp(1 + Mant15 / 32768, Exp8 - 127)
 
-        return if Sign == 0 then Result else -Result
+        return (if Sign == 0 then Result else -Result), Cur
     end
 
     F24[SER] = F24Ser
@@ -1167,25 +1214,23 @@ end
 
 const U24: SerdesNode<number> = {}
 do
-    const function U24Ser(Value: number)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function U24Ser(Value: number, Buf: buffer, Cur: number): number
         buffer.writeu16(Buf, Cur, bit32.band(Value, 0xFFFF))
         Cur += 2
         buffer.writeu8(Buf, Cur, bit32.band(bit32.rshift(Value, 16), 0xFF))
         
-        Cursor = Cur + 1
+        Cur = Cur + 1
+    
+        return Cur
     end
 
-    const function U24Deser(): number
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function U24Deser(Buf: buffer, Cur: number): (number, number)
         const b1: number = buffer.readu16(Buf, Cur)
         Cur += 2
         const b2: number = buffer.readu8(Buf, Cur)
-        Cursor = Cur + 1
+        Cur = Cur + 1
 
-        return bit32.bor(b1, bit32.lshift(b2, 16))
+        return bit32.bor(b1, bit32.lshift(b2, 16)), Cur
     end
 
     U24[SER] = U24Ser
@@ -1200,27 +1245,25 @@ end
 
 const I24: SerdesNode<number> = {}
 do
-    const function I24Ser(Value: number)
+    const function I24Ser(Value: number, Buf: buffer, Cur: number): number
         -- exactly the same as U24
-        local Cur = Cursor
-        const Buf = WriteBuffer
         buffer.writeu16(Buf, Cur, bit32.band(Value, 0xFFFF))
         Cur += 2
         buffer.writeu8(Buf, Cur, bit32.band(bit32.rshift(Value, 16), 0xFF))
         
-        Cursor = Cur + 1
+        Cur = Cur + 1
+    
+        return Cur
     end
 
-    const function I24Deser(): number
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function I24Deser(Buf: buffer, Cur: number): (number, number)
         const b1: number = buffer.readu16(Buf, Cur)
         Cur += 2
         const b2: number = buffer.readu8(Buf, Cur)
-        Cursor = Cur + 1
+        Cur = Cur + 1
 
         const Packed: number = bit32.bor(b1, bit32.lshift(b2, 16))
-        return if Packed >= 0x800000 then Packed - 0x1000000 else Packed
+        return (if Packed >= 0x800000 then Packed - 0x1000000 else Packed), Cur
     end
 
     I24[SER] = I24Ser
@@ -1234,9 +1277,7 @@ end
 
 const VectorF24: SerdesNode<vector> = {} -- Vector (3x3 bytes, each element is F24)
 do
-    const function VectorF24Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorF24Ser(Value: vector, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
 
         -- inlined f24 3 times :sob: :pray:
@@ -1265,17 +1306,17 @@ do
             buffer.writeu8(Buf, Cur + 8, bit32.rshift(Packed, 16))
         end
 
-        Cursor = Cur + 9
+        Cur = Cur + 9
+    
+        return Cur
     end
 
-    const function VectorF24Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorF24Des(Buf: buffer, Cur: number): (vector, number)
         -- inlined f24des too, sorry :pray:
         local x = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 2)
+            const b1: number = buffer.readu16(Buf, Cur)
+            const b2: number = buffer.readu8(Buf, Cur + 2)
 
             const Packed: number = bit32.bor(b1, bit32.lshift(b2, 16))
 
@@ -1296,8 +1337,8 @@ do
 
         local y = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur + 3)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 5)
+            const b1: number = buffer.readu16(Buf, Cur + 3)
+            const b2: number = buffer.readu8(Buf, Cur + 5)
 
             const Packed: number = bit32.bor(b1, bit32.lshift(b2, 16))
 
@@ -1338,8 +1379,8 @@ do
             end
         end
 
-        Cursor = Cur + 9
-        return vector.create(x, y, z)
+        Cur = Cur + 9
+        return vector.create(x, y, z), Cur
     end
 
     VectorF24[SER] = VectorF24Ser
@@ -1353,9 +1394,7 @@ end
 
 const VectorF16: SerdesNode<vector> = {} -- Vector (3x2 bytes, each element is F16)
 do
-    const function VectorF16Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorF16Ser(Value: vector, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
 
         -- x
@@ -1431,12 +1470,12 @@ do
             buffer.writeu16(Buf, Cur + 4, Packed)
         end
 
-        Cursor = Cur + 6
+        Cur = Cur + 6
+    
+        return Cur
     end
 
-    const function VectorF16Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorF16Des(Buf: buffer, Cur: number): (vector, number)
 
         local x = 0
         do
@@ -1483,8 +1522,8 @@ do
             end
         end
 
-        Cursor = Cur + 6
-        return vector.create(x, y, z)
+        Cur = Cur + 6
+        return vector.create(x, y, z), Cur
     end
 
     VectorF16[SER] = VectorF16Ser
@@ -1498,26 +1537,24 @@ end
 
 const VectorU16: SerdesNode<vector> = {} -- Vector (3x2 bytes, each element is U16)
 do
-    const function VectorU16Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorU16Ser(Value: vector, Buf: buffer, Cur: number): number
 
         buffer.writeu16(Buf, Cur, Value.x)
         buffer.writeu16(Buf, Cur + 2, Value.y)
         buffer.writeu16(Buf, Cur + 4, Value.z)
-        Cursor = Cur + 6
+        Cur = Cur + 6
+    
+        return Cur
     end
 
-    const function VectorU16Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorU16Des(Buf: buffer, Cur: number): (vector, number)
 
         const x = buffer.readu16(Buf, Cur)
         const y = buffer.readu16(Buf, Cur + 2)
         const z = buffer.readu16(Buf, Cur + 4)
-        Cursor = Cur + 6
+        Cur = Cur + 6
 
-        return vector.create(x, y, z)
+        return vector.create(x, y, z), Cur
     end
 
     VectorU16[SER] = VectorU16Ser
@@ -1531,26 +1568,24 @@ end
 
 const VectorI16: SerdesNode<vector> = {} -- Vector (3x2 bytes, each element is I16)
 do
-    const function VectorI16Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorI16Ser(Value: vector, Buf: buffer, Cur: number): number
 
         buffer.writei16(Buf, Cur, Value.x)
         buffer.writei16(Buf, Cur + 2, Value.y)
         buffer.writei16(Buf, Cur + 4, Value.z)
-        Cursor = Cur + 6
+        Cur = Cur + 6
+    
+        return Cur
     end
 
-    const function VectorI16Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorI16Des(Buf: buffer, Cur: number): (vector, number)
 
         const x = buffer.readi16(Buf, Cur)
         const y = buffer.readi16(Buf, Cur + 2)
         const z = buffer.readi16(Buf, Cur + 4)
-        Cursor = Cur + 6
+        Cur = Cur + 6
 
-        return vector.create(x, y, z)
+        return vector.create(x, y, z), Cur
     end
 
     VectorI16[SER] = VectorI16Ser
@@ -1564,26 +1599,24 @@ end
 
 const VectorU8: SerdesNode<vector> = {} -- Vector (3x1 bytes, each element is U8)
 do
-    const function VectorU8Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorU8Ser(Value: vector, Buf: buffer, Cur: number): number
 
         buffer.writeu8(Buf, Cur, Value.x)
         buffer.writeu8(Buf, Cur + 1, Value.y)
         buffer.writeu8(Buf, Cur + 2, Value.z)
-        Cursor = Cur + 3
+        Cur = Cur + 3
+    
+        return Cur
     end
 
-    const function VectorU8Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorU8Des(Buf: buffer, Cur: number): (vector, number)
 
         const x = buffer.readu8(Buf, Cur)
         const y = buffer.readu8(Buf, Cur + 1)
         const z = buffer.readu8(Buf, Cur + 2)
-        Cursor = Cur + 3
+        Cur = Cur + 3
 
-        return vector.create(x, y, z)
+        return vector.create(x, y, z), Cur
     end
 
     VectorU8[SER] = VectorU8Ser
@@ -1597,26 +1630,24 @@ end
 
 const VectorI8: SerdesNode<vector> = {} -- Vector (3x1 bytes, each element is I8)
 do
-    const function VectorI8Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorI8Ser(Value: vector, Buf: buffer, Cur: number): number
 
         buffer.writei8(Buf, Cur, Value.x)
         buffer.writei8(Buf, Cur + 1, Value.y)
         buffer.writei8(Buf, Cur + 2, Value.z)
-        Cursor = Cur + 3
+        Cur = Cur + 3
+    
+        return Cur
     end
 
-    const function VectorI8Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorI8Des(Buf: buffer, Cur: number): (vector, number)
 
         const x = buffer.readi8(Buf, Cur)
         const y = buffer.readi8(Buf, Cur + 1)
         const z = buffer.readi8(Buf, Cur + 2)
-        Cursor = Cur + 3
+        Cur = Cur + 3
 
-        return vector.create(x, y, z)
+        return vector.create(x, y, z), Cur
     end
 
     VectorI8[SER] = VectorI8Ser
@@ -1630,9 +1661,7 @@ end
 
 const VectorU24: SerdesNode<vector> = {} -- Vector (3x3 bytes, each element is U24)
 do
-    const function VectorU24Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorU24Ser(Value: vector, Buf: buffer, Cur: number): number
 
         -- x
         do
@@ -1653,39 +1682,39 @@ do
             buffer.writeu8(Buf, Cur + 8, bit32.band(bit32.rshift(z, 16), 0xFF))
         end
 
-        Cursor = Cur + 9
+        Cur = Cur + 9
+    
+        return Cur
     end
 
-    const function VectorU24Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorU24Des(Buf: buffer, Cur: number): (vector, number)
 
         local x = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 2)
+            const b1: number = buffer.readu16(Buf, Cur)
+            const b2: number = buffer.readu8(Buf, Cur + 2)
 
             x = bit32.bor(b1, bit32.lshift(b2, 16))
         end
 
         local y = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur + 3)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 5)
+            const b1: number = buffer.readu16(Buf, Cur + 3)
+            const b2: number = buffer.readu8(Buf, Cur + 5)
 
             y = bit32.bor(b1, bit32.lshift(b2, 16))
         end
 
         local z = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur + 6)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 8)
+            const b1: number = buffer.readu16(Buf, Cur + 6)
+            const b2: number = buffer.readu8(Buf, Cur + 8)
 
             z = bit32.bor(b1, bit32.lshift(b2, 16))
         end
 
-        Cursor = Cur + 9
-        return vector.create(x, y, z)
+        Cur = Cur + 9
+        return vector.create(x, y, z), Cur
     end
 
     VectorU24[SER] = VectorU24Ser
@@ -1699,9 +1728,7 @@ end
 
 const VectorI24: SerdesNode<vector> = {} -- Vector (3x3 bytes, each element is I24)
 do
-    const function VectorI24Ser(Value: vector)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function VectorI24Ser(Value: vector, Buf: buffer, Cur: number): number
 
         -- x
         do
@@ -1722,17 +1749,17 @@ do
             buffer.writeu8(Buf, Cur + 8, bit32.band(bit32.rshift(z, 16), 0xFF))
         end
 
-        Cursor = Cur + 9
+        Cur = Cur + 9
+    
+        return Cur
     end
 
-    const function VectorI24Des(): vector
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function VectorI24Des(Buf: buffer, Cur: number): (vector, number)
 
         local x = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 2)
+            const b1: number = buffer.readu16(Buf, Cur)
+            const b2: number = buffer.readu8(Buf, Cur + 2)
 
             const Packed: number = bit32.bor(b1, bit32.lshift(b2, 16))
             x = if Packed >= 0x800000 then Packed - 0x1000000 else Packed
@@ -1740,8 +1767,8 @@ do
 
         local y = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur + 3)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 5)
+            const b1: number = buffer.readu16(Buf, Cur + 3)
+            const b2: number = buffer.readu8(Buf, Cur + 5)
 
             const Packed: number = bit32.bor(b1, bit32.lshift(b2, 16))
             y = if Packed >= 0x800000 then Packed - 0x1000000 else Packed
@@ -1749,21 +1776,20 @@ do
 
         local z = 0
         do
-            const b1: number = buffer.readu16(Buf :: buffer, Cur + 6)
-            const b2: number = buffer.readu8(Buf :: buffer, Cur + 8)
+            const b1: number = buffer.readu16(Buf, Cur + 6)
+            const b2: number = buffer.readu8(Buf, Cur + 8)
 
             const Packed: number = bit32.bor(b1, bit32.lshift(b2, 16))
             z = if Packed >= 0x800000 then Packed - 0x1000000 else Packed
         end
 
-        Cursor = Cur + 9
-        return vector.create(x, y, z)
+        Cur = Cur + 9
+        return vector.create(x, y, z), Cur
     end
 
     VectorI24[SER] = VectorI24Ser
     VectorI24[DES] = VectorI24Des
 end
-
 
 --- Boolean stored as one byte (`0` or `1`).
 --- @within Types
@@ -1772,17 +1798,17 @@ end
 
 const Bool: SerdesNode<boolean> = {}
 do
-    const function BoolSer(Value: boolean)
-        const Cur = Cursor
-        buffer.writeu8(WriteBuffer, Cur, Value and 1 or 0)
-        Cursor = Cur + 1
+    const function BoolSer(Value: boolean, Buf: buffer, Cur: number): number
+        buffer.writeu8(Buf, Cur, Value and 1 or 0)
+        Cur = Cur + 1
+    
+        return Cur
     end
 
-    const function BoolDes(): boolean
-        const Cur = Cursor
-        const Value = buffer.readu8(ReadBuffer :: buffer, Cur)
-        Cursor = Cur + 1
-        return Value == 1
+    const function BoolDes(Buf: buffer, Cur: number): (boolean, number)
+        const Value = buffer.readu8(Buf, Cur)
+        Cur = Cur + 1
+        return Value == 1, Cur
     end
 
     Bool[SER] = BoolSer
@@ -1796,7 +1822,7 @@ end
 
 const BoolPacked: SerdesNode<{ boolean }> = {}
 do
-    const function BoolPackedSer(Value: { boolean })
+    const function BoolPackedSer(Value: { boolean }, Buf: buffer, Cur: number): number
         local Write = 0
         if Value[1] then
 			Write += 1
@@ -1823,15 +1849,15 @@ do
 			Write += 128
 		end
 
-        const Cur = Cursor
-        buffer.writeu8(WriteBuffer, Cur, Write)
-        Cursor = Cur + 1
+        buffer.writeu8(Buf, Cur, Write)
+        Cur = Cur + 1
+    
+        return Cur
     end
 
-    const function BoolPackedDes(): { boolean }
-        const Cur = Cursor
-        const Byte = buffer.readu8(ReadBuffer :: buffer, Cur)
-        Cursor = Cur + 1
+    const function BoolPackedDes(Buf: buffer, Cur: number): ({ boolean }, number)
+        const Byte = buffer.readu8(Buf, Cur)
+        Cur = Cur + 1
 
         return { 
 			bit32.btest(Byte, 1),
@@ -1841,8 +1867,8 @@ do
 			bit32.btest(Byte, 16),
 			bit32.btest(Byte, 32),
 			bit32.btest(Byte, 64),
-			bit32.btest(Byte, 128),
-		}
+			bit32.btest(Byte, 128), 
+        }, Cur
     end
 
     BoolPacked[SER] = BoolPackedSer
@@ -1857,25 +1883,23 @@ end
 
 const Buffer: SerdesNode<buffer> = {}
 do
-    const function BufferSer(Value: buffer)
-        local Cur = Cursor
+    const function BufferSer(Value: buffer, Buf: buffer, Cur: number): number
         const Len = buffer.len(Value)
-        const Buf = WriteBuffer
         buffer.writeu16(Buf, Cur, Len)
         Cur += 2
         buffer.copy(Buf, Cur, Value, 0, Len)
-        Cursor = Cur + Len
+        Cur = Cur + Len
+    
+        return Cur
     end
 
-    const function BufferDes(): buffer
-        local Cur = Cursor
-        const ReadBuf = ReadBuffer :: buffer
-        const Length = buffer.readu16(ReadBuf, Cur)
+    const function BufferDes(Buf: buffer, Cur: number): (buffer, number)
+        const Length = buffer.readu16(Buf, Cur)
         Cur += 2
-        const Buf = buffer.create(Length)
-        buffer.copy(Buf, 0, ReadBuf, Cur, Length)
-        Cursor = Cur + Length
-        return Buf
+        const Value = buffer.create(Length)
+        buffer.copy(Value, 0, Buf, Cur, Length)
+        Cur = Cur + Length
+        return Value, Cur
     end
 
     Buffer[SER] = BufferSer
@@ -1890,25 +1914,23 @@ end
 
 const Buffer8: SerdesNode<buffer> = {}
 do
-    const function Buffer8Ser(Value: buffer)
-        local Cur = Cursor
+    const function Buffer8Ser(Value: buffer, Buf: buffer, Cur: number): number
         const Len = buffer.len(Value)
-        const Buf = WriteBuffer
         buffer.writeu8(Buf, Cur, Len)
         Cur += 1
         buffer.copy(Buf, Cur, Value, 0, Len)
-        Cursor = Cur + Len
+        Cur = Cur + Len
+    
+        return Cur
     end
 
-    const function Buffer8Des(): buffer
-        local Cur = Cursor
-        const ReadBuf = ReadBuffer :: buffer
-        const Length = buffer.readu8(ReadBuf, Cur)
+    const function Buffer8Des(Buf: buffer, Cur: number): (buffer, number)
+        const Length = buffer.readu8(Buf, Cur)
         Cur += 1
-        const Buf = buffer.create(Length)
-        buffer.copy(Buf, 0, ReadBuf, Cur, Length)
-        Cursor = Cur + Length
-        return Buf
+        const Value = buffer.create(Length)
+        buffer.copy(Value, 0, Buf, Cur, Length)
+        Cur = Cur + Length
+        return Value, Cur
     end
 
     Buffer8[SER] = Buffer8Ser
@@ -1923,27 +1945,25 @@ end
 
 const Buffer24: SerdesNode<buffer> = {}
 do
-    const function Buffer24Ser(Value: buffer)
-        local Cur = Cursor
+    const function Buffer24Ser(Value: buffer, Buf: buffer, Cur: number): number
         const Len = buffer.len(Value)
-        const Buf = WriteBuffer
         buffer.writeu16(Buf, Cur, bit32.band(Len, 0xFFFF))
         buffer.writeu8(Buf, Cur + 2, bit32.band(bit32.rshift(Len, 16), 0xFF))
         buffer.copy(Buf, Cur + 3, Value, 0, Len)
-        Cursor = Cur + 3 + Len
+        Cur = Cur + 3 + Len
+    
+        return Cur
     end
 
-    const function Buffer24Des(): buffer
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function Buffer24Des(Buf: buffer, Cur: number): (buffer, number)
         const b1: number = buffer.readu16(Buf, Cur)
         const b2: number = buffer.readu8(Buf, Cur + 2)
 
         const Length = bit32.bor(b1, bit32.lshift(b2, 16))
         const b = buffer.create(Length)
         buffer.copy(b, 0, Buf, Cur + 3, Length)
-        Cursor = Cur + 3 + Length
-        return b
+        Cur = Cur + 3 + Length
+        return b, Cur
     end
 
     Buffer24[SER] = Buffer24Ser
@@ -1961,20 +1981,18 @@ end
 const function BufferFixed(Length: number): SerdesNode<buffer>
     const BufferFixedNode: SerdesNode<buffer> = {}
 
-    const function BufferFixedSer(Value: buffer)
-        local Cur = Cursor
-        const Buf = WriteBuffer
+    const function BufferFixedSer(Value: buffer, Buf: buffer, Cur: number): number
         buffer.copy(Buf, Cur, Value, 0, Length)
-        Cursor = Cur + Length
+        Cur = Cur + Length
+    
+        return Cur
     end
 
-    const function BufferFixedDes(): buffer
-        local Cur = Cursor
-        const Buf = ReadBuffer :: buffer
+    const function BufferFixedDes(Buf: buffer, Cur: number): (buffer, number)
         const Value = buffer.create(Length)
         buffer.copy(Value, 0, Buf, Cur, Length)
-        Cursor = Cur + Length
-        return Value
+        Cur = Cur + Length
+        return Value, Cur
     end
 
     BufferFixedNode[SER] = BufferFixedSer
@@ -1993,27 +2011,29 @@ end
 const function Optional<T>(Node: SerdesNode<T>): SerdesNode<T?>
     const OptionalNode: SerdesNode<T?> = {}
 
-    const function OptionalSer(Value: T?)
-        const Cur = Cursor
+    const function OptionalSer(Value: T?, Buf: buffer, Cur: number): number
         const Exists = Value ~= nil
-        buffer.writeu8(WriteBuffer, Cur, Exists and 1 or 0)
-        Cursor = Cur + 1
+        buffer.writeu8(Buf, Cur, Exists and 1 or 0)
+        Cur = Cur + 1
         if Exists then
             const Ser = Node[SER] :: Ser<T>
-            Ser(Value)
+            Cur = Ser(Value, Buf, Cur)
         end
+    
+        return Cur
     end
 
-    const function OptionalDes(): T?
-        const Cur = Cursor
-        const Exists = buffer.readu8(ReadBuffer :: buffer, Cur)
-        Cursor = Cur + 1
+    const function OptionalDes(Buf: buffer, Cur: number): (T?, number)
+        const Exists = buffer.readu8(Buf, Cur)
+        Cur = Cur + 1
         if Exists == 1 then
             const Des = Node[DES] :: Des<T>
-            return Des()
+            local Result
+            Result, Cur = Des(Buf, Cur)
+            return Result, Cur
         end
 
-        return nil
+        return nil, Cur
     end
 
     OptionalNode[SER] = OptionalSer
@@ -2077,13 +2097,12 @@ Types.Optional = Optional
 --- @param Schema SerdesNode<T> -- Schema that defines the wire representation.
 --- @param Value T -- Value to serialize.
 --- @return buffer
-function VoidSentryUltimate.Serialize<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>): buffer
-	Cursor = 0
+function VoidSentryUltimate.Serialize<T>(Schema: SerdesNode<T>, Value: T): buffer
 	const Ser = Schema[SER] :: Ser<T>
-	Ser(Value)
-    const Cur = Cursor
+    const WBuf = WriteBuffer
+	const Cur = Ser(Value, WBuf, 0)
 	const Buf = buffer.create(Cur)
-	buffer.copy(Buf, 0, WriteBuffer, 0, Cur)
+	buffer.copy(Buf, 0, WBuf, 0, Cur)
 	return Buf
 end
 
@@ -2096,13 +2115,12 @@ end
 --- @param Value T -- Value to serialize.
 --- @param Offset number -- Number of bytes reserved before the payload.
 --- @return buffer
-function VoidSentryUltimate.SerializeWithOffset<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>, Offset: number): buffer
-	Cursor = 0
+function VoidSentryUltimate.SerializeWithOffset<T>(Schema: SerdesNode<T>, Value: T, Offset: number): buffer
 	const Ser = Schema[SER] :: Ser<T>
-	Ser(Value)
-    const Cur = Cursor
+    const WBuf = WriteBuffer
+	const Cur = Ser(Value, WBuf, 0)
 	const Buf = buffer.create(Cur + Offset)
-	buffer.copy(Buf, Offset, WriteBuffer, 0, Cur)
+	buffer.copy(Buf, Offset, WBuf, 0, Cur)
 	return Buf
 end
 
@@ -2114,12 +2132,8 @@ end
 --- @param Buffer buffer -- Buffer containing the encoded value.
 --- @return T, number (cursor)
 function VoidSentryUltimate.Deserialize<T>(Schema: SerdesNode<T>, Buffer: buffer): (T, number)
-    Cursor = 0
-	ReadBuffer = Buffer
 	const Des = Schema[DES] :: Des<T>
-	const Value = Des()
-	ReadBuffer = nil -- gc the buffer if no more references exist
-	return Value, Cursor
+	return Des(Buffer, 0)
 end
 
 --- Writes a serialized value directly into an existing buffer.
@@ -2132,15 +2146,9 @@ end
 --- @param Buffer buffer -- Existing destination buffer.
 --- @param Offset number? -- Byte offset at which writing begins. Defaults to 0.
 --- @return number (cursor)
-function VoidSentryUltimate.Push<T>(Schema: SerdesNode<any> & T, Value: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?): number
-    Offset = Offset or 0
-    const BigBufSave = WriteBuffer
-    WriteBuffer = Buffer
-    Cursor = Offset
+function VoidSentryUltimate.Push<T>(Schema: SerdesNode<T>, Value: T, Buffer: buffer, Offset: number?): number
     const Ser = Schema[SER] :: Ser<T>
-    Ser(Value)
-    WriteBuffer = BigBufSave
-    return Cursor
+    return Ser(Value, Buffer, Offset or 0)
 end
 
 --- Deserializes a value beginning at a byte offset in a buffer.
@@ -2150,12 +2158,152 @@ end
 --- @param Offset number -- Byte offset at which reading begins.
 --- @return T, number (cursor)
 function VoidSentryUltimate.DeserializeWithOffset<T>(Schema: SerdesNode<T>, Buffer: buffer, Offset: number): (T, number)
-    Cursor = Offset
-	ReadBuffer = Buffer
 	const Des = Schema[DES] :: Des<T>
-	const Value = Des()
-	ReadBuffer = nil
-	return Value, Cursor
+	return Des(Buffer, Offset)
+end
+
+
+function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): Schema<GetTypeFromTypeNodes<T>>
+    const Schema = {}
+
+    const Keys = {}
+    local Idx = 0
+    for Key in Tbl :: { [string]: SerdesNode<any> } do
+        Idx += 1
+        Keys[Idx] = Key
+    end
+    if Idx > 255 then
+        error("Schema cannot have more than 255 fields, provided fields: " .. Idx)
+    end
+    table.sort(Keys)
+
+    const Writes = CreateTable<<Ser<any>>>(Idx)
+    const Reads = CreateTable<<Des<any>>>(Idx)
+    const KeyIndex: { [string]: number } = {}
+
+    for i, Key in Keys do
+        const Node = Tbl[Key]
+        const Ser, Des = Node[SER] :: Ser<any>, Node[DES] :: Des<any>
+        Writes[i] = Ser
+        Reads[i] = Des
+        KeyIndex[Key] = i
+    end
+
+    function Schema.Serialize(Data: { [string]: any } & GetTypeFromTypeNodes<T>): buffer
+        const Zero = 0
+        local Cur = Zero
+        const Writes = Writes
+        const Keys = Keys
+        const WBuf = WriteBuffer
+        for i, Key in Keys do
+            Cur = Writes[i](Data[Key], WBuf, Cur)
+        end
+        const Buf = buffer.create(Cur)
+        buffer.copy(Buf, Zero, WBuf, Zero, Cur)
+        return Buf
+    end
+
+    function Schema.SerializeWithOffset(Data: { [string]: any } & GetTypeFromTypeNodes<T>, Offset: number): buffer
+        local Cur = Offset
+        const Writes = Writes
+        const Keys = Keys
+        const WBuf = WriteBuffer
+        for i, Key in Keys do
+            Cur = Writes[i](Data[Key], WBuf, Cur)
+        end
+        const Buf = buffer.create(Cur)
+        buffer.copy(Buf, Offset, WBuf, Offset, Cur - Offset)
+        return Buf
+    end
+
+    function Schema.Push(Data: { [string]: any } & GetTypeFromTypeNodes<T>, Buffer: buffer, Offset: number?): number
+        local Cur = Offset or 0
+        const Keys = Keys
+        const Writes = Writes
+        for i, Key in Keys do
+            Cur = Writes[i](Data[Key], Buffer, Cur)
+        end
+        return Cur
+    end
+
+    function Schema.Deserialize(Buffer: buffer): (GetTypeFromTypeNodes<T>, number)
+        local Cur = 0
+        const Result = {}
+        const Keys = Keys
+        const Reads = Reads
+        for i, Key in Keys do
+            Result[Key], Cur = Reads[i](Buffer, Cur)
+        end
+        return Result :: GetTypeFromTypeNodes<T>, Cur
+    end
+
+    function Schema.DeserializeWithOffset(Buffer: buffer, Offset: number): (GetTypeFromTypeNodes<T>, number)
+        local Cur = Offset
+        const Result = {}
+        const Keys = Keys
+        const Reads = Reads
+        for i, Key in Keys do
+            Result[Key], Cur = Reads[i](Buffer, Cur)
+        end
+        return Result :: GetTypeFromTypeNodes<T>, Cur
+    end
+
+    function Schema.DeltaSerialize(Data: { [string]: any }, Offset: number?): buffer
+        local Cur = Offset or 0
+        const Start = Cur
+        Cur += 1
+        local Len = 0
+        const WBuf = WriteBuffer
+        const KeyIndex = KeyIndex
+        const Writes = Writes
+        for Key, Value in Data do
+            Len += 1
+            const Index = KeyIndex[Key]
+            buffer.writeu8(WBuf, Cur, Index)
+            Cur += 1
+            Cur = Writes[Index](Value, WBuf, Cur)
+        end
+        buffer.writeu8(WBuf, Start, Len)
+        const Buf = buffer.create(Cur)
+        buffer.copy(Buf, 0, WBuf, 0, Cur)
+        return Buf
+    end
+
+    function Schema.DeltaPush(Buffer: buffer, Data: Optional<GetTypeFromTypeNodes<T>>, Offset: number): number
+        const Cur = Offset
+        Offset += 1
+        local Len = 0
+        const KeyIndex = KeyIndex
+        const Writes = Writes
+        for Key, Value in Data :: { [string]: any } do
+            Len += 1
+            const Index = KeyIndex[Key]
+            buffer.writeu8(Buffer, Offset, Index)
+            Offset += 1
+            Offset = Writes[Index](Value, Buffer, Offset)
+        end
+        buffer.writeu8(Buffer, Cur, Len)
+        return Offset
+    end
+
+    function Schema.DeltaDeserialize(Buffer: buffer, Offset: number?): (Optional<GetTypeFromTypeNodes<T>>, number)
+        local Cur = Offset or 0
+        const Len = buffer.readu8(Buffer, Cur)
+        Cur += 1
+        const Result = {}
+        const Keys = Keys
+        const Reads = Reads
+        for i = 1, Len do
+            const Index = buffer.readu8(Buffer, Cur)
+            Cur += 1
+            Result[Keys[Index]], Cur = Reads[Index](Buffer, Cur)
+        end
+        return Result :: Optional<GetTypeFromTypeNodes<T>>, Cur
+    end
+
+
+    
+    return Schema :: Schema<GetTypeFromTypeNodes<T>>
 end
 
 --- Replaces the reusable serialization scratch buffer with a new capacity.
@@ -2168,8 +2316,7 @@ function VoidSentryUltimate.SetWriteBufferSize(NewSize: number): ()
     WriteBuffer = buffer.create(NewSize)
 end
 
-const Freeze = table.freeze
-Freeze(Types)
-Freeze(VoidSentryUltimate)
+TableFreeze(Types)
+TableFreeze(VoidSentryUltimate)
 
 return VoidSentryUltimate :: Lib

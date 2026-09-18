@@ -69,6 +69,7 @@ const function LuauBench(Log: boolean?, Iterations: number?)
 
     const Serialize = VoidSentryUltimate.Serialize
     const Deserialize = VoidSentryUltimate.Deserialize
+    const BuildSchema = VoidSentryUltimate.Schema
 
     const function BenchPrimitive(Name: string, Schema: VoidSentryUltimate.SerdesNode<any>, Value: any)
         Test(`{Name} Serialize`, function()
@@ -131,6 +132,14 @@ const function LuauBench(Log: boolean?, Iterations: number?)
         return Map
     end
 
+    const function MakeU8Schema(Count: number): any
+        local Tbl: { [string]: any } = {}
+        for i = 1, Count do
+            Tbl[`f{string.format("%03d", i)}`] = VSTypes.U8
+        end
+        return BuildSchema(Tbl)
+    end
+
     const function MakeU8StructSchema(Count: number): any
         local Tbl: { [string]: any } = {}
         for i = 1, Count do
@@ -169,6 +178,21 @@ const function LuauBench(Log: boolean?, Iterations: number?)
             Tbl[`f{string.format("%03d", i)}`] = i % 256
         end
         return Tbl
+    end
+
+    const function BenchSchema(Name: string, Schema: any, Value: { [string]: any })
+        Test(`{Name} Schema.Serialize`, function()
+            Schema.Serialize(Value)
+        end, Iter)
+
+        const Buf = Schema.Serialize(Value)
+        Test(`{Name} Schema.Deserialize`, function()
+            Schema.Deserialize(Buf)
+        end, Iter)
+
+        Test(`{Name} Schema RoundTrip`, function()
+            Schema.Deserialize(Schema.Serialize(Value))
+        end, Iter)
     end
 
     const U8Array = VSTypes.Array(VSTypes.U8)
@@ -248,6 +272,12 @@ const function LuauBench(Log: boolean?, Iterations: number?)
     BenchPrimitive("Map (100 elem)", U8Map, MakeU8Map(100))
     BenchPrimitive("Struct (100 elem)", MakeU8StructSchema(100), MakeU8StructValue(100))
     BenchPrimitive("DeltaStruct (10/100 present)", MakeU8DeltaStructSchema(100), MakeU8DeltaValue(100, 10))
+    YieldIfPossible()
+
+    Section("Schema API")
+    BenchSchema("Schema (1 field)", MakeU8Schema(1), MakeU8StructValue(1))
+    BenchSchema("Schema (10 fields)", MakeU8Schema(10), MakeU8StructValue(10))
+    BenchSchema("Schema (100 fields)", MakeU8Schema(100), MakeU8StructValue(100))
     YieldIfPossible()
 
     if Log then

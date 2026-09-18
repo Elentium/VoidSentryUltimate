@@ -27,6 +27,22 @@ local copy = VoidSentryUltimate.Deserialize(Inventory, bytes)
 
 No schema identifier is written to `bytes`. Changing a schema changes its wire format; old data must continue to use its old schema or be migrated explicitly.
 
+## `VoidSentryUltimate.Schema`
+
+For multi-field tables, `VoidSentryUltimate.Schema(fields)` returns a schema object with dedicated methods:
+
+```luau
+local Player = VoidSentryUltimate.Schema({
+	Health = Types.U8,
+	Name = Types.String8,
+})
+
+local bytes = Player.Serialize({ Health = 100, Name = "Ada" })
+local copy = Player.Deserialize(bytes)
+```
+
+`Types.Struct` remains available as a `SerdesNode` for use with `Serialize` / `Deserialize` on a single node. `Schema` is now the preferred API.
+
 ## Struct
 
 `Types.Struct(fields)` serializes every named field with its node. At schema creation, the implementation collects field names and sorts them. Serialization and deserialization use that sorted key order, not table iteration order or the visual order in the schema literal.

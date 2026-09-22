@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.10.1">
 <title data-rh="true">Best practices | VoidSentryUltimate</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://elentium.github.io/VoidSentryUltimate/docs/best-practices"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Best practices | VoidSentryUltimate"><meta data-rh="true" name="description" content="Share one schema definition"><meta data-rh="true" property="og:description" content="Share one schema definition"><link data-rh="true" rel="icon" href="/VoidSentryUltimate/favicon.svg"><link data-rh="true" rel="canonical" href="https://elentium.github.io/VoidSentryUltimate/docs/best-practices"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/docs/best-practices" hreflang="en"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/docs/best-practices" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Best practices","item":"https://elentium.github.io/VoidSentryUltimate/docs/best-practices"}]}</script><link rel="stylesheet" href="/VoidSentryUltimate/assets/css/styles.86d7d8cd.css">
-<script src="/VoidSentryUltimate/assets/js/runtime~main.aa035168.js" defer="defer"></script>
-<script src="/VoidSentryUltimate/assets/js/main.bb639af9.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/runtime~main.2a625bb0.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/main.e91506a5.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -38,6 +38,7 @@
 <li class="">Use <code>F16</code> or <code>F24</code> only after testing acceptable precision and range on representative values.</li>
 <li class="">Use integer vector variants only when every component fits the selected integer representation.</li>
 <li class="">Consider quaternion CFrames when their smaller representation fits your accuracy needs.</li>
+<li class="">Use <code>CFrameQuantF16</code> / <code>CFrameQuant8F16</code> or <code>UDim2Quant</code> only after measuring orientation or scale error on representative values.</li>
 </ul>
 <p>Reduced precision formats are lossy. Avoid unsupported assumptions about exact decimal error or range; test the values your application actually sends.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="account-for-bytes-not-characters">Account for bytes, not characters<a href="#account-for-bytes-not-characters" class="hash-link" aria-label="Direct link to Account for bytes, not characters" title="Direct link to Account for bytes, not characters" translate="no">​</a></h2>

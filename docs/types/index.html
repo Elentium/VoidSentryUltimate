@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.10.1">
 <title data-rh="true">Type catalog | VoidSentryUltimate</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://elentium.github.io/VoidSentryUltimate/docs/types"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Type catalog | VoidSentryUltimate"><meta data-rh="true" name="description" content="All public nodes are under VoidSentryUltimate.Types. Sizes below are wire sizes. Variable-size nodes include the stated prefix plus their payload."><meta data-rh="true" property="og:description" content="All public nodes are under VoidSentryUltimate.Types. Sizes below are wire sizes. Variable-size nodes include the stated prefix plus their payload."><link data-rh="true" rel="icon" href="/VoidSentryUltimate/favicon.svg"><link data-rh="true" rel="canonical" href="https://elentium.github.io/VoidSentryUltimate/docs/types"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/docs/types" hreflang="en"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/docs/types" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Type catalog","item":"https://elentium.github.io/VoidSentryUltimate/docs/types"}]}</script><link rel="stylesheet" href="/VoidSentryUltimate/assets/css/styles.86d7d8cd.css">
-<script src="/VoidSentryUltimate/assets/js/runtime~main.aa035168.js" defer="defer"></script>
-<script src="/VoidSentryUltimate/assets/js/main.bb639af9.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/runtime~main.2a625bb0.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/main.e91506a5.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -19,6 +19,8 @@
 <li class=""><code>U16</code>, <code>I16</code>: 2-byte unsigned or signed integer.</li>
 <li class=""><code>U24</code>, <code>I24</code>: 3-byte unsigned or signed integer.</li>
 <li class=""><code>U32</code>, <code>I32</code>: 4-byte unsigned or signed integer.</li>
+<li class=""><code>U40</code>, <code>I40</code>: 5-byte unsigned or signed integer.</li>
+<li class=""><code>U48</code>, <code>I48</code>: 6-byte unsigned or signed integer.</li>
 <li class=""><code>F16</code>: 2-byte reduced-precision float.</li>
 <li class=""><code>F24</code>: 3-byte reduced-precision float.</li>
 <li class=""><code>F32</code>: 4-byte float.</li>
@@ -88,6 +90,7 @@
 <li class=""><code>UDim2Offset</code>: the two offset components as <code>F32</code>, 8 bytes; decoded scales are zero.</li>
 <li class=""><code>UDim2OffsetI16</code>: the two offset components as <code>I16</code>, 4 bytes; decoded scales are zero.</li>
 <li class=""><code>UDim2ScaleF24</code>: the two scale components as <code>F24</code>, 6 bytes; decoded offsets are zero.</li>
+<li class=""><code>UDim2Quant(scaleMin, scaleMax)</code>: the two scale components quantized into <code>U16</code> over <code>[scaleMin, scaleMax]</code>, 4 bytes; decoded offsets are zero.</li>
 <li class=""><code>Color3</code>: RGB channels as three bytes, 3 bytes.</li>
 <li class=""><code>Enum(enumType)</code>: an enum item&#x27;s numeric value in 2 bytes.</li>
 <li class=""><code>Enum8(enumType)</code>: an enum item&#x27;s numeric value in 1 byte.</li>
@@ -100,8 +103,12 @@
 <li class=""><code>QCFrame</code>: position plus quaternion using seven <code>F32</code> values, 28 bytes.</li>
 <li class=""><code>QCFrameF16</code>: the same seven values using <code>F16</code>, 14 bytes.</li>
 <li class=""><code>QCFrameF24</code>: the same seven values using <code>F24</code>, 21 bytes.</li>
+<li class=""><code>CFrameQuant</code>: position as three <code>F32</code> values plus yaw, pitch, and roll as <code>U16</code>, 18 bytes.</li>
+<li class=""><code>CFrameQuant8</code>: position as three <code>F32</code> values plus yaw, pitch, and roll as <code>U8</code>, 15 bytes.</li>
+<li class=""><code>CFrameQuantF16</code>: position as three <code>F16</code> values plus yaw, pitch, and roll as <code>U16</code>, 12 bytes.</li>
+<li class=""><code>CFrameQuant8F16</code>: position as three <code>F16</code> values plus yaw, pitch, and roll as <code>U8</code>, 9 bytes.</li>
 </ul>
-<p>The compressed variants trade precision for smaller payloads. Quaternion variants are smaller than matrix variants but reconstruct orientation from quaternion components.</p>
+<p>The compressed variants trade precision for smaller payloads. Quaternion variants are smaller than matrix variants but reconstruct orientation from quaternion components. Quantized variants store Euler angles instead of a matrix or quaternion; <code>U8</code> orientation is coarser than <code>U16</code>.</p>
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="roblox-instances">Roblox instances<a href="#roblox-instances" class="hash-link" aria-label="Direct link to Roblox instances" title="Direct link to Roblox instances" translate="no">​</a></h2>
 <ul>
 <li class=""><code>Instance</code>: a 2-byte <code>_VSID</code> reference ID.</li>
@@ -113,7 +120,7 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="pure-luau-availability">Pure Luau availability<a href="#pure-luau-availability" class="hash-link" aria-label="Direct link to Pure Luau availability" title="Direct link to Pure Luau availability" translate="no">​</a></h2>
 <p><code>LuauVS.luau</code> exposes exactly these public <code>Types</code> names:</p>
 <ul>
-<li class="">Numbers and booleans: <code>U8</code>, <code>I8</code>, <code>U16</code>, <code>I16</code>, <code>U24</code>, <code>I24</code>, <code>U32</code>, <code>I32</code>, <code>F16</code>, <code>F24</code>, <code>F32</code>, <code>F64</code>, <code>Bool</code>, <code>BoolPacked</code>.</li>
+<li class="">Numbers and booleans: <code>U8</code>, <code>I8</code>, <code>U16</code>, <code>I16</code>, <code>U24</code>, <code>I24</code>, <code>U32</code>, <code>I32</code>, <code>U40</code>, <code>I40</code>, <code>U48</code>, <code>I48</code>, <code>F16</code>, <code>F24</code>, <code>F32</code>, <code>F64</code>, <code>Bool</code>, <code>BoolPacked</code>.</li>
 <li class="">Strings and buffers: <code>String</code>, <code>String8</code>, <code>StringFixed</code>, <code>Buffer</code>, <code>Buffer8</code>, <code>Buffer24</code>, <code>BufferFixed</code>.</li>
 <li class="">Collections: <code>Array</code>, <code>Array8</code>, <code>Array24</code>, <code>ArrayFixed</code>, <code>Map</code>, <code>Map8</code>, <code>Map24</code>, <code>MapFixed</code>, <code>Struct</code>, <code>DeltaStruct</code>, <code>DeltaStruct16</code>, <code>Optional</code>.</li>
 <li class="">Vectors: <code>Vector</code>, <code>VectorF16</code>, <code>VectorF24</code>, <code>VectorU8</code>, <code>VectorI8</code>, <code>VectorU16</code>, <code>VectorI16</code>, <code>VectorU24</code>, <code>VectorI24</code>.</li>

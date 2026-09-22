@@ -3,7 +3,7 @@ gitRepoUrl = "https://github.com/Elentium/VoidSentryUltimate"
 gitSourceBranch = "main"
 changelog = true
 classOrder = [
-	{ section = "Core", classes = ["VoidSentryUltimate"] },
+	{ section = "Core", classes = ["VoidSentryUltimate", "Schema"] },
 	{ section = "Types", classes = ["Types"] },
 ]
 apiCategories = ["Core", "Primitives", "Collections", "Special", "Vectors", "Roblox"]

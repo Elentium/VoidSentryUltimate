@@ -7,7 +7,7 @@ VoidSentryUltimate is a validation-free, schema-driven serdes optimized for perf
 Wally:
 
 ```toml
-VoidSentryUltimate = "elentium/voidsentryultimate@1.1.0"
+VoidSentryUltimate = "elentium/voidsentryultimate@1.1.1"
 ```
 
 Pesde:

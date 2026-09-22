@@ -139,6 +139,24 @@ local regular = VoidSentryUltimate.Serialize(ExactF32Position, position)
 your actual game and compare them against your accepted positional tolerance
 before choosing it. Use `Vector` when normal F32 behavior is required.
 
+## Quantize UI scales and compact CFrames
+
+`UDim2Quant` stores only scale, mapped into 16-bit values over a chosen range.
+`CFrameQuantF16` and `CFrameQuant8F16` store `F16` position plus quantized Euler
+angles:
+
+```luau
+local Scale = Types.UDim2Quant(0, 1)
+local CompactCFrame = Types.CFrameQuantF16
+local SmallerCFrame = Types.CFrameQuant8F16
+
+local scaleBytes = VoidSentryUltimate.Serialize(Scale, UDim2.fromScale(0.5, 0.25))
+local cframeBytes = VoidSentryUltimate.Serialize(CompactCFrame, cframe)
+```
+
+Decoded `UDim2Quant` offsets are zero. `CFrameQuant8F16` is smaller (9 bytes)
+than `CFrameQuantF16` (12 bytes) and coarser in orientation.
+
 ## Use a fixed-size record
 
 ```luau

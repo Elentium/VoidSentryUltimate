@@ -3,6 +3,7 @@ const Types = require("./Types")
 
 const DefaultEpsilon = 1e-3
 const F16Epsilon = 1e-2
+const Quant8OrientationEpsilon = 0.03
 
 const function ApproxEq(A: number, B: number, Epsilon: number?): boolean
     return math.abs(A - B) <= (Epsilon or DefaultEpsilon)
@@ -96,6 +97,22 @@ const function CFramesApprox(A: CFrame, B: CFrame): boolean
         and ApproxEq(Ar20, Br20)
         and ApproxEq(Ar21, Br21)
         and ApproxEq(Ar22, Br22)
+end
+
+const function CFramesApproxQuant8F16(A: CFrame, B: CFrame): boolean
+    if not (
+        ApproxEq(A.X, B.X, F16Epsilon)
+        and ApproxEq(A.Y, B.Y, F16Epsilon)
+        and ApproxEq(A.Z, B.Z, F16Epsilon)
+    ) then
+        return false
+    end
+
+    const Arx, Ary, Arz = A:ToOrientation()
+    const Brx, Bry, Brz = B:ToOrientation()
+    return ApproxEq(Arx, Brx, Quant8OrientationEpsilon)
+        and ApproxEq(Ary, Bry, Quant8OrientationEpsilon)
+        and ApproxEq(Arz, Brz, Quant8OrientationEpsilon)
 end
 
 const function CFramesApproxF16(A: CFrame, B: CFrame): boolean
@@ -225,6 +242,7 @@ return {
     Color3sEq = Color3sEq,
     CFramesApprox = CFramesApprox,
     CFramesApproxF16 = CFramesApproxF16,
+    CFramesApproxQuant8F16 = CFramesApproxQuant8F16,
     ArraysEq = ArraysEq,
     MapsEq = MapsEq,
     StructsEq = StructsEq,

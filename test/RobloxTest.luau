@@ -74,6 +74,10 @@ const function RobloxTest(Log: boolean?)
     RunTest("CFrameF24", VSTypes.CFrameF24, TestCFrame, 36, TestHelper.CFramesApprox)
     RunTest("QCFrameF16", VSTypes.QCFrameF16, TestCFrame, 14, TestHelper.CFramesApproxF16)
     RunTest("QCFrameF24", VSTypes.QCFrameF24, TestCFrame, 21, TestHelper.CFramesApprox)
+    RunTest("CFrameQuant", VSTypes.CFrameQuant, TestCFrame, 18, TestHelper.CFramesApprox)
+    RunTest("CFrameQuant8", VSTypes.CFrameQuant8, TestCFrame, 15, TestHelper.CFramesApproxQuant8F16)
+    RunTest("CFrameQuantF16", VSTypes.CFrameQuantF16, TestCFrame, 12, TestHelper.CFramesApproxF16)
+    RunTest("CFrameQuant8F16", VSTypes.CFrameQuant8F16, TestCFrame, 9, TestHelper.CFramesApproxQuant8F16)
 
     const BenchPart = Instance.new("Part")
     BenchPart.Size = Vector3.new(4, 2, 1)
@@ -121,6 +125,7 @@ const function RobloxTest(Log: boolean?)
     RunTest("UDim2Offset", VSTypes.UDim2Offset, TestUDim2Offset, 8, TestHelper.UDim2sEq)
     RunTest("UDim2OffsetI16", VSTypes.UDim2OffsetI16, TestUDim2OffsetI16, 4, TestHelper.UDim2sEq)
     RunTest("UDim2ScaleF24", VSTypes.UDim2ScaleF24, TestUDim2Scale, 6, TestHelper.UDim2sApproxScale)
+    RunTest("UDim2Quant", VSTypes.UDim2Quant(0, 1), TestUDim2Scale, 4, TestHelper.UDim2sApproxScale)
 
     if Log then
         PrintResults()

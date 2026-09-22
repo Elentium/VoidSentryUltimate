@@ -3,13 +3,49 @@ import path from "path";
 import { fileURLToPath } from "url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const targetPath = path.join(
+const sourcePath = path.join(
 	__dirname,
 	"..",
 	"packages",
 	"voidsentryultimate",
 	"VoidSentryUltimate.luau",
 );
+const targetPath = path.join(__dirname, "..", "tmp", "VoidSentryUltimate.docs.luau");
+
+const schemaProps = [
+	["Serialize", "(Data: T) -> buffer", "Serializes every field and returns an exactly sized buffer."],
+	[
+		"SerializeWithOffset",
+		"(Data: T, Offset: number) -> buffer",
+		"Serializes every field after a zero-filled prefix.",
+	],
+	["Deserialize", "(Buffer: buffer) -> (T, number)", "Deserializes every field from byte zero."],
+	[
+		"DeserializeWithOffset",
+		"(Buffer: buffer, Offset: number) -> (T, number)",
+		"Deserializes every field beginning at a byte offset.",
+	],
+	[
+		"Push",
+		"(Data: T, Buffer: buffer, Offset: number?) -> number",
+		"Writes every field directly into an existing buffer.",
+	],
+	[
+		"DeltaSerialize",
+		"(Data: T, Offset: number?) -> buffer",
+		"Serializes only keys present in the input. Writes a `u8` present-count and `u8` field ids (max 255 present fields).",
+	],
+	[
+		"DeltaDeserialize",
+		"(Buffer: buffer, Offset: number?) -> (T, number)",
+		"Deserializes a delta payload into a sparse table.",
+	],
+	[
+		"DeltaPush",
+		"(Buffer: buffer, Data: T, Offset: number) -> number",
+		"Writes a delta payload directly into an existing buffer.",
+	],
+];
 
 const props = [
 	["I8", "Primitives", "Signed 8-bit integer. 1 byte.", "SerdesNode<number>"],
@@ -20,13 +56,17 @@ const props = [
 	["I32", "Primitives", "Signed 32-bit integer. 4 bytes.", "SerdesNode<number>"],
 	["F32", "Primitives", "IEEE float. 4 bytes.", "SerdesNode<number>"],
 	["F64", "Primitives", "IEEE double. 8 bytes.", "SerdesNode<number>"],
-	["String", "Special", "UTF-8 string with a `u16` byte-length prefix.", "SerdesNode<string>"],
-	["String8", "Special", "UTF-8 string with a `u8` byte-length prefix.", "SerdesNode<string>"],
+	["String", "Primitives", "UTF-8 string with a `u16` byte-length prefix.", "SerdesNode<string>"],
+	["String8", "Primitives", "UTF-8 string with a `u8` byte-length prefix.", "SerdesNode<string>"],
 	["Vector", "Vectors", "`Vector3` with three `f32` components. 12 bytes.", "SerdesNode<Vector3>"],
 	["F16", "Primitives", "Half-precision float. 2 bytes. Lossy.", "SerdesNode<number>"],
 	["F24", "Primitives", "24-bit float. 3 bytes. Lossy.", "SerdesNode<number>"],
 	["U24", "Primitives", "Unsigned 24-bit integer. 3 bytes.", "SerdesNode<number>"],
 	["I24", "Primitives", "Signed 24-bit integer. 3 bytes.", "SerdesNode<number>"],
+	["U40", "Primitives", "Unsigned 40-bit integer. 5 bytes.", "SerdesNode<number>"],
+	["I40", "Primitives", "Signed 40-bit integer. 5 bytes.", "SerdesNode<number>"],
+	["U48", "Primitives", "Unsigned 48-bit integer. 6 bytes.", "SerdesNode<number>"],
+	["I48", "Primitives", "Signed 48-bit integer. 6 bytes.", "SerdesNode<number>"],
 	["VectorF24", "Vectors", "`Vector3` with three `f24` components. 9 bytes.", "SerdesNode<Vector3>"],
 	["VectorF16", "Vectors", "`Vector3` with three `f16` components. 6 bytes.", "SerdesNode<Vector3>"],
 	["VectorU16", "Vectors", "`Vector3` with three `u16` components. 6 bytes.", "SerdesNode<Vector3>"],
@@ -52,9 +92,9 @@ const props = [
 	["UDim2ScaleF24", "Roblox", "Two `f24` scale components. 6 bytes.", "SerdesNode<UDim2>"],
 	["Bool", "Primitives", "Boolean stored as one byte (`0` or `1`).", "SerdesNode<boolean>"],
 	["BoolPacked", "Special", "Eight booleans packed into 1 byte.", "SerdesNode<{ boolean }>"],
-	["Buffer", "Special", "Buffer with a `u16` byte-length prefix.", "SerdesNode<buffer>"],
-	["Buffer8", "Special", "Buffer with a `u8` byte-length prefix.", "SerdesNode<buffer>"],
-	["Buffer24", "Special", "Buffer with a `u24` byte-length prefix.", "SerdesNode<buffer>"],
+	["Buffer", "Primitives", "Buffer with a `u16` byte-length prefix.", "SerdesNode<buffer>"],
+	["Buffer8", "Primitives", "Buffer with a `u8` byte-length prefix.", "SerdesNode<buffer>"],
+	["Buffer24", "Primitives", "Buffer with a `u24` byte-length prefix.", "SerdesNode<buffer>"],
 	["Instance", "Roblox", "Instance reference as a `u16` `_VSID`. 2 bytes.", "SerdesNode<Instance>", "InstanceNode"],
 	["Instance24", "Roblox", "Instance reference as a `u24` `_VSID`. 3 bytes.", "SerdesNode<Instance>"],
 	["CFrame", "Roblox", "Position plus rotation matrix (`12 × f32`). 48 bytes.", "SerdesNode<CFrame>", "CFrameNode"],
@@ -230,6 +270,14 @@ function functionBlock(name, tag, desc, params, ret, luaName = name) {
 	return lines.join("\n");
 }
 
+function schemaPropBlock(name, signature, desc) {
+	return [
+		`--- ${desc}`,
+		"--- @within Schema",
+		`--- @prop ${name} ${signature}`,
+	].join("\n");
+}
+
 function insertBefore(lines, index, block) {
 	if (lines[index - 1]?.includes(`@prop ${block.match(/@prop (\w+)/)?.[1]}`)) {
 		return false;
@@ -241,7 +289,7 @@ function insertBefore(lines, index, block) {
 	return true;
 }
 
-let source = fs.readFileSync(targetPath, "utf8");
+let source = fs.readFileSync(sourcePath, "utf8");
 let lines = source.split("\n");
 let inserted = 0;
 
@@ -257,6 +305,34 @@ if (!source.includes("--- @class Types")) {
 		"--- @class Types",
 	);
 	inserted += 1;
+}
+
+if (!source.includes("--- @class Schema")) {
+	const typesAssignmentIndex = lines.findIndex(
+		(line) => line === "VoidSentryUltimate.Types = Types",
+	);
+	if (typesAssignmentIndex === -1) {
+		throw new Error("Could not find API documentation insertion point");
+	}
+	const schemaBlocks = [
+		[
+			"--- Schema object returned by `VoidSentryUltimate.Schema`.",
+			"---",
+			"--- Methods serialize a table of named fields without wrapping a `SerdesNode`.",
+			"--- Field names are sorted when the schema is created. Maximum 255 fields.",
+			"--- @class Schema",
+		].join("\n"),
+		...schemaProps.map(([name, signature, desc]) =>
+			schemaPropBlock(name, signature, desc),
+		),
+	];
+	lines.splice(
+		typesAssignmentIndex + 1,
+		0,
+		"",
+		...schemaBlocks.flatMap((block) => [block, ""]),
+	);
+	inserted += schemaBlocks.length;
 }
 
 for (const [name, tag, desc, luaType, constName = name] of props) {
@@ -281,5 +357,6 @@ for (const [name, tag, desc, params, ret, luaName = name] of functions) {
 	}
 }
 
+fs.mkdirSync(path.dirname(targetPath), { recursive: true });
 fs.writeFileSync(targetPath, lines.join("\n"));
-console.log(`Injected ${inserted} Types doc block(s) into VoidSentryUltimate.luau`);
+console.log(`Generated ${targetPath} with ${inserted} API doc block(s)`);

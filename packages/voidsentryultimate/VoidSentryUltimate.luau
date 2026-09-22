@@ -2,13 +2,11 @@
 --!optimize 2
 --[[
     VoidSentryUltimate 
-    [ V1.1.0 ]
+    [ V1.1.1 ]
     [ by IAMNOTULTRA3 a.k.a Elentium, Elite ]
     [ Apache-2.0 License ]
 
-    Efficient SerDes library
-
-    Wally: "elentium/voidsentryultimate@1.1.0"
+    Wally: "elentium/voidsentryultimate@1.1.1"
     Pesde: pesde add elentium/voidsentryultimate
     Npm: npm install @elentium/voidsentryultimate
     Docs: https://Elentium.github.io/VoidSentryUltimate
@@ -40,8 +38,6 @@ const RunService = game:GetService("RunService")
 -- MODULE
 ---------------------------------------------------------
 const VoidSentryUltimate = {}
---- Schema type nodes from `VoidSentryUltimate.Types`.
---- @class Types
 const Types = {}
 VoidSentryUltimate.Types = Types
 
@@ -99,7 +95,7 @@ export type Des<T> = (buffer, number) -> (T, number)
 export type SerdesNode<T> = {
 	-- [1] = Ser
 	-- [2] = Des
-	[number]: Ser<T> | Des<T>,
+	[number]: any,
 	_T: T | any,
 }
 
@@ -154,14 +150,11 @@ export type Schema<T> = {
 }
 
 export type Lib = {
-    -- TODO: when luau bug is fixed, replace this with read Serialize: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>) -> buffer,
-    read Serialize: <T>(Node: SerdesNode<T>, Data: T) -> buffer,
-    -- when fixed: read SerializeWithOffset: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Offset: number) -> buffer,
-    read SerializeWithOffset: <T>(Node: SerdesNode<T>, Data: T, Offset: number) -> buffer,
+    read Serialize: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>) -> buffer,
+    read SerializeWithOffset: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Offset: number) -> buffer,
     read Deserialize: <T>(Node: SerdesNode<T>, Buffer: buffer) -> (GetProperTypeFromUnion<T>, number),
     read DeserializeWithOffset: <T>(Node: SerdesNode<T>, Buffer: buffer, Offset: number) -> (GetProperTypeFromUnion<T>, number),
-    -- when fixed: read Push: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?) -> number,
-    read Push: <T>(Node: SerdesNode<T>, Data: T, Buffer: buffer, Offset: number?) -> number,
+    read Push: <T>(Node: SerdesNode<any> & T, Data: GetTypeFromTypeNode<T>, Buffer: buffer, Offset: number?) -> number,
     read SetWriteBufferSize: (NewSize: number) -> (),
     read Schema: <T>(Tbl: T & { [string]: SerdesNode<any> }) -> Schema<GetTypeFromTypeNodes<T>>,
 
@@ -177,6 +170,10 @@ export type Lib = {
         read F16: SerdesNode<number>,
         read F24: SerdesNode<number>,
         read F32: SerdesNode<number>,
+        read U40: SerdesNode<number>,
+        read I40: SerdesNode<number>,
+        read U48: SerdesNode<number>,
+        read I48: SerdesNode<number>,
         read F64: SerdesNode<number>,
         read Bool: SerdesNode<boolean>,
         read BoolPacked: SerdesNode<{ boolean }>,
@@ -210,6 +207,7 @@ export type Lib = {
         read UDim2Offset: SerdesNode<UDim2>,
         read UDim2OffsetI16: SerdesNode<UDim2>,
         read UDim2ScaleF24: SerdesNode<UDim2>,
+        read UDim2Quant: (ScaleMin: number, ScaleMax: number) -> SerdesNode<UDim2>,
         read Array: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
         read Array8: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
         read Array24: <T>(Node: SerdesNode<T>) -> SerdesNode<{ T }>,
@@ -232,20 +230,15 @@ export type Lib = {
         read CFrameF24: SerdesNode<CFrame>,
         read QCFrameF16: SerdesNode<CFrame>,
         read QCFrameF24: SerdesNode<CFrame>,
+        read CFrameQuant: SerdesNode<CFrame>,
+        read CFrameQuant8: SerdesNode<CFrame>,
+        read CFrameQuantF16: SerdesNode<CFrame>,
+        read CFrameQuant8F16: SerdesNode<CFrame>,
         read Color3: SerdesNode<Color3>,
         read Enum: <T>(EnumType: T & Enum) -> SerdesNode<GetEnumItem<T>>,
         read Enum8: <T>(EnumType: T & Enum) -> SerdesNode<GetEnumItem<T>>
     },
 }
-
----------------------------------------------------------
--- STATE
----------------------------------------------------------
-local WriteBuffer = buffer.create(BIG_BUFFER_SIZE) -- scratch buffer that is used during serialization
-const FloatConverter = buffer.create(4) -- used to convert f32 to smaller precision version
-
-const IdMap: { [number]: Instance } = {}
-const InstanceMap: { [Instance]: number } = {}
 
 ---------------------------------------------------------
 -- LOCALIZING BUILTINS
@@ -257,25 +250,35 @@ const TaskDelay = task.delay
 const CoroutineYield = coroutine.yield
 const CoroutineRunning = coroutine.running
 const NewCFrame = CFrame.new
+const NewCFrameFromOrientation = CFrame.fromOrientation
 const NewUDim2 = UDim2.new
 const FromUDim2Scale = UDim2.fromScale
 const FromUDim2Offset = UDim2.fromOffset
 const Pcall = pcall
 const NewColor3 = Color3.fromRGB
 const TableFreeze = table.freeze
+const CreateBuffer = buffer.create
+const CopyBuffer = buffer.copy
+const BufferLen = buffer.len
 
 const MathHuge = math.huge
 const NMathHuge = -math.huge
+const Pi = math.pi
+const DoublePi = Pi * 2
+const HalfPi = Pi / 2
+
+---------------------------------------------------------
+-- STATE
+---------------------------------------------------------
+local WriteBuffer = CreateBuffer(BIG_BUFFER_SIZE) -- scratch buffer that is used during serialization
+const FloatConverter = CreateBuffer(4) -- used to convert f32 to smaller precision version
+
+const IdMap: { [number]: Instance } = {}
+const InstanceMap: { [Instance]: number } = {}
 
 ---------------------------------------------------------
 -- NODES
----------------------------------------------------------
---- Signed 8-bit integer. 1 byte.
---- @within Types
---- @tag Primitives
---- @prop I8 SerdesNode<number>
-
-const I8: SerdesNode<number> = {} -- Signed 8-bit integer
+const I8: SerdesNode<number> = {}
 
 do
 	const function I8Ser(Value: number, Buf: buffer, Cur: number): number
@@ -295,12 +298,7 @@ do
 	I8[DES] = I8Des
 end
 
---- Unsigned 8-bit integer. 1 byte.
---- @within Types
---- @tag Primitives
---- @prop U8 SerdesNode<number>
-
-const U8: SerdesNode<number> = {} -- Unsigned 8-bit integer
+const U8: SerdesNode<number> = {}
 
 do
 	const function U8Ser(Value: number, Buf: buffer, Cur: number): number
@@ -320,12 +318,7 @@ do
 	U8[DES] = U8Des
 end
 
---- Unsigned 16-bit integer. 2 bytes.
---- @within Types
---- @tag Primitives
---- @prop U16 SerdesNode<number>
-
-const U16: SerdesNode<number> = {} -- Unsigned 16-bit integer
+const U16: SerdesNode<number> = {}
 
 do
 	const function U16Ser(Value: number, Buf: buffer, Cur: number): number
@@ -345,12 +338,7 @@ do
 	U16[DES] = U16Des
 end
 
---- Signed 16-bit integer. 2 bytes.
---- @within Types
---- @tag Primitives
---- @prop I16 SerdesNode<number>
-
-const I16: SerdesNode<number> = {} -- Signed 16-bit integer
+const I16: SerdesNode<number> = {}
 
 do
 	const function I16Ser(Value: number, Buf: buffer, Cur: number): number
@@ -370,12 +358,7 @@ do
 	I16[DES] = I16Des
 end
 
---- Unsigned 32-bit integer. 4 bytes.
---- @within Types
---- @tag Primitives
---- @prop U32 SerdesNode<number>
-
-const U32: SerdesNode<number> = {} -- Unsigned 32-bit integer
+const U32: SerdesNode<number> = {}
 
 do
 	const function U32Ser(Value: number, Buf: buffer, Cur: number): number
@@ -395,12 +378,7 @@ do
 	U32[DES] = U32Des
 end
 
---- Signed 32-bit integer. 4 bytes.
---- @within Types
---- @tag Primitives
---- @prop I32 SerdesNode<number>
-
-const I32: SerdesNode<number> = {} -- Signed 32-bit integer
+const I32: SerdesNode<number> = {}
 
 do
 	const function I32Ser(Value: number, Buf: buffer, Cur: number): number
@@ -420,12 +398,93 @@ do
 	I32[DES] = I32Des
 end
 
---- IEEE float. 4 bytes.
---- @within Types
---- @tag Primitives
---- @prop F32 SerdesNode<number>
+const I40: SerdesNode<number> = {}
 
-const F32: SerdesNode<number> = {} -- IEEE-754 Single Precision Float
+do
+	const function I40Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writeu32(Buf, Cur, bit32.band(Value, 0xFFFFFFFF))
+        buffer.writeu8(Buf, Cur + 4, bit32.band(Value // 0x100000000, 0xFF))
+		return Cur + 5
+	end
+
+	const function I40Des(Buf: buffer, Cur: number): (number, number)
+		const Low = buffer.readu32(Buf, Cur)
+        const High = buffer.readu8(Buf, Cur + 4)
+	    local Value = Low + High * 0x100000000
+        if Value >= 0x8000000000 then
+            Value -= 0x10000000000
+        end
+		return Value, Cur + 5
+	end
+
+	I40[SER] = I40Ser
+	I40[DES] = I40Des
+end
+
+const U40: SerdesNode<number> = {}
+
+do
+	const function U40Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writeu32(Buf, Cur, bit32.band(Value, 0xFFFFFFFF))
+        buffer.writeu8(Buf, Cur + 4, bit32.band(Value // 0x100000000, 0xFF))
+		return Cur + 5
+	end
+
+	const function U40Des(Buf: buffer, Cur: number): (number, number)
+		const Low = buffer.readu32(Buf, Cur)
+        const High = buffer.readu8(Buf, Cur + 4)
+	    const Value = Low + High * 0x100000000
+		return Value, Cur + 5
+	end
+
+	U40[SER] = U40Ser
+	U40[DES] = U40Des
+end
+
+const I48: SerdesNode<number> = {}
+
+do
+	const function I48Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writeu32(Buf, Cur, bit32.band(Value, 0xFFFFFFFF))
+        buffer.writeu16(Buf, Cur + 4, bit32.band(Value // 0x100000000, 0xFFFF))
+		return Cur + 6
+	end
+
+	const function I48Des(Buf: buffer, Cur: number): (number, number)
+		const Low = buffer.readu32(Buf, Cur)
+        const High = buffer.readu16(Buf, Cur + 4)
+	    local Value = Low + High * 0x100000000
+        if Value >= 0x800000000000 then
+            Value -= 0x1000000000000
+        end
+		return Value, Cur + 6
+	end
+
+    I48[SER] = I48Ser
+	I48[DES] = I48Des
+end
+
+const U48: SerdesNode<number> = {}
+
+do
+	const function U48Ser(Value: number, Buf: buffer, Cur: number): number
+		buffer.writeu32(Buf, Cur, bit32.band(Value, 0xFFFFFFFF))
+        buffer.writeu16(Buf, Cur + 4, bit32.band(Value // 0x100000000, 0xFFFF))
+		return Cur + 6
+	end
+
+	const function U48Des(Buf: buffer, Cur: number): (number, number)
+		const Low = buffer.readu32(Buf, Cur)
+        const High = buffer.readu16(Buf, Cur + 4)
+	    const Value = Low + High * 0x100000000
+		return Value, Cur + 6
+	end
+
+    U48[SER] = U48Ser
+	U48[DES] = U48Des
+end
+
+const F32: SerdesNode<number> = {}
 
 do
 	const function F32Ser(Value: number, Buf: buffer, Cur: number): number
@@ -445,12 +504,7 @@ do
 	F32[DES] = F32Des
 end
 
---- IEEE double. 8 bytes.
---- @within Types
---- @tag Primitives
---- @prop F64 SerdesNode<number>
-
-const F64: SerdesNode<number> = {} -- IEEE-754 Double Precision Float
+const F64: SerdesNode<number> = {}
 
 do
 	const function F64Ser(Value: number, Buf: buffer, Cur: number): number
@@ -470,12 +524,7 @@ do
 	F64[DES] = F64Des
 end
 
---- UTF-8 string with a `u16` byte-length prefix.
---- @within Types
---- @tag Special
---- @prop String SerdesNode<string>
-
-const String: SerdesNode<string> = {} -- String  (16 bits for length, meaning max characters size is 65535)
+const String: SerdesNode<string> = {}
 
 do
 	const function StringSer(Value: string, Buf: buffer, Cur: number): number
@@ -500,12 +549,7 @@ do
 	String[DES] = StringDes
 end
 
---- UTF-8 string with a `u8` byte-length prefix.
---- @within Types
---- @tag Special
---- @prop String8 SerdesNode<string>
-
-const String8: SerdesNode<string> = {} -- String8 (8 bits for length, meaning max characters size is 255)
+const String8: SerdesNode<string> = {}
 
 do
 	const function String8Ser(Value: string, Buf: buffer, Cur: number): number
@@ -531,13 +575,6 @@ do
 end
 
 -- StringFixed (fixed length)
---- Fixed-length UTF-8 string with no length prefix.
---- @within Types
---- @tag Special
---- @function StringFixed
---- @param length number -- Exact byte length on the wire.
---- @return SerdesNode<string>
-
 const function StringFixed(Length: number): SerdesNode<string>
     const StringFixedNode: SerdesNode<string> = {}
 
@@ -561,13 +598,6 @@ const function StringFixed(Length: number): SerdesNode<string>
 end
 
 -- Array (16 bits for length write, meaning max amount of elements in the array is 65535)
---- Array with a `u16` element-count prefix.
---- @within Types
---- @tag Collections
---- @function Array
---- @param node SerdesNode<T> -- Element schema.
---- @return SerdesNode<{ T }>
-
 const function Array<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
     const ArrayNode: SerdesNode<{ T }> = {}
 
@@ -604,13 +634,6 @@ const function Array<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
 end
 
 -- Array8 (8 bits for length write, meaning max amount of elements in the array is 255)
---- Array with a `u8` element-count prefix.
---- @within Types
---- @tag Collections
---- @function Array8
---- @param node SerdesNode<T> -- Element schema.
---- @return SerdesNode<{ T }>
-
 const function Array8<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
     const Array8Node: SerdesNode<{ T }> = {}
 
@@ -647,13 +670,6 @@ const function Array8<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
 end
 
 -- Array24 (24 bits for length write, meaning max amount of elements in the array is 16_777_215)
---- Array with a `u24` element-count prefix.
---- @within Types
---- @tag Collections
---- @function Array24
---- @param node SerdesNode<T> -- Element schema.
---- @return SerdesNode<{ T }>
-
 const function Array24<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
     const Array24Node: SerdesNode<{ T }> = {}
 
@@ -693,13 +709,6 @@ const function Array24<T>(Node: SerdesNode<T>): SerdesNode<{ T }>
 end
 
 -- Struct (Pretty straightforward)
---- Struct schema. Field names are sorted lexicographically on the wire.
---- @within Types
---- @tag Collections
---- @function Struct
---- @param fields {[string]: SerdesNode<any>} -- Field schemas keyed by name.
---- @return SerdesNode<any>
-
 const function Struct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<GetTypeFromTypeNodes<T>>
     const StructNode: SerdesNode<GetTypeFromTypeNodes<T>> = {}
 
@@ -745,14 +754,6 @@ const function Struct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Get
 end
 
 -- DeltaStruct (u8 present-count + u8 field ids; max 255 present fields)
---- Sparse struct: serializes present input keys only. `u8` present-count and field ids (max 255).
---- Field ids are 1-based into lexicographically sorted schema keys; entry order follows the input table.
---- @within Types
---- @tag Collections
---- @function DeltaStruct
---- @param fields {[string]: SerdesNode<any>} -- Field schemas keyed by name.
---- @return SerdesNode<any>
-
 const function DeltaStruct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }>
     const DeltaStructNode: SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }> = {}
 
@@ -817,14 +818,6 @@ const function DeltaStruct<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNod
 end
 
 -- DeltaStruct16 (u16 present-count + u16 field ids; max 65535 present fields)
---- Sparse struct: serializes present input keys only. `u16` present-count and field ids (max 65535).
---- Field ids are 1-based into lexicographically sorted schema keys; entry order follows the input table.
---- @within Types
---- @tag Collections
---- @function DeltaStruct16
---- @param fields {[string]: SerdesNode<any>} -- Field schemas keyed by name.
---- @return SerdesNode<any>
-
 const function DeltaStruct16<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }>
     const DeltaStruct16Node: SerdesNode<Optional<GetTypeFromTypeNodes<T>> & { [string]: nil }> = {}
 
@@ -888,12 +881,7 @@ const function DeltaStruct16<T>(Tbl: T & { [string]: SerdesNode<any> }): SerdesN
     return DeltaStruct16Node
 end
 
---- `Vector3` with three `f32` components. 12 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector SerdesNode<Vector3>
-
-const Vector: SerdesNode<Vector3> = {} -- Vector (4x3 bytes, each element is F32)
+const Vector: SerdesNode<Vector3> = {}
 do
     const function VectorSer(Value: Vector3, Buf: buffer, Cur: number): number
         buffer.writef32(Buf, Cur, Value.X)
@@ -918,14 +906,6 @@ do
 end
 
 -- Map (16 bits for length write, meaning max amount of elements in the map is 65535)
---- Map with a `u16` entry-count prefix.
---- @within Types
---- @tag Collections
---- @function Map
---- @param keyNode SerdesNode<K> -- Key schema.
---- @param valueNode SerdesNode<V> -- Value schema.
---- @return SerdesNode<{ [K]: V }>
-
 const function Map<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): SerdesNode<{ [K]: V }>
     const MapNode: SerdesNode<{ [K]: V }> = {}
 
@@ -974,14 +954,6 @@ const function Map<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Serd
 end
 
 -- Map8 (8 bits for length write, meaning max amount of elements in the map is 255)
---- Map with a `u8` entry-count prefix.
---- @within Types
---- @tag Collections
---- @function Map8
---- @param keyNode SerdesNode<K> -- Key schema.
---- @param valueNode SerdesNode<V> -- Value schema.
---- @return SerdesNode<{ [K]: V }>
-
 const function Map8<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): SerdesNode<{ [K]: V }>
     const Map8Node: SerdesNode<{ [K]: V }> = {}
 
@@ -1030,14 +1002,6 @@ const function Map8<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Ser
 end
 
 -- Map24 (24 bits for length write, meaning max amount of elements in the map is 16_777_215)
---- Map with a `u24` entry-count prefix.
---- @within Types
---- @tag Collections
---- @function Map24
---- @param keyNode SerdesNode<K> -- Key schema.
---- @param valueNode SerdesNode<V> -- Value schema.
---- @return SerdesNode<{ [K]: V }>
-
 const function Map24<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): SerdesNode<{ [K]: V }>
     const Map24Node: SerdesNode<{ [K]: V }> = {}
 
@@ -1089,14 +1053,6 @@ const function Map24<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>): Se
 end
 
 -- ArrayFixed (fixed length)
---- Fixed-length array with no count prefix.
---- @within Types
---- @tag Collections
---- @function ArrayFixed
---- @param node SerdesNode<T> -- Element schema.
---- @param length number -- Exact element count.
---- @return SerdesNode<{ T }>
-
 const function ArrayFixed<T>(Node: SerdesNode<T>, Length: number): SerdesNode<{ T }>
     const ArrayFixedNode: SerdesNode<{ T }> = {}
 
@@ -1128,15 +1084,6 @@ const function ArrayFixed<T>(Node: SerdesNode<T>, Length: number): SerdesNode<{ 
 end
 
 -- MapFixed (fixed length)
---- Fixed-length map with no count prefix.
---- @within Types
---- @tag Collections
---- @function MapFixed
---- @param keyNode SerdesNode<K> -- Key schema.
---- @param valueNode SerdesNode<V> -- Value schema.
---- @param length number -- Exact entry count.
---- @return SerdesNode<{ [K]: V }>
-
 const function MapFixed<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>, Length: number): SerdesNode<{ [K]: V }>
     const MapFixedNode: SerdesNode<{ [K]: V }> = {}
 
@@ -1178,11 +1125,6 @@ const function MapFixed<K, V>(KeyNode: SerdesNode<K>, ValueNode: SerdesNode<V>, 
 end
 
 -- IEEE-754 Half Precision Float
---- Half-precision float. 2 bytes. Lossy.
---- @within Types
---- @tag Primitives
---- @prop F16 SerdesNode<number>
-
 const F16: SerdesNode<number> = {}
 do
     const function F16Ser(Value: number, Buf: buffer, Cur: number): number
@@ -1236,11 +1178,6 @@ do
 end
 
 -- Custom precision float
---- 24-bit float. 3 bytes. Lossy.
---- @within Types
---- @tag Primitives
---- @prop F24 SerdesNode<number>
-
 const F24: SerdesNode<number> = {}
 do
     const function F24Ser(Value: number, Buf: buffer, Cur: number): number
@@ -1291,11 +1228,6 @@ do
 end
 
 -- Unsigned 24-bit Integer
---- Unsigned 24-bit integer. 3 bytes.
---- @within Types
---- @tag Primitives
---- @prop U24 SerdesNode<number>
-
 const U24: SerdesNode<number> = {}
 do
     const function U24Ser(Value: number, Buf: buffer, Cur: number): number
@@ -1322,11 +1254,6 @@ do
 end
 
 -- Signed 24-bit integer
---- Signed 24-bit integer. 3 bytes.
---- @within Types
---- @tag Primitives
---- @prop I24 SerdesNode<number>
-
 const I24: SerdesNode<number> = {}
 do
     const function I24Ser(Value: number, Buf: buffer, Cur: number): number
@@ -1354,12 +1281,7 @@ do
     I24[DES] = I24Deser
 end
 
---- `Vector3` with three `f24` components. 9 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorF24 SerdesNode<Vector3>
-
-const VectorF24: SerdesNode<Vector3> = {} -- Vector (3x3 bytes, each element is F24)
+const VectorF24: SerdesNode<Vector3> = {}
 do
     const function VectorF24Ser(Value: Vector3, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
@@ -1471,12 +1393,7 @@ do
     VectorF24[DES] = VectorF24Des
 end
 
---- `Vector3` with three `f16` components. 6 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorF16 SerdesNode<Vector3>
-
-const VectorF16: SerdesNode<Vector3> = {} -- Vector (3x2 bytes, each element is F16)
+const VectorF16: SerdesNode<Vector3> = {}
 do
     const function VectorF16Ser(Value: Vector3, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
@@ -1614,12 +1531,7 @@ do
     VectorF16[DES] = VectorF16Des
 end
 
---- `Vector3` with three `u16` components. 6 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorU16 SerdesNode<Vector3>
-
-const VectorU16: SerdesNode<Vector3> = {} -- Vector (3x2 bytes, each element is U16)
+const VectorU16: SerdesNode<Vector3> = {}
 do
     const function VectorU16Ser(Value: Vector3, Buf: buffer, Cur: number): number
 
@@ -1645,12 +1557,7 @@ do
     VectorU16[DES] = VectorU16Des
 end
 
---- `Vector3` with three `i16` components. 6 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorI16 SerdesNode<Vector3>
-
-const VectorI16: SerdesNode<Vector3> = {} -- Vector (3x2 bytes, each element is I16)
+const VectorI16: SerdesNode<Vector3> = {}
 do
     const function VectorI16Ser(Value: Vector3, Buf: buffer, Cur: number): number
 
@@ -1676,12 +1583,7 @@ do
     VectorI16[DES] = VectorI16Des
 end
 
---- `Vector3` with three `u8` components. 3 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorU8 SerdesNode<Vector3>
-
-const VectorU8: SerdesNode<Vector3> = {} -- Vector (3x1 bytes, each element is U8)
+const VectorU8: SerdesNode<Vector3> = {}
 do
     const function VectorU8Ser(Value: Vector3, Buf: buffer, Cur: number): number
 
@@ -1707,12 +1609,7 @@ do
     VectorU8[DES] = VectorU8Des
 end
 
---- RGB channels as three bytes. 3 bytes.
---- @within Types
---- @tag Roblox
---- @prop Color3 SerdesNode<Color3>
-
-const Color3Node: SerdesNode<Color3> = {} -- Color3 (3 bytes, each element is U8)
+const Color3Node: SerdesNode<Color3> = {}
 do
     const function Color3Ser(Value: Color3, Buf: buffer, Cur: number): number
 
@@ -1738,12 +1635,7 @@ do
     Color3Node[DES] = Color3Des
 end
 
---- `Vector3` with three `i8` components. 3 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorI8 SerdesNode<Vector3>
-
-const VectorI8: SerdesNode<Vector3> = {} -- Vector (3x1 bytes, each element is I8)
+const VectorI8: SerdesNode<Vector3> = {}
 do
     const function VectorI8Ser(Value: Vector3, Buf: buffer, Cur: number): number
 
@@ -1769,12 +1661,7 @@ do
     VectorI8[DES] = VectorI8Des
 end
 
---- `Vector3` with three `u24` components. 9 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorU24 SerdesNode<Vector3>
-
-const VectorU24: SerdesNode<Vector3> = {} -- Vector (3x3 bytes, each element is U24)
+const VectorU24: SerdesNode<Vector3> = {}
 do
     const function VectorU24Ser(Value: Vector3, Buf: buffer, Cur: number): number
 
@@ -1836,12 +1723,7 @@ do
     VectorU24[DES] = VectorU24Des
 end
 
---- `Vector3` with three `i24` components. 9 bytes.
---- @within Types
---- @tag Vectors
---- @prop VectorI24 SerdesNode<Vector3>
-
-const VectorI24: SerdesNode<Vector3> = {} -- Vector (3x3 bytes, each element is I24)
+const VectorI24: SerdesNode<Vector3> = {}
 do
     const function VectorI24Ser(Value: Vector3, Buf: buffer, Cur: number): number
 
@@ -1906,12 +1788,7 @@ do
     VectorI24[DES] = VectorI24Des
 end
 
---- `Vector2` with two `f32` components. 8 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2 SerdesNode<Vector2>
-
-const Vector2Node: SerdesNode<Vector2> = {} -- Vector2 (2x4 bytes, each element is F32)
+const Vector2Node: SerdesNode<Vector2> = {}
 do
     const function Vector2Ser(Value: Vector2, Buf: buffer, Cur: number): number
         buffer.writef32(Buf, Cur, Value.X)
@@ -1933,12 +1810,7 @@ do
     Vector2Node[DES] = Vector2Des
 end
 
---- `Vector2` with two `f24` components. 6 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2F24 SerdesNode<Vector2>
-
-const Vector2F24: SerdesNode<Vector2> = {} -- Vector2 (2x3 bytes, each element is F24)
+const Vector2F24: SerdesNode<Vector2> = {}
 do
     const function Vector2F24Ser(Value: Vector2, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
@@ -2011,12 +1883,7 @@ do
     Vector2F24[DES] = Vector2F24Des
 end
 
---- `Vector2` with two `f16` components. 4 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2F16 SerdesNode<Vector2>
-
-const Vector2F16: SerdesNode<Vector2> = {} -- Vector2 (2x2 bytes, each element is F16)
+const Vector2F16: SerdesNode<Vector2> = {}
 do
     const function Vector2F16Ser(Value: Vector2, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
@@ -2107,12 +1974,7 @@ do
     Vector2F16[DES] = Vector2F16Des
 end
 
---- `Vector2` with two `u16` components. 4 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2U16 SerdesNode<Vector2>
-
-const Vector2U16: SerdesNode<Vector2> = {} -- Vector2 (2x2 bytes, each element is U16)
+const Vector2U16: SerdesNode<Vector2> = {}
 do
     const function Vector2U16Ser(Value: Vector2, Buf: buffer, Cur: number): number
         buffer.writeu16(Buf, Cur, Value.X)
@@ -2134,12 +1996,7 @@ do
     Vector2U16[DES] = Vector2U16Des
 end
 
---- `Vector2` with two `i16` components. 4 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2I16 SerdesNode<Vector2>
-
-const Vector2I16: SerdesNode<Vector2> = {} -- Vector2 (2x2 bytes, each element is I16)
+const Vector2I16: SerdesNode<Vector2> = {}
 do
     const function Vector2I16Ser(Value: Vector2, Buf: buffer, Cur: number): number
         buffer.writei16(Buf, Cur, Value.X)
@@ -2161,12 +2018,7 @@ do
     Vector2I16[DES] = Vector2I16Des
 end
 
---- `Vector2` with two `u8` components. 2 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2U8 SerdesNode<Vector2>
-
-const Vector2U8: SerdesNode<Vector2> = {} -- Vector2 (2x1 bytes, each element is U8)
+const Vector2U8: SerdesNode<Vector2> = {}
 do
     const function Vector2U8Ser(Value: Vector2, Buf: buffer, Cur: number): number
         buffer.writeu8(Buf, Cur, Value.X)
@@ -2188,12 +2040,7 @@ do
     Vector2U8[DES] = Vector2U8Des
 end
 
---- `Vector2` with two `i8` components. 2 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2I8 SerdesNode<Vector2>
-
-const Vector2I8: SerdesNode<Vector2> = {} -- Vector2 (2x1 bytes, each element is I8)
+const Vector2I8: SerdesNode<Vector2> = {}
 do
     const function Vector2I8Ser(Value: Vector2, Buf: buffer, Cur: number): number
         buffer.writei8(Buf, Cur, Value.X)
@@ -2215,12 +2062,7 @@ do
     Vector2I8[DES] = Vector2I8Des
 end
 
---- `Vector2` with two `u24` components. 6 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2U24 SerdesNode<Vector2>
-
-const Vector2U24: SerdesNode<Vector2> = {} -- Vector2 (2x3 bytes, each element is U24)
+const Vector2U24: SerdesNode<Vector2> = {}
 do
     const function Vector2U24Ser(Value: Vector2, Buf: buffer, Cur: number): number
 
@@ -2264,12 +2106,7 @@ do
     Vector2U24[DES] = Vector2U24Des
 end
 
---- `Vector2` with two `i24` components. 6 bytes.
---- @within Types
---- @tag Vectors
---- @prop Vector2I24 SerdesNode<Vector2>
-
-const Vector2I24: SerdesNode<Vector2> = {} -- Vector2 (2x3 bytes, each element is I24)
+const Vector2I24: SerdesNode<Vector2> = {}
 do
     const function Vector2I24Ser(Value: Vector2, Buf: buffer, Cur: number): number
 
@@ -2315,12 +2152,7 @@ do
     Vector2I24[DES] = Vector2I24Des
 end
 
---- Full `UDim2` as four `f32` values. 16 bytes.
---- @within Types
---- @tag Roblox
---- @prop UDim2 SerdesNode<UDim2>
-
-const UDim2Node: SerdesNode<UDim2> = {} -- UDim2 (4x4 bytes, each element is F32)
+const UDim2Node: SerdesNode<UDim2> = {}
 do
     const function UDim2Ser(Value: UDim2, Buf: buffer, Cur: number): number
         buffer.writef32(Buf, Cur, Value.X.Scale)
@@ -2346,12 +2178,7 @@ do
     UDim2Node[DES] = UDim2Des
 end
 
---- Two `f32` scale components. 8 bytes.
---- @within Types
---- @tag Roblox
---- @prop UDim2Scale SerdesNode<UDim2>
-
-const UDim2Scale: SerdesNode<UDim2> = {} -- UDim2 scale only (2x4 bytes, each element is F32)
+const UDim2Scale: SerdesNode<UDim2> = {}
 do
     const function UDim2ScaleSer(Value: UDim2, Buf: buffer, Cur: number): number
         buffer.writef32(Buf, Cur, Value.X.Scale)
@@ -2373,12 +2200,7 @@ do
     UDim2Scale[DES] = UDim2ScaleDes
 end
 
---- Two `f32` offset components. 8 bytes.
---- @within Types
---- @tag Roblox
---- @prop UDim2Offset SerdesNode<UDim2>
-
-const UDim2Offset: SerdesNode<UDim2> = {} -- UDim2 offset only (2x4 bytes, each element is F32)
+const UDim2Offset: SerdesNode<UDim2> = {}
 do
     const function UDim2OffsetSer(Value: UDim2, Buf: buffer, Cur: number): number
         buffer.writef32(Buf, Cur, Value.X.Offset)
@@ -2400,12 +2222,7 @@ do
     UDim2Offset[DES] = UDim2OffsetDes
 end
 
---- Two `i16` offset components. 4 bytes.
---- @within Types
---- @tag Roblox
---- @prop UDim2OffsetI16 SerdesNode<UDim2>
-
-const UDim2OffsetI16: SerdesNode<UDim2> = {} -- UDim2 offset only (2x2 bytes, each element is I16)
+const UDim2OffsetI16: SerdesNode<UDim2> = {}
 do
     const function UDim2OffsetI16Ser(Value: UDim2, Buf: buffer, Cur: number): number
         buffer.writei16(Buf, Cur, Value.X.Offset)
@@ -2427,12 +2244,7 @@ do
     UDim2OffsetI16[DES] = UDim2OffsetI16Des
 end
 
---- Two `f24` scale components. 6 bytes.
---- @within Types
---- @tag Roblox
---- @prop UDim2ScaleF24 SerdesNode<UDim2>
-
-const UDim2ScaleF24: SerdesNode<UDim2> = {} -- UDim2 scale only (2x3 bytes, each element is F24)
+const UDim2ScaleF24: SerdesNode<UDim2> = {}
 do
     const function UDim2ScaleF24Ser(Value: UDim2, Buf: buffer, Cur: number): number
         const Conv = FloatConverter
@@ -2505,11 +2317,6 @@ do
     UDim2ScaleF24[DES] = UDim2ScaleF24Des
 end
 
---- Boolean stored as one byte (`0` or `1`).
---- @within Types
---- @tag Primitives
---- @prop Bool SerdesNode<boolean>
-
 const Bool: SerdesNode<boolean> = {}
 do
     const function BoolSer(Value: boolean, Buf: buffer, Cur: number): number
@@ -2528,11 +2335,6 @@ do
     Bool[SER] = BoolSer
     Bool[DES] = BoolDes
 end
-
---- Eight booleans packed into 1 byte.
---- @within Types
---- @tag Special
---- @prop BoolPacked SerdesNode<{ boolean }>
 
 const BoolPacked: SerdesNode<{ boolean }> = {}
 do
@@ -2590,18 +2392,13 @@ do
 end
 
 -- Buffer (2 bytes for length, meaning max amount of bytes in the buffer is 65535)
---- Buffer with a `u16` byte-length prefix.
---- @within Types
---- @tag Special
---- @prop Buffer SerdesNode<buffer>
-
 const Buffer: SerdesNode<buffer> = {}
 do
     const function BufferSer(Value: buffer, Buf: buffer, Cur: number): number
-        const Len = buffer.len(Value)
+        const Len = BufferLen(Value)
         buffer.writeu16(Buf, Cur, Len)
         Cur += 2
-        buffer.copy(Buf, Cur, Value, 0, Len)
+        CopyBuffer(Buf, Cur, Value, 0, Len)
         Cur = Cur + Len
     
         return Cur
@@ -2610,8 +2407,8 @@ do
     const function BufferDes(Buf: buffer, Cur: number): (buffer, number)
         const Length = buffer.readu16(Buf, Cur)
         Cur += 2
-        const Value = buffer.create(Length)
-        buffer.copy(Value, 0, Buf, Cur, Length)
+        const Value = CreateBuffer(Length)
+        CopyBuffer(Value, 0, Buf, Cur, Length)
         Cur = Cur + Length
         return Value, Cur
     end
@@ -2621,18 +2418,13 @@ do
 end
 
 -- Buffer8 (1 byte for length, meaning max amount of bytes in the buffer is 255)
---- Buffer with a `u8` byte-length prefix.
---- @within Types
---- @tag Special
---- @prop Buffer8 SerdesNode<buffer>
-
 const Buffer8: SerdesNode<buffer> = {}
 do
     const function Buffer8Ser(Value: buffer, Buf: buffer, Cur: number): number
-        const Len = buffer.len(Value)
+        const Len = BufferLen(Value)
         buffer.writeu8(Buf, Cur, Len)
         Cur += 1
-        buffer.copy(Buf, Cur, Value, 0, Len)
+        CopyBuffer(Buf, Cur, Value, 0, Len)
         Cur = Cur + Len
     
         return Cur
@@ -2641,8 +2433,8 @@ do
     const function Buffer8Des(Buf: buffer, Cur: number): (buffer, number)
         const Length = buffer.readu8(Buf, Cur)
         Cur += 1
-        const Value = buffer.create(Length)
-        buffer.copy(Value, 0, Buf, Cur, Length)
+        const Value = CreateBuffer(Length)
+        CopyBuffer(Value, 0, Buf, Cur, Length)
         Cur = Cur + Length
         return Value, Cur
     end
@@ -2652,18 +2444,13 @@ do
 end
 
 -- Buffer24 (3 bytes for length, meaning max amount of bytes in the buffer is 16_777_215)
---- Buffer with a `u24` byte-length prefix.
---- @within Types
---- @tag Special
---- @prop Buffer24 SerdesNode<buffer>
-
 const Buffer24: SerdesNode<buffer> = {}
 do
     const function Buffer24Ser(Value: buffer, Buf: buffer, Cur: number): number
-        const Len = buffer.len(Value)
+        const Len = BufferLen(Value)
         buffer.writeu16(Buf, Cur, bit32.band(Len, 0xFFFF))
         buffer.writeu8(Buf, Cur + 2, bit32.band(bit32.rshift(Len, 16), 0xFF))
-        buffer.copy(Buf, Cur + 3, Value, 0, Len)
+        CopyBuffer(Buf, Cur + 3, Value, 0, Len)
         Cur = Cur + 3 + Len
     
         return Cur
@@ -2674,8 +2461,8 @@ do
         const b2: number = buffer.readu8(Buf, Cur + 2)
 
         const Length = bit32.bor(b1, bit32.lshift(b2, 16))
-        const b = buffer.create(Length)
-        buffer.copy(b, 0, Buf, Cur + 3, Length)
+        const b = CreateBuffer(Length)
+        CopyBuffer(b, 0, Buf, Cur + 3, Length)
         Cur = Cur + 3 + Length
         return b, Cur
     end
@@ -2685,26 +2472,19 @@ do
 end
 
 -- BufferFixed (fixed length)
---- Fixed-length buffer with no length prefix.
---- @within Types
---- @tag Special
---- @function BufferFixed
---- @param length number -- Exact byte length on the wire.
---- @return SerdesNode<buffer>
-
 const function BufferFixed(Length: number): SerdesNode<buffer>
     const BufferFixedNode: SerdesNode<buffer> = {}
 
     const function BufferFixedSer(Value: buffer, Buf: buffer, Cur: number): number
-        buffer.copy(Buf, Cur, Value, 0, Length)
+        CopyBuffer(Buf, Cur, Value, 0, Length)
         Cur = Cur + Length
     
         return Cur
     end
 
     const function BufferFixedDes(Buf: buffer, Cur: number): (buffer, number)
-        const Value = buffer.create(Length)
-        buffer.copy(Value, 0, Buf, Cur, Length)
+        const Value = CreateBuffer(Length)
+        CopyBuffer(Value, 0, Buf, Cur, Length)
         Cur = Cur + Length
         return Value, Cur
     end
@@ -2715,13 +2495,6 @@ const function BufferFixed(Length: number): SerdesNode<buffer>
     return BufferFixedNode
 end
 
---- Optional value prefixed by a one-byte presence flag.
---- @within Types
---- @tag Collections
---- @function Optional
---- @param node SerdesNode<T> -- Inner schema.
---- @return SerdesNode<T?>
-
 const function Optional<T>(Node: SerdesNode<T>): SerdesNode<T?>
     const OptionalNode: SerdesNode<T?> = {}
 
@@ -2731,7 +2504,7 @@ const function Optional<T>(Node: SerdesNode<T>): SerdesNode<T?>
         Cur = Cur + 1
         if Exists then
             const Ser = Node[SER] :: Ser<T>
-            Cur = Ser(Value, Buf, Cur)
+            Cur = Ser(Value :: T, Buf, Cur)
         end
     
         return Cur
@@ -2757,11 +2530,6 @@ const function Optional<T>(Node: SerdesNode<T>): SerdesNode<T?>
 end
 
 -- Instance (2 bytes for id write, if your game has more than 65535 instances at once, consider using Instance24)
---- Instance reference as a `u16` `_VSID`. 2 bytes.
---- @within Types
---- @tag Roblox
---- @prop Instance SerdesNode<Instance>
-
 const InstanceNode: SerdesNode<Instance> = {}
 do
     const function InstanceSer(Value: Instance, Buf: buffer, Cur: number): number
@@ -2792,11 +2560,6 @@ do
 end
 
 -- Instance24 (3 bytes for id write, max amount of instances at a time is 16_777_215)
---- Instance reference as a `u24` `_VSID`. 3 bytes.
---- @within Types
---- @tag Roblox
---- @prop Instance24 SerdesNode<Instance>
-
 const Instance24: SerdesNode<Instance> = {}
 do
     const function Instance24Ser(Value: Instance, Buf: buffer, Cur: number): number
@@ -2831,11 +2594,6 @@ do
     Instance24[SER] = Instance24Ser
     Instance24[DES] = Instance24Des
 end
-
---- Position plus rotation matrix (`12 × f32`). 48 bytes.
---- @within Types
---- @tag Roblox
---- @prop CFrame SerdesNode<CFrame>
 
 const CFrameNode: SerdesNode<CFrame> = {}
 do
@@ -2888,10 +2646,365 @@ do
     CFrameNode[DES] = CFrameDes
 end
 
---- Position plus quaternion (`7 × f32`). 28 bytes.
---- @within Types
---- @tag Roblox
---- @prop QCFrame SerdesNode<CFrame>
+const CFrameQuant8: SerdesNode<CFrame> = {}
+do
+    const function CFrameQuant8Ser(Value: CFrame, Buf: buffer, Cur: number): number
+        const x, y, z = Value.X, Value.Y, Value.Z
+
+
+        buffer.writef32(Buf, Cur, x)
+        buffer.writef32(Buf, Cur + 4, y)
+        buffer.writef32(Buf, Cur + 8, z)
+        const rx, ry, rz = Value:ToOrientation()
+
+        const normalYaw = math.min((ry + Pi) / DoublePi, 1)
+        const normalPitch = math.min((rx + HalfPi) / Pi, 1)
+        const normalRoll = math.min((rz + Pi) / DoublePi, 1)
+
+        buffer.writeu8(Buf, Cur + 12, math.round(normalYaw * 255))
+        buffer.writeu8(Buf, Cur + 13, math.round(normalPitch * 255))
+        buffer.writeu8(Buf, Cur + 14, math.round(normalRoll * 255))
+
+        return Cur + 15
+    end
+
+    const function CFrameQuant8Des(Buf: buffer, Cur: number): (CFrame, number)
+
+        const x = buffer.readf32(Buf, Cur)
+        const y = buffer.readf32(Buf, Cur + 4)
+        const z = buffer.readf32(Buf, Cur + 8)
+        const Yaw = buffer.readu8(Buf, Cur + 12)
+        const Pitch = buffer.readu8(Buf, Cur + 13)
+        const Roll = buffer.readu8(Buf, Cur + 14)
+
+        const ry = (Yaw / 255) * DoublePi - Pi
+	    const rx = (Pitch / 255) * Pi - HalfPi
+	    const rz = (Roll / 255) * DoublePi - Pi
+
+        return NewCFrame(x, y, z) * NewCFrameFromOrientation(rx, ry, rz), Cur + 15
+    end
+
+    CFrameQuant8[SER] = CFrameQuant8Ser
+    CFrameQuant8[DES] = CFrameQuant8Des
+end
+
+const CFrameQuant8F16: SerdesNode<CFrame> = {}
+do
+    const function CFrameQuant8F16Ser(Value: CFrame, Buf: buffer, Cur: number): number
+        const x, y, z = Value.X, Value.Y, Value.Z
+
+        const Conv = FloatConverter
+        do
+            buffer.writef32(Conv, 0, x)
+            const Bits: number = buffer.readu32(Conv, 0)
+            const Sign: number = bit32.rshift(bit32.band(Bits, 0x80000000), 16)
+            const Exp: number = bit32.band(bit32.rshift(Bits, 23), 0xFF)
+            const Mant: number = bit32.band(Bits, 0x7FFFFF)
+
+            local Packed: number
+            if Exp == 0 then
+                Packed = Sign
+            elseif Exp >= 143 then
+                Packed = bit32.bor(Sign, 0x7C00)
+            elseif Exp <= 112 then
+                Packed = Sign
+            else
+                const F16Exp = bit32.lshift(Exp - 112, 10)
+                const F16Mant = bit32.rshift(Mant, 13)
+                Packed = bit32.bor(Sign, F16Exp, F16Mant)
+            end
+
+            buffer.writeu16(Buf, Cur, Packed)
+        end
+        do
+            buffer.writef32(Conv, 0, y)
+            const Bits: number = buffer.readu32(Conv, 0)
+            const Sign: number = bit32.rshift(bit32.band(Bits, 0x80000000), 16)
+            const Exp: number = bit32.band(bit32.rshift(Bits, 23), 0xFF)
+            const Mant: number = bit32.band(Bits, 0x7FFFFF)
+
+            local Packed: number
+            if Exp == 0 then
+                Packed = Sign
+            elseif Exp >= 143 then
+                Packed = bit32.bor(Sign, 0x7C00)
+            elseif Exp <= 112 then
+                Packed = Sign
+            else
+                const F16Exp = bit32.lshift(Exp - 112, 10)
+                const F16Mant = bit32.rshift(Mant, 13)
+                Packed = bit32.bor(Sign, F16Exp, F16Mant)
+            end
+
+            buffer.writeu16(Buf, Cur + 2, Packed)
+        end
+        do
+            buffer.writef32(Conv, 0, z)
+            const Bits: number = buffer.readu32(Conv, 0)
+            const Sign: number = bit32.rshift(bit32.band(Bits, 0x80000000), 16)
+            const Exp: number = bit32.band(bit32.rshift(Bits, 23), 0xFF)
+            const Mant: number = bit32.band(Bits, 0x7FFFFF)
+
+            local Packed: number
+            if Exp == 0 then
+                Packed = Sign
+            elseif Exp >= 143 then
+                Packed = bit32.bor(Sign, 0x7C00)
+            elseif Exp <= 112 then
+                Packed = Sign
+            else
+                const F16Exp = bit32.lshift(Exp - 112, 10)
+                const F16Mant = bit32.rshift(Mant, 13)
+                Packed = bit32.bor(Sign, F16Exp, F16Mant)
+            end
+
+            buffer.writeu16(Buf, Cur + 4, Packed)
+        end
+        const rx, ry, rz = Value:ToOrientation()
+
+        const normalYaw = math.min((ry + Pi) / DoublePi, 1)
+        const normalPitch = math.min((rx + HalfPi) / Pi, 1)
+        const normalRoll = math.min((rz + Pi) / DoublePi, 1)
+
+        buffer.writeu8(Buf, Cur + 6, math.round(normalYaw * 255))
+        buffer.writeu8(Buf, Cur + 7, math.round(normalPitch * 255))
+        buffer.writeu8(Buf, Cur + 8, math.round(normalRoll * 255))
+
+        return Cur + 9
+    end
+
+    const function CFrameQuant8F16Des(Buf: buffer, Cur: number): (CFrame, number)
+
+        local x = 0
+        do
+            const Packed: number = buffer.readu16(Buf, Cur)
+            const Exp16: number = bit32.band(bit32.rshift(Packed, 10), 0x1F)
+
+            if Exp16 ~= 0 then
+                const Sign: number = bit32.band(Packed, 0x8000)
+                const Mant10: number = bit32.band(Packed, 0x3FF)
+                const Result: number = math.ldexp(1 + Mant10 / 1024, Exp16 - 15)
+                x = if Sign == 0 then Result else -Result
+            end
+        end
+        local y = 0
+        do
+            const Packed: number = buffer.readu16(Buf, Cur + 2)
+            const Exp16: number = bit32.band(bit32.rshift(Packed, 10), 0x1F)
+
+            if Exp16 ~= 0 then
+                const Sign: number = bit32.band(Packed, 0x8000)
+                const Mant10: number = bit32.band(Packed, 0x3FF)
+                const Result: number = math.ldexp(1 + Mant10 / 1024, Exp16 - 15)
+                y = if Sign == 0 then Result else -Result
+            end
+        end
+        local z = 0
+        do
+            const Packed: number = buffer.readu16(Buf, Cur + 4)
+            const Exp16: number = bit32.band(bit32.rshift(Packed, 10), 0x1F)
+
+            if Exp16 ~= 0 then
+                const Sign: number = bit32.band(Packed, 0x8000)
+                const Mant10: number = bit32.band(Packed, 0x3FF)
+                const Result: number = math.ldexp(1 + Mant10 / 1024, Exp16 - 15)
+                z = if Sign == 0 then Result else -Result
+            end
+        end
+        const Yaw = buffer.readu8(Buf, Cur + 6)
+        const Pitch = buffer.readu8(Buf, Cur + 7)
+        const Roll = buffer.readu8(Buf, Cur + 8)
+
+        const ry = (Yaw / 255) * DoublePi - Pi
+	    const rx = (Pitch / 255) * Pi - HalfPi
+	    const rz = (Roll / 255) * DoublePi - Pi
+
+        return NewCFrame(x, y, z) * NewCFrameFromOrientation(rx, ry, rz), Cur + 9
+    end
+
+    CFrameQuant8F16[SER] = CFrameQuant8F16Ser
+    CFrameQuant8F16[DES] = CFrameQuant8F16Des
+end
+
+const CFrameQuant: SerdesNode<CFrame> = {}
+do
+    const function CFrameQuantSer(Value: CFrame, Buf: buffer, Cur: number): number
+        const x, y, z = Value.X, Value.Y, Value.Z
+
+
+        buffer.writef32(Buf, Cur, x)
+        buffer.writef32(Buf, Cur + 4, y)
+        buffer.writef32(Buf, Cur + 8, z)
+        const rx, ry, rz = Value:ToOrientation()
+
+        const normalYaw = math.min((ry + Pi) / DoublePi, 1)
+        const normalPitch = math.min((rx + HalfPi) / Pi, 1)
+        const normalRoll = math.min((rz + Pi) / DoublePi, 1)
+
+        buffer.writeu16(Buf, Cur + 12, math.round(normalYaw * 65535))
+        buffer.writeu16(Buf, Cur + 14, math.round(normalPitch * 65535))
+        buffer.writeu16(Buf, Cur + 16, math.round(normalRoll * 65535))
+
+        return Cur + 18
+    end
+
+    const function CFrameQuantDes(Buf: buffer, Cur: number): (CFrame, number)
+
+        const x = buffer.readf32(Buf, Cur)
+        const y = buffer.readf32(Buf, Cur + 4)
+        const z = buffer.readf32(Buf, Cur + 8)
+        const Yaw = buffer.readu16(Buf, Cur + 12)
+        const Pitch = buffer.readu16(Buf, Cur + 14)
+        const Roll = buffer.readu16(Buf, Cur + 16)
+
+        const ry = (Yaw / 65535) * DoublePi - Pi
+	    const rx = (Pitch / 65535) * Pi - HalfPi
+	    const rz = (Roll / 65535) * DoublePi - Pi
+
+        return NewCFrame(x, y, z) * NewCFrameFromOrientation(rx, ry, rz), Cur + 18
+    end
+
+    CFrameQuant[SER] = CFrameQuantSer
+    CFrameQuant[DES] = CFrameQuantDes
+end
+
+const CFrameQuantF16: SerdesNode<CFrame> = {}
+do
+    const function CFrameQuantF16Ser(Value: CFrame, Buf: buffer, Cur: number): number
+        const x, y, z = Value.X, Value.Y, Value.Z
+
+        const Conv = FloatConverter
+        do
+            buffer.writef32(Conv, 0, x)
+            const Bits: number = buffer.readu32(Conv, 0)
+            const Sign: number = bit32.rshift(bit32.band(Bits, 0x80000000), 16)
+            const Exp: number = bit32.band(bit32.rshift(Bits, 23), 0xFF)
+            const Mant: number = bit32.band(Bits, 0x7FFFFF)
+
+            local Packed: number
+            if Exp == 0 then
+                Packed = Sign
+            elseif Exp >= 143 then
+                Packed = bit32.bor(Sign, 0x7C00)
+            elseif Exp <= 112 then
+                Packed = Sign
+            else
+                const F16Exp = bit32.lshift(Exp - 112, 10)
+                const F16Mant = bit32.rshift(Mant, 13)
+                Packed = bit32.bor(Sign, F16Exp, F16Mant)
+            end
+
+            buffer.writeu16(Buf, Cur, Packed)
+        end
+        do
+            buffer.writef32(Conv, 0, y)
+            const Bits: number = buffer.readu32(Conv, 0)
+            const Sign: number = bit32.rshift(bit32.band(Bits, 0x80000000), 16)
+            const Exp: number = bit32.band(bit32.rshift(Bits, 23), 0xFF)
+            const Mant: number = bit32.band(Bits, 0x7FFFFF)
+
+            local Packed: number
+            if Exp == 0 then
+                Packed = Sign
+            elseif Exp >= 143 then
+                Packed = bit32.bor(Sign, 0x7C00)
+            elseif Exp <= 112 then
+                Packed = Sign
+            else
+                const F16Exp = bit32.lshift(Exp - 112, 10)
+                const F16Mant = bit32.rshift(Mant, 13)
+                Packed = bit32.bor(Sign, F16Exp, F16Mant)
+            end
+
+            buffer.writeu16(Buf, Cur + 2, Packed)
+        end
+        do
+            buffer.writef32(Conv, 0, z)
+            const Bits: number = buffer.readu32(Conv, 0)
+            const Sign: number = bit32.rshift(bit32.band(Bits, 0x80000000), 16)
+            const Exp: number = bit32.band(bit32.rshift(Bits, 23), 0xFF)
+            const Mant: number = bit32.band(Bits, 0x7FFFFF)
+
+            local Packed: number
+            if Exp == 0 then
+                Packed = Sign
+            elseif Exp >= 143 then
+                Packed = bit32.bor(Sign, 0x7C00)
+            elseif Exp <= 112 then
+                Packed = Sign
+            else
+                const F16Exp = bit32.lshift(Exp - 112, 10)
+                const F16Mant = bit32.rshift(Mant, 13)
+                Packed = bit32.bor(Sign, F16Exp, F16Mant)
+            end
+
+            buffer.writeu16(Buf, Cur + 4, Packed)
+        end
+        const rx, ry, rz = Value:ToOrientation()
+
+        const normalYaw = math.min((ry + Pi) / DoublePi, 1)
+        const normalPitch = math.min((rx + HalfPi) / Pi, 1)
+        const normalRoll = math.min((rz + Pi) / DoublePi, 1)
+
+        buffer.writeu16(Buf, Cur + 6, math.round(normalYaw * 65535))
+        buffer.writeu16(Buf, Cur + 8, math.round(normalPitch * 65535))
+        buffer.writeu16(Buf, Cur + 10, math.round(normalRoll * 65535))
+
+        return Cur + 12
+    end
+
+    const function CFrameQuantF16Des(Buf: buffer, Cur: number): (CFrame, number)
+
+        local x = 0
+        do
+            const Packed: number = buffer.readu16(Buf, Cur)
+            const Exp16: number = bit32.band(bit32.rshift(Packed, 10), 0x1F)
+
+            if Exp16 ~= 0 then
+                const Sign: number = bit32.band(Packed, 0x8000)
+                const Mant10: number = bit32.band(Packed, 0x3FF)
+                const Result: number = math.ldexp(1 + Mant10 / 1024, Exp16 - 15)
+                x = if Sign == 0 then Result else -Result
+            end
+        end
+        local y = 0
+        do
+            const Packed: number = buffer.readu16(Buf, Cur + 2)
+            const Exp16: number = bit32.band(bit32.rshift(Packed, 10), 0x1F)
+
+            if Exp16 ~= 0 then
+                const Sign: number = bit32.band(Packed, 0x8000)
+                const Mant10: number = bit32.band(Packed, 0x3FF)
+                const Result: number = math.ldexp(1 + Mant10 / 1024, Exp16 - 15)
+                y = if Sign == 0 then Result else -Result
+            end
+        end
+        local z = 0
+        do
+            const Packed: number = buffer.readu16(Buf, Cur + 4)
+            const Exp16: number = bit32.band(bit32.rshift(Packed, 10), 0x1F)
+
+            if Exp16 ~= 0 then
+                const Sign: number = bit32.band(Packed, 0x8000)
+                const Mant10: number = bit32.band(Packed, 0x3FF)
+                const Result: number = math.ldexp(1 + Mant10 / 1024, Exp16 - 15)
+                z = if Sign == 0 then Result else -Result
+            end
+        end
+        const Yaw = buffer.readu16(Buf, Cur + 6)
+        const Pitch = buffer.readu16(Buf, Cur + 8)
+        const Roll = buffer.readu16(Buf, Cur + 10)
+
+        const ry = (Yaw / 65535) * DoublePi - Pi
+	    const rx = (Pitch / 65535) * Pi - HalfPi
+	    const rz = (Roll / 65535) * DoublePi - Pi
+
+        return NewCFrame(x, y, z) * NewCFrameFromOrientation(rx, ry, rz), Cur + 12
+    end
+
+    CFrameQuantF16[SER] = CFrameQuantF16Ser
+    CFrameQuantF16[DES] = CFrameQuantF16Des
+end
 
 const QCFrame: SerdesNode<CFrame> = {}
 do  
@@ -2938,11 +3051,6 @@ do
     QCFrame[SER] = QCFrameSer
     QCFrame[DES] = QCFrameDes
 end
-
---- Rotation matrix with `f24` components. 36 bytes.
---- @within Types
---- @tag Roblox
---- @prop CFrameF24 SerdesNode<CFrame>
 
 const CFrameF24: SerdesNode<CFrame> = {}
 do
@@ -3304,11 +3412,6 @@ do
     CFrameF24[SER] = CFrameF24Ser
     CFrameF24[DES] = CFrameF24Des
 end
-
---- Rotation matrix with `f16` components. 24 bytes.
---- @within Types
---- @tag Roblox
---- @prop CFrameF16 SerdesNode<CFrame>
 
 const CFrameF16: SerdesNode<CFrame> = {}
 do
@@ -3731,11 +3834,6 @@ do
     CFrameF16[DES] = CFrameF16Des
 end
 
---- Quaternion CFrame with `f24` components. 21 bytes.
---- @within Types
---- @tag Roblox
---- @prop QCFrameF24 SerdesNode<CFrame>
-
 const QCFrameF24: SerdesNode<CFrame> = {}
 do
     const function QCFrameF24Ser(Value: CFrame, Buf: buffer, Cur: number): number
@@ -3957,11 +4055,6 @@ do
     QCFrameF24[SER] = QCFrameF24Ser
     QCFrameF24[DES] = QCFrameF24Des
 end
-
---- Quaternion CFrame with `f16` components. 14 bytes.
---- @within Types
---- @tag Roblox
---- @prop QCFrameF16 SerdesNode<CFrame>
 
 const QCFrameF16: SerdesNode<CFrame> = {}
 do
@@ -4220,14 +4313,6 @@ do
     QCFrameF16[DES] = QCFrameF16Des
 end
 
---- Serializes selected properties from an existing instance.
---- @within Types
---- @tag Roblox
---- @function SerInstance
---- @param className string -- Instance class name.
---- @param schema {[string]: SerdesNode<any>} -- Property schemas keyed by name.
---- @return SerdesNode<Instance>
-
 const function SerInstance<T>(ClassName: T | keyof<Instances> | "", Schema: { [string]: SerdesNode<any> }): SerdesNode<GetInstanceType<T, Instances, Instance>>
     const SerInstanceNode: SerdesNode<GetInstanceType<T, Instances, Instance>> = {}
     const Keys = {}
@@ -4273,13 +4358,6 @@ const function SerInstance<T>(ClassName: T | keyof<Instances> | "", Schema: { [s
     return SerInstanceNode
 end
 
---- Enum item stored as a `u16` value.
---- @within Types
---- @tag Roblox
---- @function Enum
---- @param enumType Enum -- Enum to serialize.
---- @return SerdesNode<EnumItem>
-
 const function EnumNode<T>(EnumType: T & Enum): SerdesNode<GetEnumItem<T>>
     const Node: SerdesNode<GetEnumItem<T>> = {}
     
@@ -4301,13 +4379,6 @@ const function EnumNode<T>(EnumType: T & Enum): SerdesNode<GetEnumItem<T>>
 
     return Node
 end
-
---- Enum item stored as a `u8` value.
---- @within Types
---- @tag Roblox
---- @function Enum8
---- @param enumType Enum -- Enum to serialize.
---- @return SerdesNode<EnumItem>
 
 const function Enum8<T>(EnumType: T & Enum): SerdesNode<GetEnumItem<T>>
     const Node: SerdesNode<GetEnumItem<T>> = {}
@@ -4331,6 +4402,33 @@ const function Enum8<T>(EnumType: T & Enum): SerdesNode<GetEnumItem<T>>
     return Node
 end
 
+const function UDim2Quant(MinScale: number, MaxScale: number)
+    const UDim2QuantNode: SerdesNode<UDim2> = {}
+    const QuantizedScaleRange = MaxScale - MinScale
+    const QuantizedScale = QuantizedScaleRange / 65535
+
+    const function UDim2QuantSer(Value: UDim2, Buf: buffer, Cur: number): number
+        const X, Y = Value.X, Value.Y
+        const MinScale = MinScale
+        const QuantizedScale = QuantizedScale
+        buffer.writeu16(Buf, Cur, (X.Scale - MinScale) // QuantizedScale)
+        buffer.writeu16(Buf, Cur + 2, (Y.Scale - MinScale) // QuantizedScale)
+        return Cur + 4
+    end
+
+    const function UDim2QuantDes(Buf: buffer, Cur: number): (UDim2, number)
+        const MinScale = MinScale
+        const QuantizedScale = QuantizedScale
+        const X = MinScale + buffer.readu16(Buf, Cur) * QuantizedScale
+        const Y = MinScale + buffer.readu16(Buf, Cur + 2) * QuantizedScale
+        return FromUDim2Scale(X, Y), Cur + 4
+    end
+
+    UDim2QuantNode[SER] = UDim2QuantSer
+    UDim2QuantNode[DES] = UDim2QuantDes
+    return UDim2QuantNode
+end
+
 Types.U8 = U8
 Types.I8 = I8
 Types.U16 = U16
@@ -4338,6 +4436,10 @@ Types.I16 = I16
 Types.U32 = U32
 Types.I32 = I32
 Types.F32 = F32
+Types.U40 = U40
+Types.I40 = I40
+Types.U48 = U48
+Types.I48 = I48
 Types.F64 = F64
 Types.String = String
 Types.String8 = String8
@@ -4379,6 +4481,7 @@ Types.UDim2Scale = UDim2Scale
 Types.UDim2Offset = UDim2Offset
 Types.UDim2OffsetI16 = UDim2OffsetI16
 Types.UDim2ScaleF24 = UDim2ScaleF24
+Types.UDim2Quant = UDim2Quant
 Types.Bool = Bool
 Types.BoolPacked = BoolPacked
 Types.StringFixed = StringFixed
@@ -4397,6 +4500,10 @@ Types.CFrameF16 = CFrameF16
 Types.CFrameF24 = CFrameF24
 Types.QCFrameF16 = QCFrameF16
 Types.QCFrameF24 = QCFrameF24
+Types.CFrameQuant = CFrameQuant
+Types.CFrameQuant8 = CFrameQuant8
+Types.CFrameQuantF16 = CFrameQuantF16
+Types.CFrameQuant8F16 = CFrameQuant8F16
 Types.Color3 = Color3Node
 Types.Enum = EnumNode
 Types.Enum8 = Enum8
@@ -4417,8 +4524,8 @@ function VoidSentryUltimate.Serialize<T>(Schema: SerdesNode<T>, Value: T): buffe
 	const Ser = Schema[SER] :: Ser<T>
     const WBuf = WriteBuffer
 	const Cur = Ser(Value, WBuf, 0)
-	const Buf = buffer.create(Cur)
-	buffer.copy(Buf, 0, WBuf, 0, Cur)
+	const Buf = CreateBuffer(Cur)
+	CopyBuffer(Buf, 0, WBuf, 0, Cur)
 	return Buf
 end
 
@@ -4435,8 +4542,8 @@ function VoidSentryUltimate.SerializeWithOffset<T>(Schema: SerdesNode<T>, Value:
 	const Ser = Schema[SER] :: Ser<T>
     const WBuf = WriteBuffer
 	const Cur = Ser(Value, WBuf, 0)
-	const Buf = buffer.create(Cur + Offset)
-	buffer.copy(Buf, Offset, WBuf, 0, Cur)
+	const Buf = CreateBuffer(Cur + Offset)
+	CopyBuffer(Buf, Offset, WBuf, 0, Cur)
 	return Buf
 end
 
@@ -4478,9 +4585,16 @@ function VoidSentryUltimate.DeserializeWithOffset<T>(Schema: SerdesNode<T>, Buff
 	return Des(Buffer, Offset)
 end
 
-
+--- Creates a schema object from a map of field names to type nodes.
+---
+--- Field names are collected and sorted lexicographically. The returned object
+--- exposes full-struct and delta helpers. Maximum 255 fields.
+--- @within VoidSentryUltimate
+--- @tag Core
+--- @param Tbl T -- Map of field name to `SerdesNode`.
+--- @return Schema
 function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): Schema<GetTypeFromTypeNodes<T>>
-    const Schema = {}
+    const Object = {}
 
     const Keys = {}
     local Idx = 0
@@ -4505,7 +4619,7 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
         KeyIndex[Key] = i
     end
 
-    function Schema.Serialize(Data: { [string]: any } & GetTypeFromTypeNodes<T>): buffer
+    function Object.Serialize(Data: { [string]: any } & GetTypeFromTypeNodes<T>): buffer
         const Zero = 0
         local Cur = Zero
         const Writes = Writes
@@ -4514,25 +4628,25 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
         for i, Key in Keys do
             Cur = Writes[i](Data[Key], WBuf, Cur)
         end
-        const Buf = buffer.create(Cur)
-        buffer.copy(Buf, Zero, WBuf, Zero, Cur)
+        const Buf = CreateBuffer(Cur)
+        CopyBuffer(Buf, Zero, WBuf, Zero, Cur)
         return Buf
     end
 
-    function Schema.SerializeWithOffset(Data: { [string]: any } & GetTypeFromTypeNodes<T>, Offset: number): buffer
-        local Cur = Offset
+    function Object.SerializeWithOffset(Data: { [string]: any } & GetTypeFromTypeNodes<T>, Offset: number): buffer
+        local Cur = 0
         const Writes = Writes
         const Keys = Keys
         const WBuf = WriteBuffer
         for i, Key in Keys do
             Cur = Writes[i](Data[Key], WBuf, Cur)
         end
-        const Buf = buffer.create(Cur)
-        buffer.copy(Buf, Offset, WBuf, Offset, Cur - Offset)
+        const Buf = CreateBuffer(Offset + Cur)
+        CopyBuffer(Buf, Offset, WBuf, 0, Cur)
         return Buf
     end
 
-    function Schema.Push(Data: { [string]: any } & GetTypeFromTypeNodes<T>, Buffer: buffer, Offset: number?): number
+    function Object.Push(Data: { [string]: any } & GetTypeFromTypeNodes<T>, Buffer: buffer, Offset: number?): number
         local Cur = Offset or 0
         const Keys = Keys
         const Writes = Writes
@@ -4542,7 +4656,7 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
         return Cur
     end
 
-    function Schema.Deserialize(Buffer: buffer): (GetTypeFromTypeNodes<T>, number)
+    function Object.Deserialize(Buffer: buffer): (GetTypeFromTypeNodes<T>, number)
         local Cur = 0
         const Result = {}
         const Keys = Keys
@@ -4553,7 +4667,7 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
         return Result :: GetTypeFromTypeNodes<T>, Cur
     end
 
-    function Schema.DeserializeWithOffset(Buffer: buffer, Offset: number): (GetTypeFromTypeNodes<T>, number)
+    function Object.DeserializeWithOffset(Buffer: buffer, Offset: number): (GetTypeFromTypeNodes<T>, number)
         local Cur = Offset
         const Result = {}
         const Keys = Keys
@@ -4564,7 +4678,7 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
         return Result :: GetTypeFromTypeNodes<T>, Cur
     end
 
-    function Schema.DeltaSerialize(Data: { [string]: any }, Offset: number?): buffer
+    function Object.DeltaSerialize(Data: { [string]: any }, Offset: number?): buffer
         local Cur = Offset or 0
         const Start = Cur
         Cur += 1
@@ -4580,12 +4694,12 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
             Cur = Writes[Index](Value, WBuf, Cur)
         end
         buffer.writeu8(WBuf, Start, Len)
-        const Buf = buffer.create(Cur)
-        buffer.copy(Buf, 0, WBuf, 0, Cur)
+        const Buf = CreateBuffer(Cur)
+        CopyBuffer(Buf, 0, WBuf, 0, Cur)
         return Buf
     end
 
-    function Schema.DeltaPush(Buffer: buffer, Data: Optional<GetTypeFromTypeNodes<T>>, Offset: number): number
+    function Object.DeltaPush(Buffer: buffer, Data: Optional<GetTypeFromTypeNodes<T>>, Offset: number): number
         const Cur = Offset
         Offset += 1
         local Len = 0
@@ -4602,7 +4716,7 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
         return Offset
     end
 
-    function Schema.DeltaDeserialize(Buffer: buffer, Offset: number?): (Optional<GetTypeFromTypeNodes<T>>, number)
+    function Object.DeltaDeserialize(Buffer: buffer, Offset: number?): (Optional<GetTypeFromTypeNodes<T>>, number)
         local Cur = Offset or 0
         const Len = buffer.readu8(Buffer, Cur)
         Cur += 1
@@ -4617,9 +4731,7 @@ function VoidSentryUltimate.Schema<T>(Tbl: { [string]: SerdesNode<any> } & T): S
         return Result :: Optional<GetTypeFromTypeNodes<T>>, Cur
     end
 
-
-    
-    return Schema :: Schema<GetTypeFromTypeNodes<T>>
+    return Object :: Schema<GetTypeFromTypeNodes<T>>
 end
 
 --- Replaces the reusable serialization scratch buffer with a new capacity.
@@ -4629,7 +4741,7 @@ end
 --- @tag Core
 --- @param NewSize number -- New scratch-buffer size in bytes.
 function VoidSentryUltimate.SetWriteBufferSize(NewSize: number): ()
-    WriteBuffer = buffer.create(NewSize)
+    WriteBuffer = CreateBuffer(NewSize)
 end
 
 ---------------------------------------------------------

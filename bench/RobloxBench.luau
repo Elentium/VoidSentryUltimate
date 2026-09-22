@@ -87,6 +87,8 @@ const function RobloxBench(Log: boolean?, Iterations: number?)
     Bench("CFrameF24", VSTypes.CFrameF24, TestCFrame)
     Bench("QCFrameF16", VSTypes.QCFrameF16, TestCFrame)
     Bench("QCFrameF24", VSTypes.QCFrameF24, TestCFrame)
+    Bench("CFrameQuantF16", VSTypes.CFrameQuantF16, TestCFrame)
+    Bench("CFrameQuant8F16", VSTypes.CFrameQuant8F16, TestCFrame)
 
     task.wait()
 
@@ -135,6 +137,7 @@ const function RobloxBench(Log: boolean?, Iterations: number?)
     Bench("UDim2Offset", VSTypes.UDim2Offset, TestUDim2Offset)
     Bench("UDim2OffsetI16", VSTypes.UDim2OffsetI16, TestUDim2OffsetI16)
     Bench("UDim2ScaleF24", VSTypes.UDim2ScaleF24, TestUDim2Scale)
+    Bench("UDim2Quant", VSTypes.UDim2Quant(0, 1), TestUDim2Scale)
 
     if Log then
         PrintResults(Iter)

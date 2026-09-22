@@ -9,13 +9,13 @@ sidebar_position: 2
 Add the Roblox package to your `wally.toml` dependencies:
 
 ```luau
-VoidSentryUltimate = "elentium/voidsentryultimate@1.1.0"
+VoidSentryUltimate = "elentium/voidsentryultimate@1.1.1"
 ```
 
 For a pure Luau project, use the separate package:
 
 ```luau
-VoidSentryUltimate = "elentium/voidsentryultimateluau@1.1.0"
+VoidSentryUltimate = "elentium/voidsentryultimateluau@1.1.1"
 ```
 
 Install dependencies:

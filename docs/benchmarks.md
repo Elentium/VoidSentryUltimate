@@ -20,11 +20,15 @@ Values are average microseconds per call (μs). Lower is faster.
 
 | Type | Serialize | Deserialize | RoundTrip |
 | --- | ---: | ---: | ---: |
-| `U8` | 0.06 | 0.02 | 0.08 |
-| `F32` | 0.06 | 0.02 | 0.08 |
-| `F64` | 0.06 | 0.02 | 0.08 |
-| `Bool` | 0.06 | 0.02 | 0.08 |
-| `String` (100 chars) | 0.09 | 0.06 | 0.16 |
+| `U8` | 0.04 | 0.02 | 0.06 |
+| `U40` | 0.05 | 0.02 | 0.06 |
+| `I40` | 0.05 | 0.02 | 0.07 |
+| `U48` | 0.05 | 0.02 | 0.06 |
+| `I48` | 0.05 | 0.02 | 0.06 |
+| `F32` | 0.05 | 0.02 | 0.06 |
+| `F64` | 0.05 | 0.02 | 0.06 |
+| `Bool` | 0.05 | 0.02 | 0.06 |
+| `String` (100 chars) | 0.08 | 0.06 | 0.14 |
 
 ### Vectors, buffers, and Roblox types
 
@@ -34,25 +38,28 @@ Values are average microseconds per call (μs). Lower is faster.
 | `VectorF16` | 0.08 | 0.03 | 0.12 |
 | `BufferFixed` (32b) | 0.08 | 0.05 | 0.14 |
 | `Buffer8` (33b payload) | 0.09 | 0.06 | 0.16 |
-| `Color3` | 0.07 | 0.04 | 0.08 |
-| `CFrame` | 0.09 | 0.06 | 0.14 |
+| `Color3` | 0.07 | 0.03 | 0.08 |
+| `UDim2Quant` | 0.07 | 0.04 | 0.10 |
+| `CFrame` | 0.09 | 0.05 | 0.14 |
 | `QCFrame` | 0.09 | 0.05 | 0.14 |
-| `CFrameF16` | 0.15 | 0.10 | 0.25 |
+| `CFrameF16` | 0.15 | 0.10 | 0.26 |
+| `CFrameQuantF16` | 0.10 | 0.11 | 0.23 |
+| `CFrameQuant8F16` | 0.10 | 0.11 | 0.23 |
 | `Instance` | 0.05 | 0.02 | 0.07 |
-| `SerInstance` | 0.20 | 0.96 | 1.25 |
+| `SerInstance` | 0.17 | 0.90 | 1.13 |
 
 ### Collections
 
 | Type | Serialize | Deserialize | RoundTrip |
 | --- | ---: | ---: | ---: |
-| `Array` (10 × `U8`) | 0.17 | 0.15 | 0.32 |
-| `Array` (100 × `U8`) | 0.94 | 1.03 | 2.05 |
-| `Map` (10 × `U8`→`U8`) | 0.25 | 0.35 | 0.63 |
-| `Map` (100 × `U8`→`U8`) | 1.98 | 2.32 | 4.36 |
-| `Schema` (10 × `U8`) | 0.19 | 0.38 | 0.58 |
-| `Schema` (100 × `U8`) | 1.72 | 3.13 | 4.89 |
+| `Array` (10 × `U8`) | 0.14 | 0.14 | 0.30 |
+| `Array` (100 × `U8`) | 0.89 | 0.99 | 1.88 |
+| `Map` (10 × `U8`→`U8`) | 0.21 | 0.35 | 0.59 |
+| `Map` (100 × `U8`→`U8`) | 1.56 | 2.16 | 3.86 |
+| `Schema` (10 × `U8`) | 0.18 | 0.37 | 0.55 |
+| `Schema` (100 × `U8`) | 1.49 | 2.91 | 4.51 |
 
-Primitive nodes stay near **0.06 μs** serialize and **0.02 μs** deserialize. Cost grows mainly with collection size and with compressed / property-driven types such as `CFrameF16` and `SerInstance`.
+Primitive nodes stay near **0.04–0.05 μs** serialize and **0.02 μs** deserialize. The 40-bit and 48-bit integer nodes remain in that range despite their wider wire formats. Cost grows mainly with collection size and with compressed / property-driven types such as `CFrameF16` and `SerInstance`.
 
 ## Versus Sera
 

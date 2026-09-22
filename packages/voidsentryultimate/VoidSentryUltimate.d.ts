@@ -58,6 +58,10 @@ declare namespace VoidSentryUltimate {
 		readonly I24: SerdesNode<number>
 		readonly U32: SerdesNode<number>
 		readonly I32: SerdesNode<number>
+		readonly U40: SerdesNode<number>
+		readonly I40: SerdesNode<number>
+		readonly U48: SerdesNode<number>
+		readonly I48: SerdesNode<number>
 		readonly F16: SerdesNode<number>
 		readonly F24: SerdesNode<number>
 		readonly F32: SerdesNode<number>
@@ -100,6 +104,7 @@ declare namespace VoidSentryUltimate {
 		readonly UDim2Offset: SerdesNode<UDim2>
 		readonly UDim2OffsetI16: SerdesNode<UDim2>
 		readonly UDim2ScaleF24: SerdesNode<UDim2>
+		readonly UDim2Quant: (scaleMin: number, scaleMax: number) => SerdesNode<UDim2>
 
 		readonly CFrame: SerdesNode<CFrame>
 		readonly QCFrame: SerdesNode<CFrame>
@@ -107,6 +112,10 @@ declare namespace VoidSentryUltimate {
 		readonly CFrameF24: SerdesNode<CFrame>
 		readonly QCFrameF16: SerdesNode<CFrame>
 		readonly QCFrameF24: SerdesNode<CFrame>
+		readonly CFrameQuant: SerdesNode<CFrame>
+		readonly CFrameQuant8: SerdesNode<CFrame>
+		readonly CFrameQuantF16: SerdesNode<CFrame>
+		readonly CFrameQuant8F16: SerdesNode<CFrame>
 
 		readonly Color3: SerdesNode<Color3>
 

@@ -12,6 +12,8 @@ All public nodes are under `VoidSentryUltimate.Types`. Sizes below are wire size
 - `U16`, `I16`: 2-byte unsigned or signed integer.
 - `U24`, `I24`: 3-byte unsigned or signed integer.
 - `U32`, `I32`: 4-byte unsigned or signed integer.
+- `U40`, `I40`: 5-byte unsigned or signed integer.
+- `U48`, `I48`: 6-byte unsigned or signed integer.
 - `F16`: 2-byte reduced-precision float.
 - `F24`: 3-byte reduced-precision float.
 - `F32`: 4-byte float.
@@ -100,6 +102,7 @@ The pure Luau module exposes the `Vector`, `VectorF16`, `VectorF24`, `VectorU8`,
 - `UDim2Offset`: the two offset components as `F32`, 8 bytes; decoded scales are zero.
 - `UDim2OffsetI16`: the two offset components as `I16`, 4 bytes; decoded scales are zero.
 - `UDim2ScaleF24`: the two scale components as `F24`, 6 bytes; decoded offsets are zero.
+- `UDim2Quant(scaleMin, scaleMax)`: the two scale components quantized into `U16` over `[scaleMin, scaleMax]`, 4 bytes; decoded offsets are zero.
 - `Color3`: RGB channels as three bytes, 3 bytes.
 - `Enum(enumType)`: an enum item's numeric value in 2 bytes.
 - `Enum8(enumType)`: an enum item's numeric value in 1 byte.
@@ -112,8 +115,12 @@ The pure Luau module exposes the `Vector`, `VectorF16`, `VectorF24`, `VectorU8`,
 - `QCFrame`: position plus quaternion using seven `F32` values, 28 bytes.
 - `QCFrameF16`: the same seven values using `F16`, 14 bytes.
 - `QCFrameF24`: the same seven values using `F24`, 21 bytes.
+- `CFrameQuant`: position as three `F32` values plus yaw, pitch, and roll as `U16`, 18 bytes.
+- `CFrameQuant8`: position as three `F32` values plus yaw, pitch, and roll as `U8`, 15 bytes.
+- `CFrameQuantF16`: position as three `F16` values plus yaw, pitch, and roll as `U16`, 12 bytes.
+- `CFrameQuant8F16`: position as three `F16` values plus yaw, pitch, and roll as `U8`, 9 bytes.
 
-The compressed variants trade precision for smaller payloads. Quaternion variants are smaller than matrix variants but reconstruct orientation from quaternion components.
+The compressed variants trade precision for smaller payloads. Quaternion variants are smaller than matrix variants but reconstruct orientation from quaternion components. Quantized variants store Euler angles instead of a matrix or quaternion; `U8` orientation is coarser than `U16`.
 
 ## Roblox instances
 
@@ -129,7 +136,7 @@ For `Instance` and `Instance24`, module initialization maintains maps between in
 
 `LuauVS.luau` exposes exactly these public `Types` names:
 
-- Numbers and booleans: `U8`, `I8`, `U16`, `I16`, `U24`, `I24`, `U32`, `I32`, `F16`, `F24`, `F32`, `F64`, `Bool`, `BoolPacked`.
+- Numbers and booleans: `U8`, `I8`, `U16`, `I16`, `U24`, `I24`, `U32`, `I32`, `U40`, `I40`, `U48`, `I48`, `F16`, `F24`, `F32`, `F64`, `Bool`, `BoolPacked`.
 - Strings and buffers: `String`, `String8`, `StringFixed`, `Buffer`, `Buffer8`, `Buffer24`, `BufferFixed`.
 - Collections: `Array`, `Array8`, `Array24`, `ArrayFixed`, `Map`, `Map8`, `Map24`, `MapFixed`, `Struct`, `DeltaStruct`, `DeltaStruct16`, `Optional`.
 - Vectors: `Vector`, `VectorF16`, `VectorF24`, `VectorU8`, `VectorI8`, `VectorU16`, `VectorI16`, `VectorU24`, `VectorI24`.

@@ -58,6 +58,7 @@ Use the smallest representation that safely covers real values:
 - Use `F16` or `F24` only after testing acceptable precision and range on representative values.
 - Use integer vector variants only when every component fits the selected integer representation.
 - Consider quaternion CFrames when their smaller representation fits your accuracy needs.
+- Use `CFrameQuantF16` / `CFrameQuant8F16` or `UDim2Quant` only after measuring orientation or scale error on representative values.
 
 Reduced precision formats are lossy. Avoid unsupported assumptions about exact decimal error or range; test the values your application actually sends.
 

@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="generator" content="Docusaurus v3.10.1">
 <title data-rh="true">Type catalog | VoidSentryUltimate</title><meta data-rh="true" name="viewport" content="width=device-width,initial-scale=1"><meta data-rh="true" name="twitter:card" content="summary_large_image"><meta data-rh="true" property="og:url" content="https://elentium.github.io/VoidSentryUltimate/docs/types"><meta data-rh="true" property="og:locale" content="en"><meta data-rh="true" name="docusaurus_locale" content="en"><meta data-rh="true" name="docsearch:language" content="en"><meta data-rh="true" name="docusaurus_version" content="current"><meta data-rh="true" name="docusaurus_tag" content="docs-default-current"><meta data-rh="true" name="docsearch:version" content="current"><meta data-rh="true" name="docsearch:docusaurus_tag" content="docs-default-current"><meta data-rh="true" property="og:title" content="Type catalog | VoidSentryUltimate"><meta data-rh="true" name="description" content="All public nodes are under VoidSentryUltimate.Types. Sizes below are wire sizes. Variable-size nodes include the stated prefix plus their payload."><meta data-rh="true" property="og:description" content="All public nodes are under VoidSentryUltimate.Types. Sizes below are wire sizes. Variable-size nodes include the stated prefix plus their payload."><link data-rh="true" rel="icon" href="/VoidSentryUltimate/favicon.svg"><link data-rh="true" rel="canonical" href="https://elentium.github.io/VoidSentryUltimate/docs/types"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/docs/types" hreflang="en"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/docs/types" hreflang="x-default"><script data-rh="true" type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Type catalog","item":"https://elentium.github.io/VoidSentryUltimate/docs/types"}]}</script><link rel="stylesheet" href="/VoidSentryUltimate/assets/css/styles.86d7d8cd.css">
-<script src="/VoidSentryUltimate/assets/js/runtime~main.2a625bb0.js" defer="defer"></script>
-<script src="/VoidSentryUltimate/assets/js/main.e91506a5.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/runtime~main.d277111c.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/main.49235b37.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -21,9 +21,12 @@
 <li class=""><code>U32</code>, <code>I32</code>: 4-byte unsigned or signed integer.</li>
 <li class=""><code>U40</code>, <code>I40</code>: 5-byte unsigned or signed integer.</li>
 <li class=""><code>U48</code>, <code>I48</code>: 6-byte unsigned or signed integer.</li>
+<li class=""><code>UInt</code>: unsigned LEB128 integer, 1 to 8 bytes. Each byte carries 7 value bits; the high bit marks another byte. Widths are 1 byte below 2^7, 2 below 2^14, 3 below 2^21, 4 below 2^28, 5 below 2^35, 6 below 2^42, 7 below 2^49, and 8 below 2^56. Negative values are rejected.</li>
+<li class=""><code>Int</code>: signed integer stored as ZigZag (<code>0, -1, 1, -2, …</code> become <code>0, 1, 2, 3, …</code>) and then the same LEB128 encoding as <code>UInt</code>. Small magnitudes stay short; a negative value uses the same width as the matching unsigned magnitude.</li>
 <li class=""><code>F16</code>: 2-byte reduced-precision float.</li>
 <li class=""><code>F24</code>: 3-byte reduced-precision float.</li>
 <li class=""><code>F32</code>: 4-byte float.</li>
+<li class=""><code>Number</code>: Alias for <code>F32</code></li>
 <li class=""><code>F64</code>: 8-byte float.</li>
 </ul>
 <p><code>F16</code> uses less space than <code>F24</code>, with less precision and range. <code>F24</code> retains more of an <code>F32</code> value while still saving one byte. Both are lossy conversions; use <code>F32</code> or <code>F64</code> when reduced precision is unacceptable. The implementation does not promise application-specific error bounds, so test representative values before choosing a reduced format.</p>
@@ -37,6 +40,7 @@
 <ul>
 <li class=""><code>String</code>: 2-byte unsigned byte-length prefix, then 0 to 65,535 bytes.</li>
 <li class=""><code>String8</code>: 1-byte unsigned byte-length prefix, then 0 to 255 bytes.</li>
+<li class=""><code>String24</code>: 3-byte unsigned byte-length prefix, then 0 to 16,777,215 bytes.</li>
 <li class=""><code>StringFixed(length)</code>: exactly <code>length</code> bytes with no prefix.</li>
 </ul>
 <p>The prefix records bytes, not UTF-8 characters. <code>StringFixed</code> requires the caller to provide exactly the configured byte length.</p>
@@ -83,7 +87,7 @@
 <li class=""><code>Vector2U24</code>, <code>Vector2I24</code>: two integer components, 6 bytes.</li>
 </ul>
 <p>The pure Luau module exposes the <code>Vector</code>, <code>VectorF16</code>, <code>VectorF24</code>, <code>VectorU8</code>, <code>VectorI8</code>, <code>VectorU16</code>, <code>VectorI16</code>, <code>VectorU24</code>, and <code>VectorI24</code> names for Luau&#x27;s <code>vector</code> type. It has vector support but no Roblox-only types.</p>
-<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="roblox-ui-and-value-types">Roblox UI and value types<a href="#roblox-ui-and-value-types" class="hash-link" aria-label="Direct link to Roblox UI and value types" title="Direct link to Roblox UI and value types" translate="no">​</a></h2>
+<h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="roblox-ui-and-value-types">Roblox UI and value types<a href="#roblox-ui-and-value-types" class="hash-link" aria-label="Direct link to Roblox UI and value types" title="Direct link to Roblox UI and value types" translate="no">  ​</a></h2>
 <ul>
 <li class=""><code>UDim2</code>: four <code>F32</code> components, 16 bytes.</li>
 <li class=""><code>UDim2Scale</code>: the two scale components as <code>F32</code>, 8 bytes; decoded offsets are zero.</li>
@@ -120,8 +124,8 @@
 <h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="pure-luau-availability">Pure Luau availability<a href="#pure-luau-availability" class="hash-link" aria-label="Direct link to Pure Luau availability" title="Direct link to Pure Luau availability" translate="no">​</a></h2>
 <p><code>LuauVS.luau</code> exposes exactly these public <code>Types</code> names:</p>
 <ul>
-<li class="">Numbers and booleans: <code>U8</code>, <code>I8</code>, <code>U16</code>, <code>I16</code>, <code>U24</code>, <code>I24</code>, <code>U32</code>, <code>I32</code>, <code>U40</code>, <code>I40</code>, <code>U48</code>, <code>I48</code>, <code>F16</code>, <code>F24</code>, <code>F32</code>, <code>F64</code>, <code>Bool</code>, <code>BoolPacked</code>.</li>
-<li class="">Strings and buffers: <code>String</code>, <code>String8</code>, <code>StringFixed</code>, <code>Buffer</code>, <code>Buffer8</code>, <code>Buffer24</code>, <code>BufferFixed</code>.</li>
+<li class="">Numbers and booleans: <code>U8</code>, <code>I8</code>, <code>U16</code>, <code>I16</code>, <code>U24</code>, <code>I24</code>, <code>U32</code>, <code>I32</code>, <code>U40</code>, <code>I40</code>, <code>U48</code>, <code>I48</code>, <code>UInt</code>, <code>Int</code>, <code>F16</code>, <code>F24</code>, <code>F32</code>, <code>Number</code>, <code>F64</code>, <code>Bool</code>, <code>BoolPacked</code>.</li>
+<li class="">Strings and buffers: <code>String</code>, <code>String8</code>, <code>String24</code>, <code>StringFixed</code>, <code>Buffer</code>, <code>Buffer8</code>, <code>Buffer24</code>, <code>BufferFixed</code>.</li>
 <li class="">Collections: <code>Array</code>, <code>Array8</code>, <code>Array24</code>, <code>ArrayFixed</code>, <code>Map</code>, <code>Map8</code>, <code>Map24</code>, <code>MapFixed</code>, <code>Struct</code>, <code>DeltaStruct</code>, <code>DeltaStruct16</code>, <code>Optional</code>.</li>
 <li class="">Vectors: <code>Vector</code>, <code>VectorF16</code>, <code>VectorF24</code>, <code>VectorU8</code>, <code>VectorI8</code>, <code>VectorU16</code>, <code>VectorI16</code>, <code>VectorU24</code>, <code>VectorI24</code>.</li>
 </ul>

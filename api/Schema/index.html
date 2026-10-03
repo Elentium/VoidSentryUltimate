@@ -8,8 +8,8 @@ Methods serialize a table of named fields without wrapping a `SerdesNode`.
 Field names are sorted when the schema is created. Maximum 255 fields."><meta data-rh="true" property="og:description" content="Schema object returned by `VoidSentryUltimate.Schema`.
 Methods serialize a table of named fields without wrapping a `SerdesNode`.
 Field names are sorted when the schema is created. Maximum 255 fields."><link data-rh="true" rel="icon" href="/VoidSentryUltimate/favicon.svg"><link data-rh="true" rel="canonical" href="https://elentium.github.io/VoidSentryUltimate/api/Schema"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/api/Schema" hreflang="en"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/api/Schema" hreflang="x-default"><link rel="stylesheet" href="/VoidSentryUltimate/assets/css/styles.86d7d8cd.css">
-<script src="/VoidSentryUltimate/assets/js/runtime~main.2a625bb0.js" defer="defer"></script>
-<script src="/VoidSentryUltimate/assets/js/main.e91506a5.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/runtime~main.d277111c.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/main.49235b37.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -37,6 +37,8 @@ Field names are sorted when the schema is created. Maximum 255 fields."><link da
 <p>Deserializes a delta payload into a sparse table.</p>
 </div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="DeltaPush"><code style="text-decoration:none">DeltaPush</code><a href="#DeltaPush" class="hash-link" aria-label="Direct link to DeltaPush" title="Direct link to DeltaPush" translate="no">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L83"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Schema<!-- -->.<!-- -->DeltaPush<!-- -->:<!-- --> </code> <code class="purple_ieR2">(</code><div class="inset_uKQm"><code>Buffer<!-- -->: </code><code class="blue_P4bS">buffer</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>Data<!-- -->: </code><code class="blue_P4bS">T</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>Offset<!-- -->: </code><code class="blue_P4bS">number</code></div><code class="purple_ieR2">)</code><code class="purple_ieR2"> → </code><code class="blue_P4bS">number</code></div><div>
 <p>Writes a delta payload directly into an existing buffer.</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Migrate"><code style="text-decoration:none">Migrate</code><a href="#Migrate" class="hash-link" aria-label="Direct link to Migrate" title="Direct link to Migrate" translate="no">​</a></h3><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L87"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>Schema<!-- -->.<!-- -->Migrate<!-- -->:<!-- --> </code> <code class="purple_ieR2">(</code><div class="inset_uKQm"><code>OtherSchema<!-- -->: </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VoidSentryUltimate/api/Schema">Schema</a></code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>OldBuf<!-- -->: </code><code class="blue_P4bS">buffer</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>OldOffset<!-- -->: </code><code class="blue_P4bS">number?</code><code class="purple_ieR2">,</code></div><div class="inset_uKQm"><code>NewOffset<!-- -->: </code><code class="blue_P4bS">number?</code></div><code class="purple_ieR2">)</code><code class="purple_ieR2"> → </code><code class="blue_P4bS">buffer</code></div><div>
+<p>Decodes <code>OldBuf</code> with <code>OtherSchema</code> and writes it again with this schema.</p>
 </div></div></article></div><nav class="docusaurus-mt-lg pagination-nav" aria-label="Docs pages"><a class="pagination-nav__link pagination-nav__link--prev" href="/VoidSentryUltimate/api/VoidSentryUltimate"><div class="pagination-nav__sublabel">Previous</div><div class="pagination-nav__label">VoidSentryUltimate</div></a><a class="pagination-nav__link pagination-nav__link--next" href="/VoidSentryUltimate/api/Types"><div class="pagination-nav__sublabel">Next</div><div class="pagination-nav__label">Types</div></a></nav><details><summary>Show raw api</summary><pre style="max-width:100%;white-space:pre-wrap">{
     &quot;functions&quot;: [],
     &quot;properties&quot;: [
@@ -111,6 +113,15 @@ Field names are sorted when the schema is created. Maximum 255 fields."><link da
                 &quot;line&quot;: 83,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
+        },
+        {
+            &quot;name&quot;: &quot;Migrate&quot;,
+            &quot;desc&quot;: &quot;Decodes `OldBuf` with `OtherSchema` and writes it again with this schema.&quot;,
+            &quot;lua_type&quot;: &quot;(OtherSchema: Schema, OldBuf: buffer, OldOffset: number?, NewOffset: number?) -&gt; buffer&quot;,
+            &quot;source&quot;: {
+                &quot;line&quot;: 87,
+                &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
+            }
         }
     ],
     &quot;types&quot;: [],
@@ -120,6 +131,6 @@ Field names are sorted when the schema is created. Maximum 255 fields."><link da
         &quot;line&quot;: 51,
         &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
     }
-}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#DeltaDeserialize" class="table-of-contents__link toc-highlight">DeltaDeserialize</a></li><li><a href="#DeltaPush" class="table-of-contents__link toc-highlight">DeltaPush</a></li><li><a href="#DeltaSerialize" class="table-of-contents__link toc-highlight">DeltaSerialize</a></li><li><a href="#Deserialize" class="table-of-contents__link toc-highlight">Deserialize</a></li><li><a href="#DeserializeWithOffset" class="table-of-contents__link toc-highlight">DeserializeWithOffset</a></li><li><a href="#Push" class="table-of-contents__link toc-highlight">Push</a></li><li><a href="#Serialize" class="table-of-contents__link toc-highlight">Serialize</a></li><li><a href="#SerializeWithOffset" class="table-of-contents__link toc-highlight">SerializeWithOffset</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 IAMNOTULTRA3. Built with Moonwave and Docusaurus.</div></div></div></footer></div>
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#properties" class="table-of-contents__link toc-highlight">Properties</a><ul><li><a href="#DeltaDeserialize" class="table-of-contents__link toc-highlight">DeltaDeserialize</a></li><li><a href="#DeltaPush" class="table-of-contents__link toc-highlight">DeltaPush</a></li><li><a href="#DeltaSerialize" class="table-of-contents__link toc-highlight">DeltaSerialize</a></li><li><a href="#Deserialize" class="table-of-contents__link toc-highlight">Deserialize</a></li><li><a href="#DeserializeWithOffset" class="table-of-contents__link toc-highlight">DeserializeWithOffset</a></li><li><a href="#Migrate" class="table-of-contents__link toc-highlight">Migrate</a></li><li><a href="#Push" class="table-of-contents__link toc-highlight">Push</a></li><li><a href="#Serialize" class="table-of-contents__link toc-highlight">Serialize</a></li><li><a href="#SerializeWithOffset" class="table-of-contents__link toc-highlight">SerializeWithOffset</a></li></ul></li></ul></div></div></div></div></main></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 IAMNOTULTRA3. Built with Moonwave and Docusaurus.</div></div></div></footer></div>
 </body>
 </html>

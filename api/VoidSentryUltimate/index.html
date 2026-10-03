@@ -12,8 +12,8 @@ Build a `SerdesNode` from `VoidSentryUltimate.Types`, then use the same
 schema to serialize and deserialize a value. The module includes Roblox
 nodes for `Vector3`, `Vector2`, `UDim2`, `Instance`, `CFrame`, `Color3`,
 and `Enum` values. See the Types guide for the complete catalog and wire sizes."><link data-rh="true" rel="icon" href="/VoidSentryUltimate/favicon.svg"><link data-rh="true" rel="canonical" href="https://elentium.github.io/VoidSentryUltimate/api/VoidSentryUltimate"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/api/VoidSentryUltimate" hreflang="en"><link data-rh="true" rel="alternate" href="https://elentium.github.io/VoidSentryUltimate/api/VoidSentryUltimate" hreflang="x-default"><link rel="stylesheet" href="/VoidSentryUltimate/assets/css/styles.86d7d8cd.css">
-<script src="/VoidSentryUltimate/assets/js/runtime~main.2a625bb0.js" defer="defer"></script>
-<script src="/VoidSentryUltimate/assets/js/main.e91506a5.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/runtime~main.d277111c.js" defer="defer"></script>
+<script src="/VoidSentryUltimate/assets/js/main.49235b37.js" defer="defer"></script>
 </head>
 <body>
 <svg style="display: none;"><defs>
@@ -27,7 +27,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
   nodes for <code>Vector3</code>, <code>Vector2</code>, <code>UDim2</code>, <code>Instance</code>, <code>CFrame</code>, <code>Color3</code>,
   and <code>Enum</code> values. See the Types guide for the complete catalog and wire sizes.
 </p>
-</div></header><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions" translate="no">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Serialize"><code style="text-decoration:none">Serialize</code><a href="#Serialize" class="hash-link" aria-label="Direct link to Serialize" title="Direct link to Serialize" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L4965"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Serialize</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div></header><h2 class="anchor anchorTargetStickyNavbar_Vzrq" id="functions">Functions<a href="#functions" class="hash-link" aria-label="Direct link to Functions" title="Direct link to Functions" translate="no">​</a></h2><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Serialize"><code style="text-decoration:none">Serialize</code><a href="#Serialize" class="hash-link" aria-label="Direct link to Serialize" title="Direct link to Serialize" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3548"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Serialize</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Schema that defines the wire representation.</p>
 </span></span></div><div><code>Value<!-- -->: </code><code class="blue_P4bS">T</code><span class="inlineDescription_G7Er">-- <span>
 <p>Value to serialize.</p>
@@ -37,7 +37,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
   Values are not validated. The caller must provide data that matches the
   schema and the selected node's range.
 </p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="SerializeWithOffset"><code style="text-decoration:none">SerializeWithOffset</code><a href="#SerializeWithOffset" class="hash-link" aria-label="Direct link to SerializeWithOffset" title="Direct link to SerializeWithOffset" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L4983"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">SerializeWithOffset</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="SerializeWithOffset"><code style="text-decoration:none">SerializeWithOffset</code><a href="#SerializeWithOffset" class="hash-link" aria-label="Direct link to SerializeWithOffset" title="Direct link to SerializeWithOffset" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3566"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">SerializeWithOffset</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Schema that defines the wire representation.</p>
 </span></span></div><div><code>Value<!-- -->: </code><code class="blue_P4bS">T</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Value to serialize.</p>
@@ -49,7 +49,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
   The returned buffer has <code>Offset</code> bytes before the payload. Use this when a
   caller will fill a packet header separately.
 </p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Deserialize"><code style="text-decoration:none">Deserialize</code><a href="#Deserialize" class="hash-link" aria-label="Direct link to Deserialize" title="Direct link to Deserialize" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L4999"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Deserialize</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Deserialize"><code style="text-decoration:none">Deserialize</code><a href="#Deserialize" class="hash-link" aria-label="Direct link to Deserialize" title="Direct link to Deserialize" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3582"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Deserialize</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Schema that defines the wire representation.</p>
 </span></span></div><div><code>Buffer<!-- -->: </code><code class="blue_P4bS">buffer</code><span class="inlineDescription_G7Er">-- <span>
 <p>Buffer containing the encoded value.</p>
@@ -58,7 +58,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
   Deserializes a buffer from byte zero using the supplied schema.
   The schema must match the schema and node choices used by the writer.
 </p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Push"><code style="text-decoration:none">Push</code><a href="#Push" class="hash-link" aria-label="Direct link to Push" title="Direct link to Push" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L5014"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Push</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Push"><code style="text-decoration:none">Push</code><a href="#Push" class="hash-link" aria-label="Direct link to Push" title="Direct link to Push" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3597"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Push</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Schema that defines the wire representation.</p>
 </span></span></div><div><code>Value<!-- -->: </code><code class="blue_P4bS">T</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Value to serialize.</p>
@@ -72,7 +72,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
   The destination must already be large enough. <code>Offset</code> defaults to zero.
   Returns the byte offset after the written payload.
 </p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="DeserializeWithOffset"><code style="text-decoration:none">DeserializeWithOffset</code><a href="#DeserializeWithOffset" class="hash-link" aria-label="Direct link to DeserializeWithOffset" title="Direct link to DeserializeWithOffset" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L5025"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">DeserializeWithOffset</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="DeserializeWithOffset"><code style="text-decoration:none">DeserializeWithOffset</code><a href="#DeserializeWithOffset" class="hash-link" aria-label="Direct link to DeserializeWithOffset" title="Direct link to DeserializeWithOffset" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3608"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">DeserializeWithOffset</code><code>(</code><div class="inset_uKQm"><div><code>Schema<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Schema that defines the wire representation.</p>
 </span></span></div><div><code>Buffer<!-- -->: </code><code class="blue_P4bS">buffer</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
 <p>Buffer containing the encoded value.</p>
@@ -80,7 +80,20 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
 <p>Byte offset at which reading begins.</p>
 </span></span></div></div><code>) → </code><code class="blue_P4bS">T,</code><code class="blue_P4bS">number</code><code class="purple_ieR2">(</code><code class="blue_P4bS">cursor</code><code class="purple_ieR2">)</code></div><div>
 <p>Deserializes a value beginning at a byte offset in a buffer.</p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Schema"><code style="text-decoration:none">Schema</code><a href="#Schema" class="hash-link" aria-label="Direct link to Schema" title="Direct link to Schema" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L5038"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Schema</code><code>(</code><div class="inset_uKQm"><div><code>Tbl<!-- -->: </code><code class="blue_P4bS">T</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Migrate"><code style="text-decoration:none">Migrate</code><a href="#Migrate" class="hash-link" aria-label="Direct link to Migrate" title="Direct link to Migrate" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3621"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Migrate</code><code>(</code><div class="inset_uKQm"><div><code>Old<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Old SerdesNode which was used to serialize the old buffer.</p>
+</span></span></div><div><code>New<!-- -->: </code><code class="blue_P4bS">SerdesNode</code><code class="op_lSLc">&lt;</code><code class="blue_P4bS">T</code><code class="op_lSLc">&gt;</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>New SerdesNode which will be used to re-serialize the old buffer.</p>
+</span></span></div><div><code>OldBuf<!-- -->: </code><code class="blue_P4bS">buffer</code><code>,</code></div><div><code>OldOffset<!-- -->: </code><code class="blue_P4bS">number?</code><code>,</code><span class="inlineDescription_G7Er">-- <span>
+<p>Optional offset if old buffer was serialized with offset.</p>
+</span></span></div><div><code>NewOffset<!-- -->: </code><code class="blue_P4bS">number?</code><span class="inlineDescription_G7Er">-- <span>
+<p>Optional offset for the new buffer.</p>
+</span></span></div></div><code>) → </code><code class="blue_P4bS">buffer</code></div><div>
+<p>
+  Migrates the old serialized buffer based on the new provided SerdesNode.
+  Mainly designed for Struct types (but might sometimes work with other types).
+</p>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="Schema"><code style="text-decoration:none">Schema</code><a href="#Schema" class="hash-link" aria-label="Direct link to Schema" title="Direct link to Schema" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3643"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">Schema</code><code>(</code><div class="inset_uKQm"><div><code>Tbl<!-- -->: </code><code class="blue_P4bS">T</code><span class="inlineDescription_G7Er">-- <span>
 <p>Map of field name to <code>SerdesNode</code>.</p>
 </span></span></div></div><code>) → </code><code class="blue_P4bS"><a style="text-decoration:underline;color:inherit" href="/VoidSentryUltimate/api/Schema">Schema</a></code></div><div>
 <p>
@@ -88,7 +101,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
   Field names are collected and sorted lexicographically. The returned object
   exposes full-struct and delta helpers. Maximum 255 fields.
 </p>
-</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="SetWriteBufferSize"><code style="text-decoration:none">SetWriteBufferSize</code><a href="#SetWriteBufferSize" class="hash-link" aria-label="Direct link to SetWriteBufferSize" title="Direct link to SetWriteBufferSize" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L5185"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">SetWriteBufferSize</code><code>(</code><div class="inset_uKQm"><div><code>NewSize<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
+</div><div class="divider_rE5g"></div><h3 class="anchor anchorTargetStickyNavbar_Vzrq" id="SetWriteBufferSize"><code style="text-decoration:none">SetWriteBufferSize</code><a href="#SetWriteBufferSize" class="hash-link" aria-label="Direct link to SetWriteBufferSize" title="Direct link to SetWriteBufferSize" translate="no">​</a></h3><span class="docTag__6UZ" style="border-color:#79b473;color:#79b473">Core</span><div class="repositoryDetailsContainer_BPdw"><a class="sourceButton_sEho" href="https://github.com/Elentium/VoidSentryUltimate/blob/main/tmp/VoidSentryUltimate.docs.luau#L3803"><div class="sourceButtonText_Vh0m">&lt;/&gt;</div></a></div><div class="memberString_GwaU"><code>VoidSentryUltimate<!-- -->.</code><code class="green_DgR4">SetWriteBufferSize</code><code>(</code><div class="inset_uKQm"><div><code>NewSize<!-- -->: </code><code class="blue_P4bS">number</code><span class="inlineDescription_G7Er">-- <span>
 <p>New scratch-buffer size in bytes.</p>
 </span></span></div></div><code>) → </code><code>(</code><code>)</code></div><div>
 <p>
@@ -124,7 +137,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
                 &quot;Core&quot;
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 4965,
+                &quot;line&quot;: 3548,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
         },
@@ -159,7 +172,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
                 &quot;Core&quot;
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 4983,
+                &quot;line&quot;: 3566,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
         },
@@ -189,7 +202,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
                 &quot;Core&quot;
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 4999,
+                &quot;line&quot;: 3582,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
         },
@@ -229,7 +242,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
                 &quot;Core&quot;
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 5014,
+                &quot;line&quot;: 3597,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
         },
@@ -264,7 +277,52 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
                 &quot;Core&quot;
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 5025,
+                &quot;line&quot;: 3608,
+                &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
+            }
+        },
+        {
+            &quot;name&quot;: &quot;Migrate&quot;,
+            &quot;desc&quot;: &quot;Migrates the old serialized buffer based on the new provided SerdesNode.\nMainly designed for Struct types (but might sometimes work with other types).&quot;,
+            &quot;params&quot;: [
+                {
+                    &quot;name&quot;: &quot;Old&quot;,
+                    &quot;desc&quot;: &quot;Old SerdesNode which was used to serialize the old buffer.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;New&quot;,
+                    &quot;desc&quot;: &quot;New SerdesNode which will be used to re-serialize the old buffer.&quot;,
+                    &quot;lua_type&quot;: &quot;SerdesNode&lt;T&gt;&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;OldBuf&quot;,
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;buffer&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;OldOffset&quot;,
+                    &quot;desc&quot;: &quot;Optional offset if old buffer was serialized with offset.&quot;,
+                    &quot;lua_type&quot;: &quot;number?&quot;
+                },
+                {
+                    &quot;name&quot;: &quot;NewOffset&quot;,
+                    &quot;desc&quot;: &quot;Optional offset for the new buffer.&quot;,
+                    &quot;lua_type&quot;: &quot;number?&quot;
+                }
+            ],
+            &quot;returns&quot;: [
+                {
+                    &quot;desc&quot;: &quot;&quot;,
+                    &quot;lua_type&quot;: &quot;buffer\n&quot;
+                }
+            ],
+            &quot;function_type&quot;: &quot;static&quot;,
+            &quot;tags&quot;: [
+                &quot;Core&quot;
+            ],
+            &quot;source&quot;: {
+                &quot;line&quot;: 3621,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
         },
@@ -289,7 +347,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
                 &quot;Core&quot;
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 5038,
+                &quot;line&quot;: 3643,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
         },
@@ -309,7 +367,7 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
                 &quot;Core&quot;
             ],
             &quot;source&quot;: {
-                &quot;line&quot;: 5185,
+                &quot;line&quot;: 3803,
                 &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
             }
         }
@@ -322,6 +380,6 @@ and `Enum` values. See the Types guide for the complete catalog and wire sizes."
         &quot;line&quot;: 23,
         &quot;path&quot;: &quot;tmp/VoidSentryUltimate.docs.luau&quot;
     }
-}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#Core" class="table-of-contents__link toc-highlight">Core</a><ul><li><a href="#Deserialize" class="table-of-contents__link toc-highlight">.Deserialize</a></li><li><a href="#DeserializeWithOffset" class="table-of-contents__link toc-highlight">.DeserializeWithOffset</a></li><li><a href="#Push" class="table-of-contents__link toc-highlight">.Push</a></li><li><a href="#Schema" class="table-of-contents__link toc-highlight">.Schema</a></li><li><a href="#Serialize" class="table-of-contents__link toc-highlight">.Serialize</a></li><li><a href="#SerializeWithOffset" class="table-of-contents__link toc-highlight">.SerializeWithOffset</a></li><li><a href="#SetWriteBufferSize" class="table-of-contents__link toc-highlight">.SetWriteBufferSize</a></li></ul></li></ul></li></ul></div></div></div></div></main></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 IAMNOTULTRA3. Built with Moonwave and Docusaurus.</div></div></div></footer></div>
+}</pre></details></div><div class="col col--3"><div class="tableOfContents_bqdL thin-scrollbar"><ul class="table-of-contents table-of-contents__left-border"><li><a href="#functions" class="table-of-contents__link toc-highlight">Functions</a><ul><li><a href="#Core" class="table-of-contents__link toc-highlight">Core</a><ul><li><a href="#Deserialize" class="table-of-contents__link toc-highlight">.Deserialize</a></li><li><a href="#DeserializeWithOffset" class="table-of-contents__link toc-highlight">.DeserializeWithOffset</a></li><li><a href="#Migrate" class="table-of-contents__link toc-highlight">.Migrate</a></li><li><a href="#Push" class="table-of-contents__link toc-highlight">.Push</a></li><li><a href="#Schema" class="table-of-contents__link toc-highlight">.Schema</a></li><li><a href="#Serialize" class="table-of-contents__link toc-highlight">.Serialize</a></li><li><a href="#SerializeWithOffset" class="table-of-contents__link toc-highlight">.SerializeWithOffset</a></li><li><a href="#SetWriteBufferSize" class="table-of-contents__link toc-highlight">.SetWriteBufferSize</a></li></ul></li></ul></li></ul></div></div></div></div></main></div></div><footer class="theme-layout-footer footer footer--dark"><div class="container container-fluid"><div class="footer__bottom text--center"><div class="footer__copyright">Copyright © 2026 IAMNOTULTRA3. Built with Moonwave and Docusaurus.</div></div></div></footer></div>
 </body>
 </html>

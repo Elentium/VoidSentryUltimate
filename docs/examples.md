@@ -10,11 +10,11 @@ sidebar_position: 5
 local VoidSentryUltimate = require(path.to.VoidSentryUltimate)
 local Types = VoidSentryUltimate.Types
 
-local Profile = Types.Struct({
+local Profile = Types.Struct {
 	Coins = Types.U32,
 	DisplayName = Types.String8,
 	EquippedItem = Types.Optional(Types.U16),
-})
+}
 
 local original = {
 	Coins = 12_500,
@@ -50,12 +50,12 @@ Define the schema in a shared module so the server and client cannot accidentall
 local VoidSentryUltimate = require(path.to.VoidSentryUltimate)
 local Types = VoidSentryUltimate.Types
 
-local DamageMessage = Types.Struct({
+local DamageMessage = Types.Struct {
 	Amount = Types.U16,
 	Critical = Types.Bool,
 	Origin = Types.VectorF24,
 	Target = Types.Instance,
-})
+}
 
 return DamageMessage
 ```
@@ -160,11 +160,11 @@ than `CFrameQuantF16` (12 bytes) and coarser in orientation.
 ## Use a fixed-size record
 
 ```luau
-local DigestRecord = Types.Struct({
+local DigestRecord = Types.Struct {
 	Digest = Types.BufferFixed(16),
 	Label = Types.StringFixed(8),
 	Samples = Types.ArrayFixed(Types.I16, 4),
-})
+}
 
 local bytes = VoidSentryUltimate.Serialize(DigestRecord, {
 	Digest = digestBuffer,
@@ -178,10 +178,10 @@ local bytes = VoidSentryUltimate.Serialize(DigestRecord, {
 ## Preserve an application header
 
 ```luau
-local Payload = Types.Struct({
+local Payload = Types.Struct {
 	Id = Types.U32,
 	Message = Types.String8,
-})
+}
 
 local bytes = VoidSentryUltimate.SerializeWithOffset(Payload, {
 	Id = 7,

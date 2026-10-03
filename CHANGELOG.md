@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.2
+
+- Math & branching & micro optimizations
+- Code quality improvements
+- `Number` type alias for F32
+- New `Int` and `UInt` LEB-128 varints
+- New `String24` type
+- Added `Migrate` for rewriting a buffer from an old schema onto a new one
+
 ## 1.1.1
 
 - Added `UDim2Quant`, `CFrameQuant`, `CFrameQuant8`, `CFrameQuantF16`, `CFrameQuant8F16`, `U40`, `I40`, `U48`, `I48` types

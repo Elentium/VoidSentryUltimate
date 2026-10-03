@@ -45,6 +45,11 @@ const schemaProps = [
 		"(Buffer: buffer, Data: T, Offset: number) -> number",
 		"Writes a delta payload directly into an existing buffer.",
 	],
+	[
+		"Migrate",
+		"(OtherSchema: Schema, OldBuf: buffer, OldOffset: number?, NewOffset: number?) -> buffer",
+		"Decodes `OldBuf` with `OtherSchema` and writes it again with this schema.",
+	],
 ];
 
 const props = [
@@ -58,6 +63,7 @@ const props = [
 	["F64", "Primitives", "IEEE double. 8 bytes.", "SerdesNode<number>"],
 	["String", "Primitives", "UTF-8 string with a `u16` byte-length prefix.", "SerdesNode<string>"],
 	["String8", "Primitives", "UTF-8 string with a `u8` byte-length prefix.", "SerdesNode<string>"],
+	["String24", "Primitives", "UTF-8 string with a `u24` byte-length prefix.", "SerdesNode<string>"],
 	["Vector", "Vectors", "`Vector3` with three `f32` components. 12 bytes.", "SerdesNode<Vector3>"],
 	["F16", "Primitives", "Half-precision float. 2 bytes. Lossy.", "SerdesNode<number>"],
 	["F24", "Primitives", "24-bit float. 3 bytes. Lossy.", "SerdesNode<number>"],
@@ -67,6 +73,8 @@ const props = [
 	["I40", "Primitives", "Signed 40-bit integer. 5 bytes.", "SerdesNode<number>"],
 	["U48", "Primitives", "Unsigned 48-bit integer. 6 bytes.", "SerdesNode<number>"],
 	["I48", "Primitives", "Signed 48-bit integer. 6 bytes.", "SerdesNode<number>"],
+	["UInt", "Primitives", "Unsigned LEB128 integer. 1 to 8 bytes.", "SerdesNode<number>"],
+	["Int", "Primitives", "Signed ZigZag + LEB128 integer. 1 to 8 bytes.", "SerdesNode<number>"],
 	["VectorF24", "Vectors", "`Vector3` with three `f24` components. 9 bytes.", "SerdesNode<Vector3>"],
 	["VectorF16", "Vectors", "`Vector3` with three `f16` components. 6 bytes.", "SerdesNode<Vector3>"],
 	["VectorU16", "Vectors", "`Vector3` with three `u16` components. 6 bytes.", "SerdesNode<Vector3>"],

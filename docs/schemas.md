@@ -43,6 +43,39 @@ local copy = Player.Deserialize(bytes)
 
 `Types.Struct` remains available as a `SerdesNode` for use with `Serialize` / `Deserialize` on a single node. `Schema` is now the preferred API.
 
+## Migrating old buffers
+
+`Migrate` decodes a buffer with an old schema and writes it again with a new one. It does not embed a version. The caller still has to know which schema produced `oldBytes`.
+
+For schema objects, call `Migrate` on the **new** schema and pass the **old** schema first:
+
+```luau
+local PlayerV1 = VoidSentryUltimate.Schema({
+	Health = Types.U8,
+	Name = Types.String8,
+})
+
+local PlayerV2 = VoidSentryUltimate.Schema({
+	Health = Types.U16,
+	Name = Types.String8,
+})
+
+local migrated = PlayerV2.Migrate(PlayerV1, oldBytes)
+local copy = PlayerV2.Deserialize(migrated)
+```
+
+`OldOffset` and `NewOffset` are optional byte offsets. `OldOffset` is where the old payload starts. `NewOffset` is where the new payload is written; the returned buffer includes that leading gap.
+
+The same idea exists for bare nodes:
+
+```luau
+local migrated = VoidSentryUltimate.Migrate(OldStruct, NewStruct, oldBytes)
+```
+
+Here the first argument is the old node and the second is the new node. This path is meant for `Struct` nodes. Other nodes can work when the decoded value is still valid input for the new node.
+
+Decoded fields are written with the new schema’s field writers. A renamed or added field is not filled in for you: every field the new schema writes must already be present on the decoded table, or the new field node must accept the missing value. Changing a field’s node is safe when the old decoded value is still a valid input for the new node, such as widening `U8` health to `U16`.
+
 ## Struct
 
 `Types.Struct(fields)` serializes every named field with its node. At schema creation, the implementation collects field names and sorts them. Serialization and deserialization use that sorted key order, not table iteration order or the visual order in the schema literal.
@@ -129,7 +162,7 @@ String lengths are byte lengths because the implementation uses Luau's `#string`
 
 - `String` and `Buffer` use a 2-byte length prefix.
 - `String8` and `Buffer8` use a 1-byte length prefix.
-- `Buffer24` uses a 3-byte length prefix.
+- `String24` and `Buffer24` use a 3-byte length prefix.
 - `StringFixed(length)` and `BufferFixed(length)` have no length prefix.
 
 Fixed strings and buffers require exactly the configured number of bytes from the caller. The library does not validate that requirement.

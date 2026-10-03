@@ -14,9 +14,12 @@ All public nodes are under `VoidSentryUltimate.Types`. Sizes below are wire size
 - `U32`, `I32`: 4-byte unsigned or signed integer.
 - `U40`, `I40`: 5-byte unsigned or signed integer.
 - `U48`, `I48`: 6-byte unsigned or signed integer.
+- `UInt`: unsigned LEB128 integer, 1 to 8 bytes. Each byte carries 7 value bits; the high bit marks another byte. Widths are 1 byte below 2^7, 2 below 2^14, 3 below 2^21, 4 below 2^28, 5 below 2^35, 6 below 2^42, 7 below 2^49, and 8 below 2^56. Negative values are rejected.
+- `Int`: signed integer stored as ZigZag (`0, -1, 1, -2, …` become `0, 1, 2, 3, …`) and then the same LEB128 encoding as `UInt`. Small magnitudes stay short; a negative value uses the same width as the matching unsigned magnitude.
 - `F16`: 2-byte reduced-precision float.
 - `F24`: 3-byte reduced-precision float.
 - `F32`: 4-byte float.
+- `Number`: Alias for `F32`
 - `F64`: 8-byte float.
 
 `F16` uses less space than `F24`, with less precision and range. `F24` retains more of an `F32` value while still saving one byte. Both are lossy conversions; use `F32` or `F64` when reduced precision is unacceptable. The implementation does not promise application-specific error bounds, so test representative values before choosing a reduced format.
@@ -45,6 +48,7 @@ local bytes = VoidSentryUltimate.Serialize(Types.BoolPacked, flags)
 
 - `String`: 2-byte unsigned byte-length prefix, then 0 to 65,535 bytes.
 - `String8`: 1-byte unsigned byte-length prefix, then 0 to 255 bytes.
+- `String24`: 3-byte unsigned byte-length prefix, then 0 to 16,777,215 bytes.
 - `StringFixed(length)`: exactly `length` bytes with no prefix.
 
 The prefix records bytes, not UTF-8 characters. `StringFixed` requires the caller to provide exactly the configured byte length.
@@ -136,8 +140,8 @@ For `Instance` and `Instance24`, module initialization maintains maps between in
 
 `LuauVS.luau` exposes exactly these public `Types` names:
 
-- Numbers and booleans: `U8`, `I8`, `U16`, `I16`, `U24`, `I24`, `U32`, `I32`, `U40`, `I40`, `U48`, `I48`, `F16`, `F24`, `F32`, `F64`, `Bool`, `BoolPacked`.
-- Strings and buffers: `String`, `String8`, `StringFixed`, `Buffer`, `Buffer8`, `Buffer24`, `BufferFixed`.
+- Numbers and booleans: `U8`, `I8`, `U16`, `I16`, `U24`, `I24`, `U32`, `I32`, `U40`, `I40`, `U48`, `I48`, `UInt`, `Int`, `F16`, `F24`, `F32`, `Number`, `F64`, `Bool`, `BoolPacked`.
+- Strings and buffers: `String`, `String8`, `String24`, `StringFixed`, `Buffer`, `Buffer8`, `Buffer24`, `BufferFixed`.
 - Collections: `Array`, `Array8`, `Array24`, `ArrayFixed`, `Map`, `Map8`, `Map24`, `MapFixed`, `Struct`, `DeltaStruct`, `DeltaStruct16`, `Optional`.
 - Vectors: `Vector`, `VectorF16`, `VectorF24`, `VectorU8`, `VectorI8`, `VectorU16`, `VectorI16`, `VectorU24`, `VectorI24`.
 

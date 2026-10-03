@@ -9,51 +9,39 @@ sidebar_position: 6
 Put each wire schema in a shared module and import it from every producer and consumer. A buffer carries no schema information, so a mismatch can silently reinterpret every following byte.
 
 ```luau
-local Types = VoidSentryUltimate.Types
+local Schema = VoidSentryUltimate.Schema
 
-return Types.Struct({
+return Schema {
 	Sequence = Types.U32,
 	SentAt = Types.F64,
 	Value = Types.F32,
-})
+}
 ```
 
 ## Version persisted formats
 
-Treat schemas as protocols. If a field or node changes, either keep decoding with the old schema or add an explicit version outside the payload.
+Treat schemas as protocols. If a field or node changes, keep decoding with the old schema, rewrite the buffer with [`Migrate`](./schemas.md#migrating-old-buffers), or add an explicit version outside the payload.
 
 ```luau
 local version = buffer.readu8(packet, 0)
 
 if version == 1 then
-	return VoidSentryUltimate.DeserializeWithOffset(MessageV1, packet, 1)
+	return SchemaV1.DeserializeWithOffset(packet, 1)
 elseif version == 2 then
-	return VoidSentryUltimate.DeserializeWithOffset(MessageV2, packet, 1)
+	return SchemaV2.DeserializeWithOffset(packet, 1)
 else
 	error("Unsupported message version")
 end
 ```
 
-Do not add a field to a `Struct` and expect older buffers to remain compatible. Struct keys are sorted, so adding or renaming a field can also move other fields in the wire order.
-
-## Validate before serialization
-
-VoidSentryUltimate deliberately strips validation. Enforce all application constraints before calling it:
-
-- Integer values fit the selected signed or unsigned width.
-- String and buffer byte lengths fit their prefixes.
-- Fixed strings, buffers, arrays, and maps have exactly the configured lengths.
-- `BoolPacked` receives exactly eight booleans.
-- Required struct fields exist and have the expected types.
-- Destination buffers have enough space before `Push`.
-
-Validation is especially important at a trust boundary. Do not deserialize arbitrary client or external buffers without checking message size, version, authorization, and protocol limits around the call.
+Do not add a field to a `Schema` and expect older buffers to remain compatible. Struct keys are sorted, so adding or renaming a field can also move other fields in the wire order.
 
 ## Choose compact types from measured data
 
 Use the smallest representation that safely covers real values:
 
 - Prefer `String8`, `Array8`, `Map8`, and `Buffer8` only when payloads cannot exceed 255 bytes or entries.
+- Use `String24` or `Buffer24` when a payload can exceed 65,535 bytes.
 - Use fixed variants when length is guaranteed by the protocol.
 - Use `F16` or `F24` only after testing acceptable precision and range on representative values.
 - Use integer vector variants only when every component fits the selected integer representation.
@@ -61,30 +49,6 @@ Use the smallest representation that safely covers real values:
 - Use `CFrameQuantF16` / `CFrameQuant8F16` or `UDim2Quant` only after measuring orientation or scale error on representative values.
 
 Reduced precision formats are lossy. Avoid unsupported assumptions about exact decimal error or range; test the values your application actually sends.
-
-## Account for bytes, not characters
-
-Luau's string length operator counts bytes. A UTF-8 string can use multiple bytes per visible character.
-
-```luau
-local text = "café"
-print(#text)
-```
-
-Use `#text` when checking `String8`, `String`, or `StringFixed` limits.
-
-## Plan deterministic bytes explicitly
-
-`Struct` sorts its field names before use, but maps emit entries in table iteration order. Equivalent maps can therefore produce different byte sequences. For stable hashes, signatures, snapshots, or cache keys, sort entries yourself and serialize them as an array.
-
-```luau
-local Entry = Types.Struct({
-	Key = Types.String8,
-	Value = Types.U32,
-})
-
-local CanonicalEntries = Types.Array(Entry)
-```
 
 ## Treat instance references as contextual
 
@@ -118,3 +82,20 @@ VoidSentryUltimate.Push(Types.U32, sequence, packet, cursor)
 
 `Deserialize`, `DeserializeWithOffset`, and `Push` all return the final cursor.
 You can ignore the second return from deserialize calls when you only need the value.
+
+
+## Prefer `Schema` over `Struct`
+
+`Schema` type is slightly faster than `Struct` type, easier and more convenient to use
+
+The only reason to use structs is for nested definitions (Schema cannot be nested)
+```luau
+local PlayerData = Schema {
+	Name = Types.String8,
+	Id = Types.UInt,
+	Builds = Types.Array(Types.Struct {
+		Id = Types.UInt,
+		CFrame = Types.QCFrame,
+	})
+}
+```

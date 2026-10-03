@@ -19,19 +19,19 @@ The library is intentionally validation-free. It does not check values, lengths,
 local VoidSentryUltimate = require(path.to.VoidSentryUltimate)
 local Types = VoidSentryUltimate.Types
 
-local PlayerState = Types.Struct({
-	Health = Types.U16,
+local PlayerState = Types.Schema {
+	Health = Types.UInt,
 	Name = Types.String8,
 	Position = Types.Vector,
-})
+}
 
-local encoded = VoidSentryUltimate.Serialize(PlayerState, {
+local encoded = PlayerState.Serialize {
 	Health = 100,
 	Name = "Builder",
 	Position = Vector3.new(4, 8, 15),
-})
+}
 
-local decoded = VoidSentryUltimate.Deserialize(PlayerState, encoded)
+local decoded = PlayerState.Deserialize(encoded)
 print(decoded.Name, decoded.Health)
 ```
 
@@ -40,10 +40,10 @@ Schemas are executable serialization nodes, not metadata embedded in the output.
 ## Choose a module
 
 - Use `VoidSentryUltimate.luau` in Roblox. Its Wally package is
-  `elentium/voidsentryultimate@1.1.1`. It includes Roblox datatypes, instance
+  `elentium/voidsentryultimate@1.1.2`. It includes Roblox datatypes, instance
   references, and serializable instances.
 - Use `LuauVS.luau` for pure Luau. Its Wally package is
-  `elentium/voidsentryultimateluau@1.1.1`. It includes scalar, string, buffer,
+  `elentium/voidsentryultimateluau@1.1.2`. It includes scalar, string, buffer,
   collection, optional, packed-boolean, and `vector` nodes, but no Roblox-only
   types.
 

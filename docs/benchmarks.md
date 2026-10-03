@@ -20,11 +20,15 @@ Values are average microseconds per call (μs). Lower is faster.
 
 | Type | Serialize | Deserialize | RoundTrip |
 | --- | ---: | ---: | ---: |
-| `U8` | 0.04 | 0.02 | 0.06 |
-| `U40` | 0.05 | 0.02 | 0.06 |
+| `U8` | 0.05 | 0.02 | 0.06 |
+| `U40` | 0.05 | 0.02 | 0.07 |
 | `I40` | 0.05 | 0.02 | 0.07 |
-| `U48` | 0.05 | 0.02 | 0.06 |
-| `I48` | 0.05 | 0.02 | 0.06 |
+| `U48` | 0.05 | 0.02 | 0.07 |
+| `I48` | 0.05 | 0.02 | 0.07 |
+| `UInt` (1 byte) | 0.05 | 0.02 | 0.06 |
+| `Int` (1 byte) | 0.05 | 0.02 | 0.07 |
+| `UInt` (4 byte) | 0.05 | 0.02 | 0.07 |
+| `Int` (4 byte) | 0.05 | 0.02 | 0.08 |
 | `F32` | 0.05 | 0.02 | 0.06 |
 | `F64` | 0.05 | 0.02 | 0.06 |
 | `Bool` | 0.05 | 0.02 | 0.06 |
@@ -34,32 +38,32 @@ Values are average microseconds per call (μs). Lower is faster.
 
 | Type | Serialize | Deserialize | RoundTrip |
 | --- | ---: | ---: | ---: |
-| `Vector` | 0.06 | 0.02 | 0.08 |
-| `VectorF16` | 0.08 | 0.03 | 0.12 |
-| `BufferFixed` (32b) | 0.08 | 0.05 | 0.14 |
-| `Buffer8` (33b payload) | 0.09 | 0.06 | 0.16 |
-| `Color3` | 0.07 | 0.03 | 0.08 |
+| `Vector` | 0.05 | 0.02 | 0.06 |
+| `VectorF16` | 0.07 | 0.03 | 0.09 |
+| `BufferFixed` (32b) | 0.07 | 0.05 | 0.12 |
+| `Buffer8` (33b payload) | 0.08 | 0.05 | 0.13 |
+| `Color3` | 0.09 | 0.05 | 0.08 |
 | `UDim2Quant` | 0.07 | 0.04 | 0.10 |
 | `CFrame` | 0.09 | 0.05 | 0.14 |
-| `QCFrame` | 0.09 | 0.05 | 0.14 |
-| `CFrameF16` | 0.15 | 0.10 | 0.26 |
-| `CFrameQuantF16` | 0.10 | 0.11 | 0.23 |
-| `CFrameQuant8F16` | 0.10 | 0.11 | 0.23 |
+| `QCFrame` | 0.10 | 0.05 | 0.16 |
+| `CFrameF16` | 0.14 | 0.08 | 0.23 |
+| `CFrameQuantF16` | 0.11 | 0.09 | 0.21 |
+| `CFrameQuant8F16` | 0.11 | 0.10 | 0.22 |
 | `Instance` | 0.05 | 0.02 | 0.07 |
-| `SerInstance` | 0.17 | 0.90 | 1.13 |
+| `SerInstance` | 0.19 | 0.88 | 1.10 |
 
 ### Collections
 
 | Type | Serialize | Deserialize | RoundTrip |
 | --- | ---: | ---: | ---: |
-| `Array` (10 × `U8`) | 0.14 | 0.14 | 0.30 |
-| `Array` (100 × `U8`) | 0.89 | 0.99 | 1.88 |
-| `Map` (10 × `U8`→`U8`) | 0.21 | 0.35 | 0.59 |
-| `Map` (100 × `U8`→`U8`) | 1.56 | 2.16 | 3.86 |
-| `Schema` (10 × `U8`) | 0.18 | 0.37 | 0.55 |
-| `Schema` (100 × `U8`) | 1.49 | 2.91 | 4.51 |
+| `Array` (10 × `U8`) | 0.14 | 0.14 | 0.29 |
+| `Array` (100 × `U8`) | 0.90 | 1.02 | 1.93 |
+| `Map` (10 × `U8`→`U8`) | 0.23 | 0.33 | 0.56 |
+| `Map` (100 × `U8`→`U8`) | 1.60 | 2.20 | 3.93 |
+| `Schema` (10 × `U8`) | 0.18 | 0.32 | 0.51 |
+| `Schema` (100 × `U8`) | 1.53 | 2.83 | 4.47 |
 
-Primitive nodes stay near **0.04–0.05 μs** serialize and **0.02 μs** deserialize. The 40-bit and 48-bit integer nodes remain in that range despite their wider wire formats. Cost grows mainly with collection size and with compressed / property-driven types such as `CFrameF16` and `SerInstance`.
+Primitive nodes stay near **0.05 μs** serialize and **0.02 μs** deserialize. The 40-bit and 48-bit integer nodes, and both the 1-byte and 4-byte `UInt` / `Int` paths, remain in that range. Cost grows mainly with collection size and with compressed / property-driven types such as `CFrameF16` and `SerInstance`.
 
 ## Versus Sera
 
@@ -75,62 +79,62 @@ Sera only serializes through schemas. For primitives, vectors, and CFrames the c
 
 | Category | Serialize | Deserialize | Total / RoundTrip |
 | --- | ---: | ---: | ---: |
-| Primitives | **1.70x** VS | **3.33x** VS | **1.90x** VS |
-| Schemas | **1.31x** VS | **1.00x** VS | **1.04x** VS |
-| Deltas | **1.44x** VS | **1.13x** VS | **1.27x** VS |
-| Push (avg μs) | VS **1.153** / Sera **1.069** | — | — |
+| Primitives | **1.51x** VS | **2.13x** VS | **1.77x** VS |
+| Schemas | **1.25x** VS | **1.01x** VS | **1.09x** VS |
+| Deltas | **1.38x** VS | **1.14x** VS | **1.24x** VS |
+| Push (avg μs) | VS **1.169** / Sera **1.086** | — | — |
 
 ### Floats, vectors, and CFrames
 
 | Operation | Sera (μs) | VoidSentry (μs) | Speedup |
 | --- | ---: | ---: | ---: |
-| `F32` Serialize | 0.08 | 0.05 | 1.60x |
-| `F32` Deserialize | 0.06 | 0.01 | 6.00x |
-| `F32` RoundTrip | 0.15 | 0.06 | 2.50x |
+| `F32` Serialize | 0.09 | 0.05 | 1.80x |
+| `F32` Deserialize | 0.05 | 0.02 | 2.50x |
+| `F32` RoundTrip | 0.14 | 0.06 | 2.33x |
 | `Vector3` Serialize | 0.09 | 0.05 | 1.80x |
-| `Vector3` Deserialize | 0.06 | 0.01 | 6.00x |
-| `Vector3` RoundTrip | 0.15 | 0.06 | 2.50x |
-| `CFrame` Serialize | 0.13 | 0.09 | 1.44x |
+| `Vector3` Deserialize | 0.05 | 0.02 | 2.50x |
+| `Vector3` RoundTrip | 0.14 | 0.07 | 2.00x |
+| `CFrame` Serialize | 0.14 | 0.10 | 1.40x |
 | `CFrame` Deserialize | 0.09 | 0.05 | 1.80x |
-| `CFrame` RoundTrip | 0.23 | 0.14 | 1.64x |
-| LossyCFrame vs `QCFrame` Serialize | 0.15 | 0.09 | 1.67x |
-| LossyCFrame vs `QCFrame` Deserialize | 0.22 | 0.05 | 4.40x |
+| `CFrame` RoundTrip | 0.23 | 0.15 | 1.53x |
+| LossyCFrame vs `QCFrame` Serialize | 0.14 | 0.11 | 1.27x |
+| LossyCFrame vs `QCFrame` Deserialize | 0.11 | 0.05 | 2.20x |
 
 ### Schemas (U8 fields)
 
 | Operation | Sera (μs) | VoidSentry (μs) | Speedup |
 | --- | ---: | ---: | ---: |
-| 1 field Serialize | 0.09 | 0.05 | 1.80x |
-| 1 field Deserialize | 0.06 | 0.06 | 1.00x |
-| 10 fields Serialize | 0.43 | 0.20 | 2.15x |
-| 10 fields Deserialize | 0.56 | 0.56 | 1.00x |
-| 100 fields Serialize | 1.77 | 1.49 | 1.19x |
-| 100 fields Deserialize | 3.02 | 3.14 | 0.96x |
-| 100 fields RoundTrip | 5.01 | 4.56 | 1.10x |
+| 1 field Serialize | 0.09 | 0.06 | 1.50x |
+| 1 field Deserialize | 0.05 | 0.05 | 1.00x |
+| 10 fields Serialize | 0.23 | 0.18 | 1.28x |
+| 10 fields Deserialize | 0.32 | 0.32 | 1.00x |
+| 100 fields Serialize | 1.82 | 1.47 | 1.24x |
+| 100 fields Deserialize | 2.82 | 2.80 | 1.01x |
+| 100 fields RoundTrip | 4.73 | 4.39 | 1.08x |
 
 ### Deltas (`Schema.DeltaSerialize` vs Sera delta)
 
 | Operation | Sera (μs) | VoidSentry (μs) | Speedup |
 | --- | ---: | ---: | ---: |
-| 10 fields, all present Serialize | 0.27 | 0.19 | 1.42x |
-| 10 fields, all present Deserialize | 0.41 | 0.38 | 1.08x |
-| 100 fields, all present Serialize | 2.22 | 1.57 | 1.41x |
-| 100 fields, only 1 present Serialize | 0.10 | 0.06 | 1.67x |
-| 255 fields, only 1 present Serialize | 0.10 | 0.06 | 1.67x |
+| 10 fields, all present Serialize | 0.26 | 0.19 | 1.37x |
+| 10 fields, all present Deserialize | 0.36 | 0.33 | 1.09x |
+| 100 fields, all present Serialize | 2.20 | 1.60 | 1.38x |
+| 100 fields, only 1 present Serialize | 0.09 | 0.07 | 1.29x |
+| 255 fields, only 1 present Serialize | 0.09 | 0.06 | 1.50x |
 
 ### Push
 
 | Operation | Sera (μs) | VoidSentry (μs) | Speedup |
 | --- | ---: | ---: | ---: |
-| Schema Push (100 fields) | 1.73 | 1.44 | 1.20x |
-| DeltaPush (100 fields, only 1 present) | 0.06 | 0.04 | 1.50x |
+| Schema Push (100 fields) | 1.70 | 1.45 | 1.17x |
+| DeltaPush (100 fields, only 1 present) | 0.06 | 0.05 | 1.20x |
 
 ### Summary
 
-- **Primitives** are VoidSentry’s clearest win (~**1.7×** serialize, ~**3.3×** deserialize, ~**1.9×** round-trip on the suite averages; bare `F32` / `Vector3` deserialize is about **6×**).
-- **Schemas** stay close: VoidSentry leads serialize (~**1.31×**) and total (~**1.04×**); deserialize is even.
-- **Deltas** favor VoidSentry (~**1.44×** serialize, ~**1.13×** deserialize, ~**1.27×** total), including sparse “only 1 present” cases.
-- **Push** suite average slightly favors Sera (**1.069 μs** vs **1.153 μs**). Individual rows still vary: 100-field `Schema.Push` and sparse `DeltaPush` favor VoidSentry.
+- **Primitives** are VoidSentry’s clearest win (~**1.5×** serialize, ~**2.1×** deserialize, ~**1.8×** round-trip on the suite averages; bare `F32` / `Vector3` deserialize is **2.5×**).
+- **Schemas** stay close: VoidSentry leads serialize (~**1.25×**) and total (~**1.09×**); deserialize is even.
+- **Deltas** favor VoidSentry (~**1.38×** serialize, ~**1.14×** deserialize, ~**1.24×** total), including sparse “only 1 present” cases.
+- **Push** suite average slightly favors Sera (**1.086 μs** vs **1.169 μs**). Individual rows still vary: 100-field `Schema.Push` and sparse `DeltaPush` favor VoidSentry.
 - Prefer schema tables for schema-to-schema comparisons; prefer primitive tables when comparing each library’s natural single-value API.
 
 `LuauBench` also includes a `VoidSentryUltimate.Schema` section for the pure-Luau package.

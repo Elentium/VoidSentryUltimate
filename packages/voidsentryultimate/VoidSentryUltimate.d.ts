@@ -29,6 +29,12 @@ declare namespace VoidSentryUltimate {
 			data: DeltaStructOf<{ readonly [key: string]: SerdesNode<unknown> }>,
 			offset: number,
 		) => number
+		readonly Migrate: (
+			otherSchema: Schema<T>,
+			oldBuf: buffer,
+			oldOffset?: number,
+			newOffset?: number,
+		) => buffer
 	}
 
 	export type Dictionary<K, V> = { [P in Extract<K, string | number>]: V }
@@ -66,12 +72,16 @@ declare namespace VoidSentryUltimate {
 		readonly F24: SerdesNode<number>
 		readonly F32: SerdesNode<number>
 		readonly F64: SerdesNode<number>
+		readonly Number: SerdesNode<number>
+		readonly UInt: SerdesNode<number>
+		readonly Int: SerdesNode<number>
 
 		readonly Bool: SerdesNode<boolean>
 		readonly BoolPacked: SerdesNode<BoolPacked>
 
 		readonly String: SerdesNode<string>
 		readonly String8: SerdesNode<string>
+		readonly String24: SerdesNode<string>
 		readonly StringFixed: (length: number) => SerdesNode<string>
 
 		readonly Buffer: SerdesNode<buffer>
@@ -118,6 +128,7 @@ declare namespace VoidSentryUltimate {
 		readonly CFrameQuant8F16: SerdesNode<CFrame>
 
 		readonly Color3: SerdesNode<Color3>
+		readonly Color3Round: SerdesNode<Color3>
 
 		readonly Instance: SerdesNode<Instance>
 		readonly Instance24: SerdesNode<Instance>
@@ -191,6 +202,13 @@ interface VoidSentryUltimate {
 	readonly Schema: <T extends { readonly [key: string]: SerdesNode<unknown> }>(
 		tbl: T,
 	) => VoidSentryUltimate.Schema<VoidSentryUltimate.StructOf<T>>
+	readonly Migrate: <T>(
+		old: VoidSentryUltimate.SerdesNode<T>,
+		next: VoidSentryUltimate.SerdesNode<T>,
+		oldBuf: buffer,
+		oldOffset?: number,
+		newOffset?: number,
+	) => buffer
 }
 
 declare const VoidSentryUltimate: VoidSentryUltimate
